@@ -1,0 +1,14 @@
+###
+POST http://localhost:4001/auth/login
+Content-Type: application/json
+Authorization: Basic bXV0eWEtYnJva2VyMTpwYXNzMTIz
+
+###
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTAzODcwMzEsImV4cCI6MTc1MDM4NzkzMX0._P_0MVY2wCRO-f87fKdGnEApaeznUkFNkGIXA4Ht-eo
+POST http://localhost:4001/auth/refresh
+Authorization: Bearer {{refreshToken}}
+
+###
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTAzOTYxMzMsImV4cCI6MTc1MDM5NzAzM30.PdIrN9SpvtrXBydnR1S6aPt8_CDvbNHk69WKYsfvRto
+GET http://localhost:4001/user/info
+Authorization: Bearer {{accessToken}}
