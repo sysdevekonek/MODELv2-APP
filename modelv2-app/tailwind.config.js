@@ -24,6 +24,10 @@ module.exports = {
 
         
       },
+    fontFamily: {
+        'bodyFont': ['Roboto', 'sans-serif'],
+        'titleFont': ['Montserrat', 'sans-serif'],
+      },
     },
   },
   plugins: [],
