@@ -1,5 +1,5 @@
 "use client"
-import withAuth from '@/components/withAuth';
+import withAuth from '@/components/utils/withAuth';
 
 function DashboardPage() {
 
