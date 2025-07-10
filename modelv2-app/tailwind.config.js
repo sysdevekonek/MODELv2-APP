@@ -12,18 +12,18 @@ module.exports = {
   theme: {
   	extend: {
   		colors: {
-  			mainDef1: '#D9DDED',
-  			mainDef2: '#8289A4',
-  			mainDef3: '#1E212F',
-  			subDef: '#131622',
-  			bgDef: '#F5F5F5',
-  			bgDefcont: '#FFFFFF',
-  			mainTextDef1: '#000000',
-  			mainTextDef2: '#1E212F',
-  			mainTextDef3: '#FFFFFF',
-  			mainSubtextDef: '#C2C2C2',
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
+  			'mainDef1': '#D9DDED',
+  			'mainDef2': '#8289A4',
+  			'mainDef3': '#1E212F',
+  			'subDef': '#131622',
+  			'bgDef': '#F5F5F5',
+  			'bgDefcont': '#FFFFFF',
+  			'mainTextDef1': '#000000',
+  			'mainTextDef2': '#1E212F',
+  			'mainTextDef3': '#FFFFFF',
+  			'mainSubtextDef': '#C2C2C2',
+  			'background': 'hsl(var(--background))',
+  			'foreground': 'hsl(var(--foreground))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
