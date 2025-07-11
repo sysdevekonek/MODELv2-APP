@@ -9,6 +9,7 @@ const handleLogout = () => {
 };
 
   return (
+
     <div>
       <h1>Welcome to your dashboard</h1>
       <button
@@ -21,6 +22,7 @@ const handleLogout = () => {
         Logout
       </button>
     </div>
+   
   );
 }
 
