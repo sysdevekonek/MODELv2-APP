@@ -14,6 +14,6 @@ export default function withAuth(Component: React.FC) {
       }
     }, []);
 
-    return <Component {...props} />
+    return <Component {...props} />;
   };
 }
