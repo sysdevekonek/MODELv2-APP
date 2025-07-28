@@ -4,11 +4,40 @@ Content-Type: application/json
 Authorization: Basic bXV0eWEtYnJva2VyMTpwYXNzMTIz
 
 ###
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTAzODcwMzEsImV4cCI6MTc1MDM4NzkzMX0._P_0MVY2wCRO-f87fKdGnEApaeznUkFNkGIXA4Ht-eo
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzUyNTU4NTI2LCJleHAiOjE3NTI1NTk3MjZ9.CR6b2JXE2-6z8lhSJUYwgwh5uBRG9Q9egXEfdayMIl4
 POST http://localhost:4001/auth/refresh
 Authorization: Bearer {{refreshToken}}
 
 ###
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTAzOTYxMzMsImV4cCI6MTc1MDM5NzAzM30.PdIrN9SpvtrXBydnR1S6aPt8_CDvbNHk69WKYsfvRto
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTMxNTYyMjAsImV4cCI6MTc1MzE1NzEyMH0.mIA66z6NVDfuapHH0QWgQ7Cl9kGZaoO-TyAU0htu0ak
 GET http://localhost:4001/user/info
+Authorization: Bearer {{accessToken}}
+
+###
+GET http://localhost:4001/reference/clients
+Authorization: Bearer {{accessToken}}
+
+###
+GET http://localhost:4001/reports/summary?from_date=01/01/2025&to_date=07/08/2025&client_code=479354463000
+Authorization: Bearer {{accessToken}}
+
+###
+POST http://localhost:4001/reports/pro-info
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+[
+  {
+    "val_type"     : "pronumber",
+    "val_list"     : "RVM2500023F,RVM2500020F,RVM2500019F",
+    "generate_type": "BRC"
+  }
+]
+
+###
+GET http://localhost:4001/reference/check/pro-exist?val_type=pronumber&value=RVM2500023F
+Authorization: Bearer {{accessToken}}
+
+###
+GET http://localhost:4001/reference/transactions/details?value=RVM2500023F
 Authorization: Bearer {{accessToken}}

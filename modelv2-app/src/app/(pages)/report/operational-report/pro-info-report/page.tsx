@@ -1,8 +1,17 @@
-export default function PROInfoReport() {
+'use client'
+import React, { useState } from 'react'
+import ProReportField from '@/components/features/reports/ProReportField'
+
+const page = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen text-center text-gray-600">
-      <h1 className="text-3xl font-bold mb-2">🚧 Under Maintenance</h1>
-      <p className="text-lg">This feature is not yet available. Please check back soon.</p>
+    <div className='w-full h-[70vh] flex flex-col justify-center items-center p-8 mt-5 bg-bgDefcont shadow-2xl rounded-[10px] overflow-auto'>
+        <div className='w-96 h-12 flex items-center justify-center absolute top-5 left-[310px] rounded text-[1.5vw] text-mainTextDef3 bg-mainDef3 font-semibold shadow-md'>
+          <h3>PRO INFORMATION REPORT</h3>
+        </div>
+        <ProReportField />
+
     </div>
   );
 }
+
+export default page;

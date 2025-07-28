@@ -11,7 +11,7 @@ export default function Header() {
       </div>
       <div>
         <a href="/dashboard">
-          <img src="./../modellogowhite.png" alt="MODEL Logo" className="w-[15rem] h-auto" />
+          <img src="./../../../public/modellogowhite.png" alt="MODEL Logo" className="w-[15rem] h-auto" />
         </a>
       </div>
     </header>
