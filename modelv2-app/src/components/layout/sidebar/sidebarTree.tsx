@@ -26,7 +26,7 @@ export default function SidebarTree({ items, openDropdowns, setOpenDropdowns, pa
               <>
                 <button
                   onClick={() => toggleDropdown(item.NAV_ITEM_CODE)}
-                  className="flex items-center justify-between w-full pl-2 py-1 hover:bg-gray-700 hover:text-gray-300 focus:outline-none transition duration-200"
+                  className="flex items-center justify-between w-full pl-2 py-1 text-layoutText2 hover:bg-layouthover hover:text-layoutText1 focus:outline-none transition duration-200 rounded-md"
                 >
                   <span>{item.TITLE}</span>
                   <svg
@@ -55,8 +55,8 @@ export default function SidebarTree({ items, openDropdowns, setOpenDropdowns, pa
                 href={item.URL}
                 className={`block pl-2 py-1 rounded-md transition duration-200 ${
                   isActive
-                    ? 'bg-gray-700 text-white font-semibold'
-                    : 'hover:bg-gray-700 hover:text-gray-300'
+                    ? 'bg-layouthover text-layoutText1 font-semibold'
+                    : 'text-layoutText2 hover:bg-layouthover hover:text-layoutText1' 
                 }`}
               >
                 {item.TITLE}

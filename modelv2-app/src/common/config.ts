@@ -14,14 +14,42 @@ api.interceptors.request.use(config => {
 
 api.interceptors.response.use(
   response => response,
-  error => {
-    if (error.response && error.response.status === 401) {
-      console.warn('Unauthorized - Token expired.');
+  async error => {
+    const originalRequest = error.config;
 
-      sessionStorage.removeItem('accessToken');
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
 
-      if (typeof window !== 'undefined') {
+      try {
+        const refreshToken = sessionStorage.getItem('refreshToken');
+        if (!refreshToken) { throw new Error('No refresh token'); }
+
+        const res = await axios.post(
+          'http://localhost:4001/auth/refresh',
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
+        );
+
+        const { accessToken, refreshToken: newRefreshToken } = res.data;
+
+        sessionStorage.setItem('accessToken', accessToken);
+        sessionStorage.setItem('refreshToken', newRefreshToken);
+        
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return api(originalRequest);
+      } catch (refreshErr) {
+        console.error('Refresh failed, logging out');
+        sessionStorage.clear();
         window.location.href = '/login';
+        return Promise.reject(refreshErr);
       }
     }
 

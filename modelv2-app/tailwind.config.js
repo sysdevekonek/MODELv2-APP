@@ -12,18 +12,39 @@ module.exports = {
   theme: {
   	extend: {
   		colors: {
-  			'mainDef1': '#D9DDED',
-  			'mainDef2': '#8289A4',
-  			'mainDef3': '#1E212F',
-  			'subDef': '#131622',
-  			'bgDef': '#F5F5F5',
-  			'bgDefcont': '#FFFFFF',
-  			'mainTextDef1': '#000000',
-  			'mainTextDef2': '#1E212F',
-  			'mainTextDef3': '#FFFFFF',
-  			'mainSubtextDef': '#C2C2C2',
-  			'background': 'hsl(var(--background))',
-  			'foreground': 'hsl(var(--foreground))',
+			main1: 'hsl(var(--main-1))',
+			inputField1: 'hsl(var(--input-field-1))',
+			inputField2: 'hsl(var(--input-field-2))',
+			button1: 'hsl(var(--button-1))',
+			button2: 'hsl(var(--button-2))',
+			buttonBorder: 'hsl(var(--button-border))',
+			layouthover: 'hsl(var(--layout-hover))',
+			layout1: 'hsl(var(--layout-1))',
+			layout2: 'hsl(var(--layout-2))',
+			layout3: 'hsl(var(--layout-3))',
+			layoutText1: 'hsl(var(--layout-text-1))',
+			layoutText2: 'hsl(var(--layout-text-2))',
+			bg: 'hsl(var(--bg))',
+			bgContainer: 'hsl(var(--bg-container))',
+			titlebodytext1: 'hsl(var(--title-body-text-1))',
+			bodytext2: 'hsl(var(--body-text-2))',
+			subtext: 'hsl(var(--subtext))',
+			themebutton1: 'hsl(var(--theme-button-1))',
+			themebutton2: 'hsl(var(--theme-button-2))',
+		
+			'mainDef1': '#D9DDED', //Default Main Colors
+			'mainDef2': '#8289A4',
+			'mainDef3': '#1E212F',
+			'subDef': '#131622',
+			'bgDef': '#F5F5F5', //Default Background Colors
+			'bgDefcont': '#FFFFFF',
+			'mainTextDef1': '#000000', //Default Text Color
+			'mainTextDef2': '#1E212F',
+			'mainTextDef3': '#FFFFFF',
+			'mainSubtextDef': '#C2C2C2',
+    
+  			background: 'hsl(var(--background))',
+  			foreground: 'hsl(var(--foreground))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
