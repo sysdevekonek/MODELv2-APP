@@ -27,18 +27,18 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="fixed top-32 left-0 w-72 h-[calc(100vh-8rem)] bg-mainDef3 text-white shadow-lg z-30 overflow-hidden">
+      <aside className="fixed top-32 left-0 w-72 h-[calc(100vh-8rem)] bg-layout1 text-foreground shadow-lg z-30 overflow-hidden transition-colors duration-300">
         <div className="absolute inset-0 pointer-events-none z-0">
           <div
-            className="absolute top-0 right-0 w-full h-full bg-mainDef2 opacity-20"
+            className="absolute top-0 right-0 w-full h-full bg-layout3 opacity-50"
             style={{
-              clipPath: "polygon(70.2% 85%, 100% 75%, 100% 100%, 0% 100%, 0% 75%)",
+              clipPath: "polygon(85.2% 87%, 100% 75%, 100% 100%, 0% 100%, 0% 75%)", 
             }}
           />
           <div
-            className="absolute top-0 right-0 w-full h-full bg-mainDef1 opacity-15"
+            className="absolute top-0 right-0 w-full h-full bg-layout2 opacity-50"
             style={{
-              clipPath: "polygon(65.2% 90%, 100% 80%, 100% 100%, 0% 100%, 0% 75%)",
+              clipPath: "polygon(90.2% 90%, 100% 79%, 100% 100%, 0% 100%, 0% 83%)",
             }}
           />
         </div>
@@ -54,7 +54,7 @@ export default function Sidebar() {
 
             <button
               onClick={handleLogout}
-              className="mt-4 px-2 py-1 text-left text-white hover:bg-gray-700 w-full"
+              className="mt-4 px-2 py-1 text-left text-layoutText2 rounded-md hover:bg-red-500 hover:text2 hover:font-semibold w-full"
             >
               Logout
             </button>

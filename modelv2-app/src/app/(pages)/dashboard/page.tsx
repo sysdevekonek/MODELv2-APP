@@ -1,29 +1,17 @@
 "use client"
-import withAuth from '@/components/utils/withAuth';
 
 function DashboardPage() {
 
-const handleLogout = () => {
-  sessionStorage.removeItem('accessToken');
-  window.location.href = '/login'; // or router.push('/login') if inside client
-};
-
   return (
-
-    <div>
-      <h1>Welcome to your dashboard</h1>
-      <button
-        onClick={() => {
-          sessionStorage.removeItem('accessToken');
-          window.location.href = '/login';
-        }}
-        className="px-4 py-2 bg-red-500 text-white rounded"
-      >
-        Logout
-      </button>
+    <div className="bg-bgContainer w-full">
+      <div className="bg-main1 text-titlebodytext1 font-semibold p-4 inline-block rounded-[5px] mb-4 -translate-y-1/4 -top-6">
+        <h1>DASHBOARD</h1>
+      </div>
+      <h5 className='text-bodytext2'> Hello this is a sample text</h5>
+      
     </div>
    
   );
 }
 
-export default withAuth(DashboardPage);
+export default DashboardPage;
