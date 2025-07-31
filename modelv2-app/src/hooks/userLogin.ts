@@ -20,7 +20,6 @@ export const userLogin = () => {
   };
 
   const getFirstAccessibleURL = (navList: any[]): string | null => {
-    // Optionally sort by DISPLAY_ORDER first
     navList.sort((a, b) => a.DISPLAY_ORDER - b.DISPLAY_ORDER);
     for (const item of navList) {
       const isLeaf = !navList.some(nav => nav.PARENT_NAV_CODE === item.NAV_ITEM_CODE);
@@ -48,13 +47,16 @@ export const userLogin = () => {
       });
 
       const accessToken = res.data.accessToken;
+      const refreshToken = res.data.refreshToken;
       sessionStorage.setItem('accessToken', accessToken);
+      sessionStorage.setItem('refreshToken', refreshToken);
 
       const userInfoRes = await api.get('/user/info');
       const userInfo = userInfoRes.data.USER_INFO;
       const navList = userInfoRes.data.NAV_LIST;
 
       sessionStorage.setItem('username', userInfo.USERNAME);
+      sessionStorage.setItem('fullName', userInfo.FULLNAME);
       sessionStorage.setItem('userRoles', userInfo.ACCESS_PROFILE);
       sessionStorage.setItem('navigation', JSON.stringify(navList));
 
@@ -69,6 +71,8 @@ export const userLogin = () => {
       }
 
       console.log('User access profile:', userInfo.ACCESS_PROFILE);
+      console.log('User full name:', userInfo.FULLNAME);
+
     } catch (err: any) {
       console.error('Login failed:', err.response?.data || err.message);
       toast.error(err.response?.data?.message || 'Login failed');
