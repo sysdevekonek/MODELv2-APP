@@ -11,7 +11,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="relative min-h-screen">
       <Header />
       <Sidebar />
-      <main className="ml-72 mt-32 p-6 bg-bgDef min-h-[calc(100vh-4rem)]">{children}</main>
+      <main className="ml-72 mt-32 p-6 bg-bg min-h-[calc(100vh-4rem)]">{children}</main>
     </div>
   )
 }
