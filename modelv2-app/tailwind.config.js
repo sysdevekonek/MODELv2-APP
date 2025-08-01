@@ -13,24 +13,24 @@ module.exports = {
   	extend: {
   		colors: {
 			main1: 'hsl(var(--main-1))',
-			inputField1: 'hsl(var(--input-field-1))',
-			inputField2: 'hsl(var(--input-field-2))',
-			button1: 'hsl(var(--button-1))',
-			button2: 'hsl(var(--button-2))',
-			buttonBorder: 'hsl(var(--button-border))',
-			layouthover: 'hsl(var(--layout-hover))',
-			layout1: 'hsl(var(--layout-1))',
-			layout2: 'hsl(var(--layout-2))',
-			layout3: 'hsl(var(--layout-3))',
-			layoutText1: 'hsl(var(--layout-text-1))',
-			layoutText2: 'hsl(var(--layout-text-2))',
-			bg: 'hsl(var(--bg))',
-			bgContainer: 'hsl(var(--bg-container))',
-			titlebodytext1: 'hsl(var(--title-body-text-1))',
-			bodytext2: 'hsl(var(--body-text-2))',
-			subtext: 'hsl(var(--subtext))',
-			themebutton1: 'hsl(var(--theme-button-1))',
-			themebutton2: 'hsl(var(--theme-button-2))',
+			inputField1: 'hsl(var(--input-field-1))', //Input bg
+			inputField2: 'hsl(var(--input-field-2))', //Input field border
+			button1: 'hsl(var(--button-1))', //main button
+			button2: 'hsl(var(--button-2))', //sub-button
+			buttonBorder: 'hsl(var(--button-border))', //border (for dark)
+			layouthover: 'hsl(var(--layout-hover))', //sidebar item hover
+			layout1: 'hsl(var(--layout-1))', //bg for sidebar and header
+			layout2: 'hsl(var(--layout-2))', //sidebar&header element1
+			layout3: 'hsl(var(--layout-3))', //sidebar&header element2
+			layoutText1: 'hsl(var(--layout-text-1))', //sidebar active tab
+			layoutText2: 'hsl(var(--layout-text-2))', //sidebar non active tab
+			bg: 'hsl(var(--bg))', //bg of the page
+			bgContainer: 'hsl(var(--bg-container))', //bg of the container
+			titlebodytext1: 'hsl(var(--title-body-text-1))', //titles & sub titles
+			bodytext2: 'hsl(var(--body-text-2))', //body, general
+			subtext: 'hsl(var(--subtext))', //placeholders
+			themebutton1: 'hsl(var(--theme-button-1))', //themebutton (rarely used)
+			themebutton2: 'hsl(var(--theme-button-2))', //themebutton
 		
 			'mainDef1': '#D9DDED', //Default Main Colors
 			'mainDef2': '#8289A4',

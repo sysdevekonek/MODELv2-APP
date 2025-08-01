@@ -26,8 +26,8 @@ export default function SummaryReportFields() {
     <>
       <form className="flex items-center justify-center flex-col my-4">
         <div className="flex items-center gap-x-4 mb-4">
-          <label className="text-medium text-mainTextDef1 w-32">
-            <span className="text-mainDef3 font-semibold">Client:</span>
+          <label className="text-medium text-bodytext1 w-32">
+            <span className="font-semibold">Client:</span>
           </label>
           <ComboBox
             ref={comboRef}
@@ -36,34 +36,34 @@ export default function SummaryReportFields() {
             valueKey="CMP_CON_COD"
             selectedValue={selectedClient}
             setSelectedValue={setSelectedClient}
-            className="text-xs h-10 px-4 w-full border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-slate-700"
+            className="text-xs bg-inputField1 h-10 px-4 w-full border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
 
           />
         </div>
 
         <div className="flex items-center gap-x-4 mb-2">
-          <label htmlFor="entryDateFrom" className="text-medium text-mainTextDef1 w-32">
-            <span className="text-mainDef3 font-semibold">Entry Date From:</span>
+          <label htmlFor="entryDateFrom" className="text-medium text-bodytext2 w-32">
+            <span className="font-semibold">Entry Date From:</span>
           </label>
           <input
             id="entryDateFrom"
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="w-80 text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-slate-700"
+            className="w-80 text-xs h-10 px-4 bg-inputField1 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
           />
         </div>
 
         <div className="flex items-center gap-x-4 mb-4">
-          <label htmlFor="entryDateTo" className="text-medium text-mainTextDef1 w-32">
-            <span className="text-mainDef3 font-semibold">Entry Date To:</span>
+          <label htmlFor="entryDateTo" className="text-medium text-bodytext2 w-32">
+            <span className="font-semibold">Entry Date To:</span>
           </label>
           <input
             id="entryDateTo"
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="w-80 text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-slate-700"
+            className="w-80 text-xs h-10 px-4 bg-inputField1 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
           />
         </div>
       </form>
@@ -74,7 +74,7 @@ export default function SummaryReportFields() {
           disabled={loading}
           className={loading ? "pointer-events-none opacity-50" : ""}
         >
-          <div className="h-10 w-40 bg-mainDef3 rounded flex justify-center items-center hover:bg-mainDef2 hover:text-mainTextDef2 transition">
+          <div className="h-10 w-40 bg-button1 rounded flex justify-center items-center hover:bg-mainDef2 hover:text-mainTextDef2 transition">
         <span className="text-white font-semibold">
           {loading ? "LOADING..." : "GENERATE"}
         </span>
@@ -86,7 +86,7 @@ export default function SummaryReportFields() {
           disabled={loading}
           className={loading ? "pointer-events-none opacity-50" : ""}
         >
-          <div className="h-10 w-40 bg-mainDef2 rounded flex justify-center items-center hover:bg-mainDef2 text-white font-semibold">
+          <div className="h-10 w-40 bg-button2 rounded flex justify-center items-center hover:bg-mainDef2 text-bodytext2 font-semibold">
         CLEAR
           </div>
         </button>

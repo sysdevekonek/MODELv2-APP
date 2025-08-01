@@ -73,22 +73,22 @@ function ComboBoxInner<T>(
         }}
         onFocus={() => setShowDropdown(true)}
         placeholder={placeholder}
-        className={`w-full border rounded px-2 py-1 ${className || ''}`}
+        className={`w-full border rounded px-2 py-1 text-bodyText2 ${className || ''}`}
       />
       {showDropdown && (
-        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5">
+        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-bg text-bodyText2 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5">
           {filteredItems.length > 0 ? (
             filteredItems.map((item, idx) => (
               <li
                 key={`${String(valueKey)}-${String(item[valueKey])}-${idx}`}
-                className="cursor-pointer px-4 py-2 hover:bg-slate-100"
+                className="cursor-pointer px-4 py-2 hover:bg-main1"
                 onClick={() => handleSelect(item)}
               >
-                {String(item[displayKey])}
+                {String(item[displayKey])} 
               </li>
             ))
           ) : (
-            <li className="px-4 py-2 text-slate-400">No results found</li>
+            <li className="px-4 py-2 text-bodyText2">No results found</li>
           )}
         </ul>
       )}
