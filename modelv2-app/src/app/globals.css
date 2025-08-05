@@ -17,8 +17,8 @@ body {
 
   .light {
     --main-1: 228 36% 89%;
-    --input-field-1: 0 0% 100%;
-    --input-field-2: 214 32% 91%;
+    --input-field-1: 0 0% 100%; 
+    --input-field-2: 0 0% 52%;
     --button-1: 228 28% 10%;
     --button-2: 228 36% 89%;
     --button-border: ;
@@ -32,29 +32,29 @@ body {
     --bg-container: 0 0% 100%;
     --title-body-text-1: 0 0% 8%;
     --body-text-2: 0 0% 8%;
-    --subtext: 0 0% 76%;
+    --subtext: 0 0% 50%;
     --theme-button-1: 229 22% 15%;
     --theme-button-2: 230 12% 30%;
   }
 
   .dark {
-    --main-1: 210 25% 2%;
+    --main-1: 227 9% 19%;
     --input-field-1: 0 0% 7%;
     --input-field-2: 0 0% 13%;
     --button-1: 227 36% 5%;
     --button-2: 210 25% 2%;
-    --button-border: 227 36% 5%;
-    --layout-hover: 228 36% 89%;
+    --button-border: ;
+    --layout-hover: 227 9% 19%;
     --layout-1: 0 0% 8%;
     --layout-2: 228 3% 31%;
     --layout-3: 227 8% 23%;
-    --layout-text-1: 0 0% 8%;
+    --layout-text-1: 0 0% 100%;
     --layout-text-2: 0 0% 100%;
     --bg: 0 0% 4%;
     --bg-container: 0 0% 8%;
     --title-body-text-1: 0 0% 100%;
     --body-text-2: 0 0% 100%;
-    --subtext: 0 0% 76%;
+    --subtext: 0 0% 80%;
     --theme-button-1: 229 22% 15%;
     --theme-button-2: 230 12% 30%;
   }
@@ -62,7 +62,7 @@ body {
   .system {
     --main-1: 229 22% 15%;
     --input-field-1: 0 0% 100%;
-    --input-field-2: 214 32% 91%;
+    --input-field-2: 0 0% 52%;
     --button-1: 228 28% 10%;
     --button-2: 228 36% 89%;
     --button-border: ;
@@ -76,7 +76,7 @@ body {
     --bg-container: 0 0% 100%;
     --title-body-text-1: 0 0% 100%;
     --body-text-2: 0 0% 8%;
-    --subtext: 0 0% 76%;
+    --subtext: 0 0% 50%;
     --theme-button-1: 229 22% 15%;
     --theme-button-2: 230 12% 30%;
   }
