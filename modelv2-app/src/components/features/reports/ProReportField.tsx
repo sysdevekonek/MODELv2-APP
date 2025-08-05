@@ -10,13 +10,11 @@ const ProReportField = () => {
   
   const {
     fields,
-    // touchedFields,
     validationResults,
     loadingStates,
     handleAdd,
     handleRemove,
     handleChange,
-    // isFieldValid,
     areAllValid,
     generateValList,
     clearFields,
@@ -59,11 +57,6 @@ const ProReportField = () => {
           </div>
         <div className='w-full max-h-[250px] overflow-y-auto flex flex-col justify-around gap-2 scrollbar-thin scrollbar-thumb-mainDef3 scrollbar-track-bgDef p-5'>
         {fields.map((field, index) => {
-          // const trimmed = field.trim();
-          // const showValidation = touchedFields[index] && trimmed.length > 0;
-          // const isValid = showValidation && isFieldValid(trimmed);
-          // const isInvalid = showValidation && !isValid;
-          
           const trimmed = field.trim();
           const showValidation = trimmed.length >= 2;
           const isLoading = loadingStates[index];
@@ -136,7 +129,7 @@ const ProReportField = () => {
         <button className={`flex flex-row justify-center items-center h-8 w-36 rounded gap-1 transition
           ${areAllValid() ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
           : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
-          onClick={generateValList}
+          onClick={() => generateValList('PRO')}
           disabled={!areAllValid()}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
           >
@@ -146,7 +139,7 @@ const ProReportField = () => {
         <button className={`flex flex-row justify-center items-center h-8 w-36 rounded gap-1 transition
           ${areAllValid() ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
           : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
-          onClick={generateValList}
+          onClick={() => generateValList('BRC')}
           disabled={!areAllValid()}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
           >
@@ -156,7 +149,7 @@ const ProReportField = () => {
         <button className={`flex flex-row justify-center items-center h-8 w-40 rounded gap-1 transition
           ${areAllValid() ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
           : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
-          onClick={generateValList}
+          onClick={() => generateValList('MNF')}
           disabled={!areAllValid()}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
           >

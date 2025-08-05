@@ -9,7 +9,7 @@ POST http://localhost:4001/auth/refresh
 Authorization: Bearer {{refreshToken}}
 
 ###
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTMxNTYyMjAsImV4cCI6MTc1MzE1NzEyMH0.mIA66z6NVDfuapHH0QWgQ7Cl9kGZaoO-TyAU0htu0ak
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTQyODYzMzksImV4cCI6MTc1NDI4NzIzOX0.Yy6q_HBsuQYEZ2YHGk-RzYMaKVNMPT9U8PKi6kQvLB8
 GET http://localhost:4001/user/info
 Authorization: Bearer {{accessToken}}
 
@@ -21,6 +21,7 @@ Authorization: Bearer {{accessToken}}
 GET http://localhost:4001/reports/summary?from_date=01/01/2025&to_date=07/08/2025&client_code=479354463000
 Authorization: Bearer {{accessToken}}
 
+
 ###
 POST http://localhost:4001/reports/pro-info
 Content-Type: application/json
@@ -28,16 +29,16 @@ Authorization: Bearer {{accessToken}}
 
 [
   {
-    "val_type"     : "pronumber",
-    "val_list"     : "RVM2500023F,RVM2500020F,RVM2500019F",
-    "generate_type": "BRC"
+    "val_type"     : "airwaybill",
+    "val_list"     : "AAGJ003921",
+    "generate_type": "PRO"
   }
 ]
 
 ###
-GET http://localhost:4001/reference/check/pro-exist?val_type=pronumber&value=RVM2500023F
+GET http://localhost:4001/reference/check/pro-exist?val_type=pronumber&value=RVM2500013T
 Authorization: Bearer {{accessToken}}
 
 ###
-GET http://localhost:4001/reference/transactions/details?value=RVM2500023F
+GET http://localhost:4001/reference/transactions/details?value=RVM2500013T
 Authorization: Bearer {{accessToken}}

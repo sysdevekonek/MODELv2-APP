@@ -42,6 +42,8 @@ api.interceptors.response.use(
 
         sessionStorage.setItem('accessToken', accessToken);
         sessionStorage.setItem('refreshToken', newRefreshToken);
+        console.log('Access Token:', accessToken);
+        console.log('Refresh Token:', refreshToken);
         
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);

@@ -25,7 +25,7 @@ export default function ThemeSwitcher() {
               onClick={() => setTheme(label)}
               aria-label={`Switch to ${label} theme`}
               className={cn(
-                'w-10 h-10 flex items-center justify-center rounded-full text-gray-500 transition-colors duration-150',
+                'w-10 h-10 flex items-center justify-center rounded-full text-gray-500 transition-colors duration-150 transition',
                 isActive
                   ? 'bg-themebutton2 text-white'
                   : 'hidden group-hover:flex hover:bg-accent/60 hover:text-white'

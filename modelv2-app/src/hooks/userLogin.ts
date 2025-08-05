@@ -50,6 +50,8 @@ export const userLogin = () => {
       const refreshToken = res.data.refreshToken;
       sessionStorage.setItem('accessToken', accessToken);
       sessionStorage.setItem('refreshToken', refreshToken);
+      console.log('Access Token:', accessToken);
+      console.log('Refresh Token:', refreshToken);
 
       const userInfoRes = await api.get('/user/info');
       const userInfo = userInfoRes.data.USER_INFO;
