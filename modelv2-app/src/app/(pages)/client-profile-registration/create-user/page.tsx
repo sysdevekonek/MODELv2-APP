@@ -6,7 +6,6 @@ import UserInformation from '@/components/features/registration/create-user/user
 import PersonalData from '@/components/features/registration/create-user/personalData';
 import UserAuthentication from '@/components/features/registration/create-user/userAuthentication';
 import UserSpecificProperties from '@/components/features/registration/create-user/userProperties';
-import Layout from "@/components/layout/layout";
 
 const tabs = ['User Information', 'Personal Data', 'User Authentication', 'User Specific Properties'];
 
@@ -24,7 +23,6 @@ export default function CreateUserPage() {
     };
 
     return (
-        <Layout>
             <div className="bg-bgDefcont w-full h-full rounded-[5px] shadow-lg relative">
                 <div className="bg-mainDef3 text-white font-semibold p-4 inline-block rounded-[5px] -translate-y-1/4 -top-6 ">
                     <h1>CREATE USER</h1>
@@ -50,7 +48,7 @@ export default function CreateUserPage() {
 
             </div>
 
-        </Layout>
+
     )
 
 }

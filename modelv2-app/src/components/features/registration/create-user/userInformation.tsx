@@ -1,6 +1,13 @@
-import React from 'react'
+import React, { useRef, useState } from "react";
+import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import { useClientRoleDropdown } from "@/components/dropdownAPI";
 
 const userInformation = () => {
+    const comboRef = useRef<ComboBoxRef>(null);
+    const { clientDropdown, roleDropdown } = useClientRoleDropdown();
+    const [ selectedRole, setSelectedRole ] = React.useState<string>("");
+    const [ selectedClient, setSelectedClient ] = React.useState<string>("");
+
     return (
 
         <div>
@@ -45,25 +52,31 @@ const userInformation = () => {
                     <label htmlFor="company" className="block text-medium mb-1 text-mainTextDef1 w-56">
                         <label>Company:</label>
                     </label>
-                    <input
-                        id="company"
-                        type="company"
-                        placeholder="Company"
+                     <ComboBox
+                        ref={comboRef}
+                        items={clientDropdown}
+                        displayKey="CLIENT_NAME"
+                        valueKey="CLIENT_CODE"
+                        selectedValue={selectedClient}
+                        setSelectedValue={setSelectedClient}
                         className="w-96 text-xs h-10 px-4 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
                                     focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
-                    />
+                     />
                 </div>
                 <div className="mb-4 flex items-center">
                     <label htmlFor="zipCode" className="block text-medium mb-1 text-mainTextDef1 w-56">
                         <label>Business Unit/s:</label>
                     </label>
-                    <input
-                        id="businessUnit"
-                        type="businessUnit"
-                        placeholder="Business Unit/s"
+                     <ComboBox
+                        ref={comboRef}
+                        items={roleDropdown}
+                        displayKey="PROFILE_NAME"
+                        valueKey="PROFILE_CODE"
+                        selectedValue={selectedRole}
+                        setSelectedValue={setSelectedRole}
                         className="w-96 text-xs h-10 px-4 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
                                     focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
-                    />
+                     />
                 </div>
                 <div className="mb-4 flex items-center">
                     <label htmlFor="enableClientAccess" className="block text-medium mb-1 text-mainTextDef1 w-56">

@@ -1,6 +1,14 @@
-import React from 'react'
+import React, { useRef, useState } from "react";
+import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import { useCountryDropdown } from "@/components/dropdownAPI";
 
 const personalData = () => {
+    const comboRef = useRef<ComboBoxRef>(null);
+    const { countryDropdown } = useCountryDropdown();
+    const [ selectedCountry, setSelectedCountry ] = React.useState<string>("");
+
+
+    
     return (
         <div>
           
@@ -32,15 +40,18 @@ const personalData = () => {
                 </div>
                 <div className="mb-[3px] flex items-center">
                     <label htmlFor="country" className="block text-medium mb-1 text-mainTextDef1 w-32">
-                        <label>Country</label>
+                        <label>County</label>
                     </label>
-                    <input
-                        id="country"
-                        type="country"
-                        placeholder="Account Holder"
+                    <ComboBox
+                        ref={comboRef}
+                        items={countryDropdown}
+                        displayKey="COUNTRY_NAME"
+                        valueKey="COUNTRY_CODE"
+                        selectedValue={selectedCountry}
+                        setSelectedValue={setSelectedCountry}
                         className="w-96 text-xs h-10 px-4 border border-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
                                     focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
-                    />
+                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
                     <label htmlFor="city" className="block text-medium mb-1 text-mainTextDef1 w-32">

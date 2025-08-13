@@ -12,6 +12,9 @@ interface ComboBoxProps<T> {
   setSelectedValue: (val: string) => void;
   placeholder?: string;
   className?: string;
+  onInputChange?: (val: string) => void;
+  onLoadMore?: () => void;
+  hasMore?: boolean;
 }
 
 function ComboBoxInner<T>(
@@ -23,18 +26,25 @@ function ComboBoxInner<T>(
     setSelectedValue,
     placeholder = "Search...",
     className,
-  }: ComboBoxProps<T>, ref: React.Ref<ComboBoxRef>
+    onInputChange,
+    onLoadMore,
+    hasMore
+  }: ComboBoxProps<T> & { 
+    onInputChange?: (val: string) => void;
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+  },
+  ref: React.Ref<ComboBoxRef>
 ) {
   const [query, setQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const inputRef = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(ref, () => ({
-    clear: () => {
-      setQuery("");
-    }
+    clear: () => setQuery("")
   }));
 
+  // Pre-fill if selectedValue exists
   useEffect(() => {
     const selectedItem = items.find((item) => String(item[valueKey]) === selectedValue);
     if (selectedItem) {
@@ -42,6 +52,7 @@ function ComboBoxInner<T>(
     }
   }, [selectedValue, items, displayKey, valueKey]);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
@@ -52,9 +63,12 @@ function ComboBoxInner<T>(
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredItems = items.filter((item) =>
-    String(item[displayKey]).toLowerCase().includes(query.toLowerCase())
-  );
+  // If no onInputChange, we filter locally
+  const filteredItems = onInputChange
+    ? items // for dynamic mode, items are already filtered from API
+    : items.filter((item) =>
+        String(item[displayKey]).toLowerCase().includes(query.toLowerCase())
+      );
 
   const handleSelect = (item: T) => {
     setQuery(String(item[displayKey]));
@@ -70,23 +84,34 @@ function ComboBoxInner<T>(
         onChange={(e) => {
           setQuery(e.target.value);
           setShowDropdown(true);
+          onInputChange?.(e.target.value);
         }}
         onFocus={() => setShowDropdown(true)}
         placeholder={placeholder}
-        className={`w-full border rounded px-2 py-1 text-bodyText2 ${className || ''}`}
+        className={`${className || ''}`}
       />
       {showDropdown && (
         <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-bg text-bodyText2 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item, idx) => (
-              <li
-                key={`${String(valueKey)}-${String(item[valueKey])}-${idx}`}
-                className="cursor-pointer px-4 py-2 hover:bg-main1"
-                onClick={() => handleSelect(item)}
-              >
-                {String(item[displayKey])} 
-              </li>
-            ))
+          {items.length > 0 ? (
+            <>
+              {items.map((item, idx) => (
+                <li
+                  key={`${String(valueKey)}-${String(item[valueKey])}-${idx}`}
+                  className="cursor-pointer px-4 py-2 hover:bg-main1"
+                  onClick={() => handleSelect(item)}
+                >
+                  {String(item[displayKey])}
+                </li>
+              ))}
+              {hasMore && (
+                <li
+                  className="cursor-pointer px-4 py-2 text-blue-500 hover:underline"
+                  onClick={onLoadMore}
+                >
+                  View more...
+                </li>
+              )}
+            </>
           ) : (
             <li className="px-4 py-2 text-bodyText2">No results found</li>
           )}
@@ -103,5 +128,3 @@ function createGenericComboBox<T>() {
 const ComboBox = createGenericComboBox<any>();
 
 export default ComboBox;
-
-// src/components/features/reports/SummaryReportFields.tsx

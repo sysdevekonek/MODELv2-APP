@@ -60,6 +60,9 @@ export const userLogin = () => {
       sessionStorage.setItem('userRoles', userInfo.ACCESS_PROFILE);
       sessionStorage.setItem('navigation', JSON.stringify(navList));
 
+      console.log("Access Token", accessToken);
+      console.log("Refresh Token: ", refreshToken);
+
       const firstURL = getFirstAccessibleURL(navList);
       toast.dismiss(loadingToast);
       toast.success('Login successful');
