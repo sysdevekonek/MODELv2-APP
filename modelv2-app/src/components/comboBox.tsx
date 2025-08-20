@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 
 export interface ComboBoxRef {
   clear: () => void;
 }
 
-interface ComboBoxProps<T> { 
-  items: T[]; 
+interface ComboBoxProps<T> {
+  items: T[];
   displayKey: keyof T;
   valueKey: keyof T;
   selectedValue: string;
@@ -13,13 +13,13 @@ interface ComboBoxProps<T> {
   placeholder?: string;
   className?: string;
   onInputChange?: (val: string) => void;
-  onLoadMore?: () => void;
+  onScrollEnd?: () => void;   // 👈 new
   hasMore?: boolean;
 }
 
 function ComboBoxInner<T>(
   {
-    items,
+    items = [],
     displayKey,
     valueKey,
     selectedValue,
@@ -27,13 +27,9 @@ function ComboBoxInner<T>(
     placeholder = "Search...",
     className,
     onInputChange,
-    onLoadMore,
+    onScrollEnd,
     hasMore
-  }: ComboBoxProps<T> & { 
-    onInputChange?: (val: string) => void;
-    onLoadMore?: () => void;
-    hasMore?: boolean;
-  },
+  }: ComboBoxProps<T>,
   ref: React.Ref<ComboBoxRef>
 ) {
   const [query, setQuery] = useState("");
@@ -67,8 +63,8 @@ function ComboBoxInner<T>(
   const filteredItems = onInputChange
     ? items // for dynamic mode, items are already filtered from API
     : items.filter((item) =>
-        String(item[displayKey]).toLowerCase().includes(query.toLowerCase())
-      );
+      String(item[displayKey]).toLowerCase().includes(query.toLowerCase())
+    );
 
   const handleSelect = (item: T) => {
     setQuery(String(item[displayKey]));
@@ -82,41 +78,51 @@ function ComboBoxInner<T>(
         type="text"
         value={query}
         onChange={(e) => {
-          setQuery(e.target.value);
+          const val = e.target.value;
+          setQuery(val);
           setShowDropdown(true);
-          onInputChange?.(e.target.value);
+          if (onInputChange) {
+            onInputChange(val); // Call API fetch if provided
+          }
         }}
         onFocus={() => setShowDropdown(true)}
         placeholder={placeholder}
         className={`${className || ''}`}
       />
       {showDropdown && (
-        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-bg text-bodyText2 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5">
-          {items.length > 0 ? (
-            <>
-              {items.map((item, idx) => (
-                <li
-                  key={`${String(valueKey)}-${String(item[valueKey])}-${idx}`}
-                  className="cursor-pointer px-4 py-2 hover:bg-main1"
-                  onClick={() => handleSelect(item)}
-                >
-                  {String(item[displayKey])}
-                </li>
-              ))}
-              {hasMore && (
-                <li
-                  className="cursor-pointer px-4 py-2 text-blue-500 hover:underline"
-                  onClick={onLoadMore}
-                >
-                  View more...
-                </li>
-              )}
-            </>
+        <ul
+          className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-bg text-bodyText2 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5"
+          onScroll={(e) => {
+            const target = e.currentTarget;
+            if (target.scrollTop + target.clientHeight >= target.scrollHeight - 5) {
+              if (onScrollEnd) onScrollEnd();
+            }
+          }}
+        >
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item, idx) => (
+              <li
+                key={`${String(valueKey)}-${String(item[valueKey])}-${idx}`}
+                className="cursor-pointer px-4 py-2 hover:bg-main1"
+                onClick={() => handleSelect(item)}
+              >
+                {String(item[displayKey])}
+              </li>
+            ))
+          ) : query.trim() === "" ? (
+            <li className="px-4 py-2 text-bodyText2">
+              Waiting for Next Action
+            </li>
           ) : (
-            <li className="px-4 py-2 text-bodyText2">No results found</li>
+            <li className="px-4 py-2 text-bodyText2">
+              No Results Found
+            </li>
           )}
         </ul>
+
+
       )}
+
     </div>
   );
 }

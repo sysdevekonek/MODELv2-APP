@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useCallback, useRef } from "react";
 import api from '../common/config'
 import toast from 'react-hot-toast';
 
@@ -75,27 +75,78 @@ export const useDepartmentDropdown = () => {
   return { departmentDropdown, setDepartmentDropdown, loading };
 };
 
-//
 export const useConsigneeDropdown = () => {
-  const [consigneeDropdown, setConsigneeDropdown] = useState<{ CNEE_NAM: string; CNEE_COD: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+  const pageSize = 10;
 
-  const fetchConsignee = async (searchValue: string) => {
-    if (!searchValue.trim()) {
-      setConsigneeDropdown([]); // clear if no input
-      return;
-    }
+  const [items, setItems] = useState<{ CNEE_NAM: string; CNEE_COD: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(0); // 0 = nothing loaded yet
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchConsignee = useCallback(
+    async (term: string, reset = true) => {
+      const value = term.trim();
+      setSearchTerm(value);
+
+      if (!value) {
+        // empty input: clear results & stop paging
+        setItems([]);
+        setHasMore(false);
+        setPage(0);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const start = 1;
+        const end = pageSize;
+        const res = await api.get("/search/consignee", {
+          params: { value, start, end },
+        });
+        const data = res.data || [];
+        setItems(data);
+        setPage(1);
+        setHasMore(data.length === pageSize);
+      } catch (err) {
+        console.error("Consignee fetch error:", err);
+        toast.error("Failed to load consignees");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize]
+  );
+
+  const fetchNextPage = useCallback(async () => {
+    if (loading || !hasMore || !searchTerm) return;
+
+    const nextPage = page + 1;
+    const start = (nextPage - 1) * pageSize + 1;
+    const end = nextPage * pageSize;
+
     setLoading(true);
     try {
-      const res = await api.get('/search/consignee', { params: { value: searchValue } });
-      setConsigneeDropdown(res.data || []);
+      const res = await api.get("/search/consignee", {
+        params: { value: searchTerm, start, end },
+      });
+      const data = res.data || [];
+      setItems(prev => [...prev, ...data]);
+      setPage(nextPage);
+      setHasMore(data.length === pageSize);
     } catch (err) {
       console.error("Consignee fetch error:", err);
       toast.error("Failed to load consignees");
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, hasMore, searchTerm, page, pageSize]);
 
-  return { consigneeDropdown, loading, fetchConsignee };
+  return {
+    consigneeDropdown: items,
+    loading,
+    hasMore,
+    fetchConsignee,
+    fetchNextPage, // <-- no args needed now
+  };
 };

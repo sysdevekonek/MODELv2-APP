@@ -1,0 +1,114 @@
+### TOKEN REQUEST
+POST http://localhost:4001/auth/login
+Content-Type: application/json
+Authorization: Basic bXV0eWEtYnJva2VyMTpwYXNzMTIz
+
+### REFRESH TOKEN
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTAzODcwMzEsImV4cCI6MTc1MDM4NzkzMX0._P_0MVY2wCRO-f87fKdGnEApaeznUkFNkGIXA4Ht-eo
+POST http://localhost:4001/auth/refresh
+Authorization: Bearer {{refreshToken}}
+
+### USER DETAILS
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTUxNTA5MzUsImV4cCI6MTc1NTE1MTgzNX0.vj6NB-VBnD9-CmDrX09slRoGpqlM7uJuf90tsG_Q7yc
+GET http://localhost:4001/user/info
+Authorization: Bearer {{accessToken}}
+
+### CLIENTS USED BY USER
+GET http://localhost:4001/reference/clients
+Authorization: Bearer {{accessToken}}
+
+### REPORTS || SUMMARY REPORT
+GET http://localhost:4001/reports/summary?from_date=01/01/2025&to_date=07/08/2025&client_code=479354463000
+Authorization: Bearer {{accessToken}}
+
+###  REGISTRATION || CHECK IF USERNAME EXIST
+GET http://localhost:4001/utilities/registration/check/username?value=mutya-broker11
+Authorization: Bearer {{accessToken}}
+
+### ALL CLIENT
+GET http://localhost:4001/reference/clients/all
+Authorization: Bearer {{accessToken}}
+
+### ALL PROFILE TYPE
+GET http://localhost:4001/reference/profile/all
+Authorization: Bearer {{accessToken}}
+
+### ALL COUNTRY
+GET http://localhost:4001/reference/country/all
+Authorization: Bearer {{accessToken}}
+
+### ALL DEPARTMENT
+GET http://localhost:4001/reference/department/all
+Authorization: Bearer {{accessToken}}
+
+### SEARCH CONSIGNEE
+GET http://localhost:4001/search/consignee?value=EMBASSY
+Authorization: Bearer {{accessToken}}
+
+### GET CONSIGNEE BY RANGE
+GET http://localhost:4001/reference/consignees/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### REGISTATION || CREATE USER
+POST http://localhost:4001/user/create
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "username": "jdoe",
+  "password": "pass123",
+  "account_reference": "REF-2025",
+  "address": "123 Main St",
+  "city": "Metro Manila",
+  "zip": "1700",
+  "country": "PH",
+  "phone_no": "02-12345678",
+  "cellphone_no": "09171234567",
+  "fax": "02-87654321",
+  "email": "jdoe@example.com",
+  "name": "John Doe",
+  "company": "C001",
+  "enable_client_access": 1,
+  "auto_submit_capable": 0,
+  "auto_submit_capable2": 0,
+  "profile": "USER"
+}
+
+### REPORT NSL GET USER TEMPLATE
+GET http://localhost:4001/reference/templates/NSL
+Authorization: Bearer {{accessToken}}
+
+
+### GET CONSOLIDATOR BY RANGE
+GET http://localhost:4001/reference/consolidators/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### SEARCH CONSOLIDATOR
+GET http://localhost:4001/search/consolidator?value=EMBASSY
+Authorization: Bearer {{accessToken}}
+
+### GET WAREHOUSE BY RANGE
+GET http://localhost:4001/reference/warehouse/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### SEARCH WAREHOUSE
+GET http://localhost:4001/search/warehouse?value=TMW
+Authorization: Bearer {{accessToken}}
+
+### GET WAREHOUSE BY RANGE
+GET http://localhost:4001/reference/department/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### SEARCH DEPARTMENT
+GET http://localhost:4001/search/department?value=EXPORT
+Authorization: Bearer {{accessToken}}
+
+### SEARCH SAD FIELD
+GET http://localhost:4001/search/sad/field?value=PRO
+Authorization: Bearer {{accessToken}}
+
+### GET WAREHOUSE BY RANGE
+GET http://localhost:4001/reference/sad/field/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+

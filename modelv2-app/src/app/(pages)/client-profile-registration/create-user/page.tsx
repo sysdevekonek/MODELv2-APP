@@ -23,17 +23,17 @@ export default function CreateUserPage() {
     };
 
     return (
-            <div className="bg-bgDefcont w-full h-full rounded-[5px] shadow-lg relative">
-                <div className="bg-mainDef3 text-white font-semibold p-4 inline-block rounded-[5px] -translate-y-1/4 -top-6 ">
+            <div className="bg-bgContainer w-full h-full rounded-[5px] shadow-lg relative">
+                <div className="bg-main1 text-titlebodytext1 font-semibold p-4 inline-block rounded-[5px] -translate-y-1/4 -top-6 ">
                     <h1>CREATE USER</h1>
                 </div>
                 <div>
-                    <div className="flex space-x-4 border-b-8 border-mainDef3 shadow-lg mb-4 justify-center">
+                    <div className="flex space-x-4 border-b-8 border-main1 shadow-lg mb-4 justify-center">
                         {tabs.map((tab, index) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(index)}
-                                className={`px-4 py-2 font-medium ${activeTab === index ? ' bg-mainDef3 text-white' : 'text-gray-600'}`}
+                                className={`px-4 py-2 font-medium ${activeTab === index ? ' bg-main1 text-titlebodytext1' : 'text-subtext'}`}
                             >
                                 {tab}
                             </button>
