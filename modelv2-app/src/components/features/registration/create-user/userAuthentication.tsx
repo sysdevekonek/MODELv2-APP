@@ -15,7 +15,7 @@ const userAuthentication = () => {
                         type="password"
                         placeholder="Set Password"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-4 flex items-center">
@@ -27,7 +27,7 @@ const userAuthentication = () => {
                         type="password"
                         placeholder="Confirm Password"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-4 flex items-center">

@@ -22,7 +22,7 @@ const personalData = () => {
                         type="text"
                         placeholder="Insert Full Name"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -34,7 +34,7 @@ const personalData = () => {
                         type="address"
                         placeholder="Insert Full Address"
                         className="bg-inputField1 w-96 text-xs h-20 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -50,7 +50,7 @@ const personalData = () => {
                         selectedValue={selectedCountry}
                         setSelectedValue={setSelectedCountry}
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                      />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -62,7 +62,7 @@ const personalData = () => {
                         type="city"
                         placeholder="Insert City"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -74,7 +74,7 @@ const personalData = () => {
                         type="zipCode"
                         placeholder="Insert Zip Code"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
 
@@ -87,7 +87,7 @@ const personalData = () => {
                         type="phoneNum"
                         placeholder="Insert Phone #"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -99,7 +99,7 @@ const personalData = () => {
                         type="cellNum"
                         placeholder="Insert Cell #"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -111,7 +111,7 @@ const personalData = () => {
                         type="fax"
                         placeholder="Insert Fax"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -123,7 +123,7 @@ const personalData = () => {
                         type="email"
                         placeholder="Insert Email"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
 

@@ -87,7 +87,7 @@ function ComboBoxInner<T>(
         }}
         onFocus={() => setShowDropdown(true)}
         placeholder={placeholder}
-        className={`${className || ''}`}
+        className={`${className || 'text-bodytext2'}`}
       />
       {showDropdown && (
         <ul

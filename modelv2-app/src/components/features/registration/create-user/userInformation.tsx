@@ -21,7 +21,7 @@ const userInformation = () => {
                         type="text"
                         placeholder="Insert Username"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -33,7 +33,7 @@ const userInformation = () => {
                         type="accNumRef"
                         placeholder="Insert Account Number Reference"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -45,7 +45,7 @@ const userInformation = () => {
                         type="accHolder"
                         placeholder="Insert Account Holder"
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                     />
                 </div>
                 <div className="mb-[3px] flex items-center">
@@ -61,7 +61,7 @@ const userInformation = () => {
                         selectedValue={selectedClient}
                         setSelectedValue={setSelectedClient}
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                      />
                 </div>
                 <div className="mb-4 flex items-center">
@@ -77,7 +77,7 @@ const userInformation = () => {
                         selectedValue={selectedRole}
                         setSelectedValue={setSelectedRole}
                         className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:subtext text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                    focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
                      />
                 </div>
                 <div className="mb-4 flex items-center">
