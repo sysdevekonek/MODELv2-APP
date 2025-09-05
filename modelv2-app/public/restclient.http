@@ -9,7 +9,7 @@ POST http://localhost:4001/auth/refresh
 Authorization: Bearer {{refreshToken}}
 
 ### USER DETAILS
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTUxNTA5MzUsImV4cCI6MTc1NTE1MTgzNX0.vj6NB-VBnD9-CmDrX09slRoGpqlM7uJuf90tsG_Q7yc
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTY5NTQwNTUsImV4cCI6MTc1Njk1NDk1NX0.LKowB-mQZCqM-mPEoEJVCm3HbvB2k1M6_2QBhXswk48
 GET http://localhost:4001/user/info
 Authorization: Bearer {{accessToken}}
 
@@ -42,7 +42,7 @@ GET http://localhost:4001/reference/department/all
 Authorization: Bearer {{accessToken}}
 
 ### SEARCH CONSIGNEE
-GET http://localhost:4001/search/consignee?value=EMBASSY
+GET http://localhost:4001/search/consignee?value=EMBASSY&start=1&end=2
 Authorization: Bearer {{accessToken}}
 
 ### GET CONSIGNEE BY RANGE
@@ -58,6 +58,7 @@ Authorization: Bearer {{accessToken}}
   "username": "jdoe",
   "password": "pass123",
   "account_reference": "REF-2025",
+  "account_holder": "REF-2025",
   "address": "123 Main St",
   "city": "Metro Manila",
   "zip": "1700",
@@ -71,7 +72,25 @@ Authorization: Bearer {{accessToken}}
   "enable_client_access": 1,
   "auto_submit_capable": 0,
   "auto_submit_capable2": 0,
-  "profile": "USER"
+  "profile": "USER",
+  "properties":[
+    {
+      "name": "TIN",
+      "value": "215061306000"
+    },
+    {
+      "name": "DEPARTMENT",
+      "value": "W"
+    },
+    {
+      "name": "",
+      "value": "W"
+    },
+    {
+      "name": "TIN",
+      "value": ""
+    }
+  ]
 }
 
 ### REPORT NSL GET USER TEMPLATE
@@ -95,7 +114,7 @@ Authorization: Bearer {{accessToken}}
 GET http://localhost:4001/search/warehouse?value=TMW
 Authorization: Bearer {{accessToken}}
 
-### GET WAREHOUSE BY RANGE
+### GET DEPARTMENT BY RANGE
 GET http://localhost:4001/reference/department/range?start=1&end=20
 Authorization: Bearer {{accessToken}}
 
@@ -107,7 +126,7 @@ Authorization: Bearer {{accessToken}}
 GET http://localhost:4001/search/sad/field?value=PRO
 Authorization: Bearer {{accessToken}}
 
-### GET WAREHOUSE BY RANGE
+### GET SAD FIELD BY RANGE
 GET http://localhost:4001/reference/sad/field/range?start=1&end=20
 Authorization: Bearer {{accessToken}}
 

@@ -1,59 +1,129 @@
-import React from 'react'
+import React from "react";
+import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { UserData } from "@/components/data/dataTypes";
+import { validateField } from "@/hooks/registration/RegistrationValidation";
 
-const userAuthentication = () => {
-    return (
-        <div>
-   
-            <form className="pl-5">
-
-                <div className="mb-[3px] flex items-center">
-                    <label htmlFor="password" className="block text-medium mb-1 w-72">
-                        <label>Password:</label>
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        placeholder="Set Password"
-                        className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
-                    />
-                </div>
-                <div className="mb-4 flex items-center">
-                    <label htmlFor="confirmPassword" className="block text-medium mb-1 w-72">
-                        <label>Confirm Password:</label>
-                    </label>
-                    <input
-                        id="comfirmPassword"
-                        type="password"
-                        placeholder="Confirm Password"
-                        className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 
-                                    focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
-                    />
-                </div>
-                <div className="mb-4 flex items-center">
-                    <label htmlFor="asc" className="block textmedium mb-1 w-72">
-                        Authentic Submission Capable
-                    </label>
-                    <input
-                        id="asc"
-                        type="checkbox"
-                        className="ml-2 h-5 w-5 bg-inputField1 border-inputField2"
-                    />
-                </div>
-                <div className="mb-4 flex items-center">
-                    <label htmlFor="asc2" className="block text-medium mb-1 w-72">
-                        Authentic Submission Capable 2
-                    </label>
-                    <input
-                        id="asc2"
-                        type="checkbox"
-                        className="ml-2 h-5 w-5 bg-inputField1 border-inputField2"
-                    />
-                </div>
-            </form>
-
-        </div>
-    )
+interface UserAuthenticationProps {
+  goNext: () => void;
+  goBack: () => void;
+  errors: Record<string, string>;
+  clearError: (field: keyof UserData) => void;
 }
 
-export default userAuthentication;
+const UserAuthentication: React.FC<UserAuthenticationProps> = ({ goNext, goBack, errors, clearError }) => {
+  const { userData, updateField } = useRegistrationContext();
+
+  const handleChange = (field: keyof UserData, value: string) => {
+    updateField(field, value);
+    const error = validateField(field, value, { ...userData, [field]: value });
+    if (error) {
+      errors[field] = error;
+    } else {
+      clearError(field);
+    }
+  };
+
+  const handlePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!errors.password && !errors.confirm_password) {
+      goNext();
+    }
+  };
+
+  return (
+    <div>
+      <form className="pl-5" onSubmit={handlePassword}>
+        <div className="mb-[3px] flex flex-col">
+          <label htmlFor="password" className="block text-medium mb-1">
+            Password: <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="password"
+            type="password"
+            maxLength={32}
+            placeholder="Set Password"
+            value={userData.password || ""}
+            onChange={(e) => handleChange("password", e.target.value)}
+            className={`bg-inputField1 w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
+              ${errors.password ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"}`}
+          />
+          {errors.password && (
+            <p className="text-xs text-red-500 mt-1">{errors.password}</p>
+          )}
+        </div>
+
+        <div className="mb-4 flex flex-col">
+          <label htmlFor="confirm_password" className="block text-medium mb-1">
+            Confirm Password: <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="confirm_password"
+            type="password"
+            placeholder="Confirm Password"
+            value={userData.confirm_password || ""}
+            onChange={(e) => handleChange("confirm_password", e.target.value)}
+            className={`bg-inputField1 w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
+              ${errors.confirm_password ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"}`}
+          />
+          {errors.confirm_password && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.confirm_password}
+            </p>
+          )}
+        </div>
+
+        <div className="mb-4 flex items-center">
+          <label htmlFor="asc" className="block text-medium mb-1 w-72">
+            Automatic Submission Capable
+          </label>
+          <input
+            id="asc"
+            type="checkbox"
+            checked={userData.auto_submit_capable}
+            onChange={(e) =>
+              updateField("auto_submit_capable", e.target.checked)
+            }
+            className="ml-2 h-5 w-5 bg-inputField1 border-inputField2"
+          />
+        </div>
+        <div className="mb-4 flex items-center">
+          <label htmlFor="asc2" className="block text-medium mb-1 w-72">
+            Automatic Submission Capable 2
+          </label>
+          <input
+            id="asc2"
+            type="checkbox"
+            checked={userData.auto_submit_capable2}
+            onChange={(e) =>
+              updateField("auto_submit_capable2", e.target.checked)
+            }
+            className="ml-2 h-5 w-5 bg-inputField1 border-inputField2"
+          />
+        </div>
+
+        <div className="flex justify-between">
+          <button
+            type="button"
+            onClick={goBack}
+            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition"
+          >
+            <ArrowLeft size={18} />
+            Back
+          </button>
+          <button
+            type="submit"
+            disabled={!!errors.password || !!errors.confirm_password}
+            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium 
+              hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+            <ArrowRight size={18} />
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default UserAuthentication;

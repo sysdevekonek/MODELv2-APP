@@ -7,21 +7,20 @@ import toast from 'react-hot-toast';
 //
 export const useClientRoleDropdown = () => {
   const [clientDropdown, setClientDropdown] = useState<{ CLIENT_NAME: string; CLIENT_CODE: string }[]>([]);
-  const [roleDropdown, setRoleDropdown] = useState<{ PROFILE_NAME: string; PROFILE_CODE: string }[]>([]);
+  const [profileDropdown, setProfileDropdown] = useState<{ PROFILE_NAME: string; PROFILE_CODE: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchDropdowns = async () => {
       setLoading(true);
       try {
-        const [clientsResponse, roleResponse] = await Promise.all([
+        const [clientsResponse, profileResponse] = await Promise.all([
           api.get("/reference/clients/all"),
           api.get("/reference/profile/all")
         ]);
 
-        // No need to dig into .data.clients — it's already the array
         setClientDropdown(clientsResponse.data || []);
-        setRoleDropdown(roleResponse.data || []);
+        setProfileDropdown(profileResponse.data || []);
       } catch (err) {
         console.error("Error fetching client or role dropdown data:", err);
         toast.error("Failed to load client or role data");
@@ -33,9 +32,8 @@ export const useClientRoleDropdown = () => {
     fetchDropdowns();
   }, []);
 
-  return { clientDropdown, setClientDropdown, roleDropdown, setRoleDropdown, loading };
+  return { clientDropdown, setClientDropdown, profileDropdown, setProfileDropdown, loading };
 }
-
 
 //
 export const useCountryDropdown = () => {
@@ -81,7 +79,7 @@ export const useConsigneeDropdown = () => {
   const [items, setItems] = useState<{ CNEE_NAM: string; CNEE_COD: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const [page, setPage] = useState(0); // 0 = nothing loaded yet
+  const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchConsignee = useCallback(
@@ -90,7 +88,6 @@ export const useConsigneeDropdown = () => {
       setSearchTerm(value);
 
       if (!value) {
-        // empty input: clear results & stop paging
         setItems([]);
         setHasMore(false);
         setPage(0);
@@ -142,11 +139,5 @@ export const useConsigneeDropdown = () => {
     }
   }, [loading, hasMore, searchTerm, page, pageSize]);
 
-  return {
-    consigneeDropdown: items,
-    loading,
-    hasMore,
-    fetchConsignee,
-    fetchNextPage, // <-- no args needed now
-  };
+  return { consigneeDropdown: items, loading, hasMore, fetchConsignee, fetchNextPage };
 };
