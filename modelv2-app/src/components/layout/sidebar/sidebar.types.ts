@@ -2,7 +2,7 @@ export interface NavItem {
   NAV_ITEM_CODE: string;
   TITLE: string;
   URL: string;
-  ICON: string;
+  ICON: string | null;
   PARENT_NAV_CODE: string | null;
   children?: NavItem[];
 }
