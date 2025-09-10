@@ -5,7 +5,8 @@ import React, {
   forwardRef,
   useImperativeHandle
 } from "react";
-import { errorText } from "@/components/utils/formValidationStyles";
+// import { errorText } from "@/components/utils/formValidationStyles";
+import { createPortal } from "react-dom";
 
 export interface ComboBoxRef {
   clear: () => void;
@@ -26,6 +27,7 @@ interface ComboBoxProps<T> {
   hasMore?: boolean;
   required?: boolean;   
   name?: string;      
+  showOnFocus?: boolean; 
 }
 
 function ComboBoxInner<T>(
@@ -42,14 +44,17 @@ function ComboBoxInner<T>(
     hasMore,
     required = false,
     name,
+    showOnFocus = true,
   }: ComboBoxProps<T>,
   ref: React.Ref<ComboBoxRef>
 ) {
   const [query, setQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [touched, setTouched] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputEl = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null)  // used for positioning
+  const wrapperRef = useRef<HTMLDivElement>(null);  // container for outside click
+  const dropdownRef = useRef<HTMLUListElement | null>(null);   // ref for the portaled dropdown
+  const inputEl = useRef<HTMLInputElement>(null); 
 
   useImperativeHandle(ref, () => ({
     clear: () => {
@@ -71,14 +76,25 @@ function ComboBoxInner<T>(
   }, [selectedValue, items, displayKey, valueKey]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event: Event) => {
+      const target = event.target as Node;
+      // if click is NOT inside wrapper AND NOT inside the portaled dropdown => close
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(target) &&
+        !(dropdownRef.current && dropdownRef.current.contains(target))
+      ) {
         setShowDropdown(false);
         setTouched(true);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
 
   const filteredItems = onInputChange
@@ -95,53 +111,26 @@ function ComboBoxInner<T>(
   };
 
   const invalid = required && touched && !selectedValue;
-
-  return (
-    <div className="relative w-80" ref={wrapperRef}>
-      <input
-        tabIndex={-1}
-        name={name}
-        value={selectedValue}
-        onChange={() => {}}
-        required={required}
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          opacity: 0,
-          width: 0,
-          height: 0,
-          pointerEvents: "none",
-        }}
-      />
-
-      <input
-        ref={inputEl}
-        type="text"
-        value={query}
-        onChange={(e) => {
-          const val = e.target.value;
-          setQuery(val);
-          setShowDropdown(true);
-          if (onInputChange) onInputChange(val);
-        }}
-        onFocus={() => setShowDropdown(true)}
-        onBlur={() => setTouched(true)}
-        placeholder={placeholder}
-        className={className}
-      />
-
-      {invalid && (
-        <p className={errorText}>This field is required</p>
-      )}
-
-
-      {showDropdown && (
+  const dropdown = showDropdown && inputRef.current
+    ? createPortal(
         <ul
-          className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-bg text-bodyText2 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5"
+        ref={dropdownRef}
+          className="z-40 max-h-60 overflow-auto rounded-md bg-bg text-bodyText2 py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5"
+          style={{
+            position: "absolute",
+            top:
+              inputRef.current.getBoundingClientRect().bottom +
+              window.scrollY,
+            left: inputRef.current.getBoundingClientRect().left + window.scrollX,
+            width: inputRef.current.offsetWidth,
+          }}
           onScroll={(e) => {
-            const target = e.currentTarget;
-            if (target.scrollTop + target.clientHeight >= target.scrollHeight - 5) {
-              onScrollEnd?.();
+            const target = e.currentTarget
+            if (
+              target.scrollTop + target.clientHeight >=
+              target.scrollHeight - 5
+            ) {
+              if (onScrollEnd) onScrollEnd()
             }
           }}
         >
@@ -149,30 +138,58 @@ function ComboBoxInner<T>(
             filteredItems.map((item, idx) => (
               <li
                 key={`${String(valueKey)}-${String(item[valueKey])}-${idx}`}
-                className="cursor-pointer px-4 py-2 hover:bg-main1"
+                className="cursor-pointer px-4 py-2 hover:bg-main1 hover:text-white"
                 onClick={() => handleSelect(item)}
               >
                 {String(item[displayKey])}
               </li>
             ))
           ) : query.trim() === "" ? (
-            <li className="px-4 py-2 text-bodyText2">Waiting for Next Action</li>
+            <li className="px-4 py-2 text-bodyText2">
+              Waiting for Next Action
+            </li>
           ) : (
             <li className="px-4 py-2 text-bodyText2">No Results Found</li>
           )}
-          {hasMore && (
-            <li className="px-4 py-2 text-center text-xs text-subtext">Loading more…</li>
-          )}
-        </ul>
-      )}
+        </ul>,
+        document.body
+      )
+    : null
+
+  return (
+    <div ref={wrapperRef}>
+      <div ref={inputRef}>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => {
+          const val = e.target.value
+          setQuery(val)
+          setShowDropdown(true)
+          if (onInputChange) {
+            onInputChange(val)
+          }
+        }}
+        onFocus={() => {
+          setShowDropdown(true);
+          if (showOnFocus && onInputChange) {
+            const safeQuery = query.trim() || "a"; // 👈 use default when empty
+            onInputChange(safeQuery);
+          }
+        }}
+        placeholder={placeholder}
+        className={className || "text-bodytext2"}
+      />
+      </div>
+      {dropdown}
     </div>
-  );
+  )
 }
 
 function createGenericComboBox<T>() {
-  return forwardRef<ComboBoxRef, ComboBoxProps<T>>(ComboBoxInner);
+  return forwardRef<ComboBoxRef, ComboBoxProps<T>>(ComboBoxInner)
 }
 
-const ComboBox = createGenericComboBox<any>();
+const ComboBox = createGenericComboBox<any>()
 
-export default ComboBox;
+export default ComboBox

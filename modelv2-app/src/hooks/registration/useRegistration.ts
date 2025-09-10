@@ -27,6 +27,26 @@ export function useRegistration() {
     }
   };
 
+const mapProfiles = (profiles: string[]): string => {
+  if (!profiles || profiles.length === 0) return "";
+
+  if (profiles.length === 1) {
+    if (profiles[0] === "BROKER") return "SAD";
+    if (profiles[0] === "SYSTEM ADMINISTRATOR") return "Admin";
+    return profiles[0]; 
+  }
+  if (
+    profiles.length === 2 &&
+    profiles.includes("BROKER") &&
+    profiles.includes("SYSTEM ADMINISTRATOR")
+  ) {
+    return "SAD,Admin";
+  }
+
+  return profiles.join(",");
+};
+
+
   const TEST_MODE = false; //turn true for testing 
 
   const handleSubmit = async () => {
@@ -35,6 +55,9 @@ export function useRegistration() {
 
     const payload = Object.fromEntries(
       Object.entries(userData).map(([key, value]) => {
+        if (key === "profile" && Array.isArray(value)) {
+          return [key, mapProfiles(value)];
+        }
         if (key === "properties") {
           return [key, (value as { name: string; value: string }[])];
         }
