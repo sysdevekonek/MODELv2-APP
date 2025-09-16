@@ -28,7 +28,7 @@ export default function Header() {
       : '/modellogowhite.png';
 
   return (
-    <header className="fixed top-0 left-0 w-full h-32 bg-layout1 text-foreground shadow-lg z-40 flex items-center px-4 transition-colors duration-300">
+    <header className="z-50 fixed top-0 left-0 w-full h-32 bg-layout1 text-foreground shadow-lg z-40 flex items-center px-4 transition-colors duration-300">
       <div className="absolute top-0 right-0 w-full h-full pointer-events-none z-0">
         <div
           className="absolute top-0 right-0 w-3/4 h-full bg-layout3 opacity-50"
