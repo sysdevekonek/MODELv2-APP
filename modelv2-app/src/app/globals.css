@@ -17,11 +17,12 @@ body {
 
   .light {
     --main-1: 228 36% 89%;
-    --input-field-1: 0 0% 100%; 
+    --input-field-1: 210 20% 98%; 
     --input-field-2: 0 0% 52%;
-    --button-1: 228 28% 10%;
-    --button-2: 228 36% 89%;
+    --button-1: 228 36% 89%;
+    --button-2: 225 18% 96%;
     --button-border: ;
+    --button-hover: 215 16% 47%;
     --layout-hover: 228 36% 89%;
     --layout-1: 0 0% 100%;
     --layout-2: 228 4% 50%;
@@ -41,9 +42,10 @@ body {
     --main-1: 227 9% 19%;
     --input-field-1: 0 0% 7%;
     --input-field-2: 0 0% 13%;
-    --button-1: 227 36% 5%;
-    --button-2: 210 25% 2%;
+    --button-1: 227 9% 19%;
+    --button-2: 225 6% 13%;
     --button-border: ;
+    --button-hover: 215 16% 47%;
     --layout-hover: 227 9% 19%;
     --layout-1: 0 0% 8%;
     --layout-2: 228 3% 31%;
@@ -61,11 +63,12 @@ body {
 
   .system {
     --main-1: 229 22% 15%;
-    --input-field-1: 0 0% 100%;
+    --input-field-1: 210 20% 98%;
     --input-field-2: 0 0% 52%;
     --button-1: 228 28% 10%;
     --button-2: 228 36% 89%;
     --button-border: ;
+    --button-hover: 215 16% 47%;
     --layout-hover: 228 36% 89%;
     --layout-1: 229 22% 15%;
     --layout-2: 228 4% 50%;
