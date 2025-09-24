@@ -19,6 +19,8 @@ module.exports = {
 			button2: 'hsl(var(--button-2))', 				//sub button (next, back, clear, (not active), etc)
 			buttonBorder: 'hsl(var(--button-border))', 		//button border (use if necessary)
 			buttonHover: 'hsl(var(--button-hover))',		//button hover effect (when use, use hover:text-white)
+			deleteButton: 'hsl(var(--delete-button))', 		//delete button (trash icon, etc)
+			deleteButtonHover: 'hsl(var(--delete-button-hover))', //delete button hover effect
 			layouthover: 'hsl(var(--layout-hover))', 		//layout hover/active color
 			layout1: 'hsl(var(--layout-1))', 				//layout (header, sidebar) bg
 			layout2: 'hsl(var(--layout-2))', 				//layout elements 1
