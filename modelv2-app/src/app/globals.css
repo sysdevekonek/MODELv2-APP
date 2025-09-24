@@ -98,6 +98,19 @@ body {
     @apply bg-bg text-bodytext2;
   }
 
+    /* Hide built-in password reveal icons in Chrome/Edge */
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
+
+  input[type="password"]::-webkit-credentials-auto-fill-button,
+  input[type="password"]::-webkit-textfield-decoration-container,
+  input[type="password"]::-webkit-inner-spin-button,
+  input[type="password"]::-webkit-clear-button {
+    display: none !important;
+  }
+
   body, header, main, aside, div, a, button {
     @apply transition-colors duration-300 ease-in-out;
   }
