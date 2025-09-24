@@ -48,7 +48,7 @@ export default function LoginPage() {
                     <p className="text-white text-sm font-medium mb-3 font-titleFont">POWERED BY:</p>
                     <div className="relative w-[8rem] h-[2.5rem]">
                         <Image
-                            src="/ekonek_logo.png"
+                            src="/ekonek_logo_white.png"
                             alt="e-KONEK PILIPINAS INC Logo"
                             fill
                             sizes="(max-width: 640px) 50vw, 8rem"

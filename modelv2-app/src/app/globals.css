@@ -17,11 +17,14 @@ body {
 
   .light {
     --main-1: 228 36% 89%;
-    --input-field-1: 0 0% 100%;
-    --input-field-2: 214 32% 91%;
-    --button-1: 228 28% 10%;
-    --button-2: 228 36% 89%;
+    --input-field-1: 210 20% 98%; 
+    --input-field-2: 0 0% 52%;
+    --button-1: 228 36% 89%;
+    --button-2: 225 18% 96%;
     --button-border: ;
+    --button-hover: 215 16% 47%;
+    --delete-button: 0 91% 36%;
+    --delete-button-hover: 0 96% 44%;
     --layout-hover: 228 36% 89%;
     --layout-1: 0 0% 100%;
     --layout-2: 228 4% 50%;
@@ -32,40 +35,46 @@ body {
     --bg-container: 0 0% 100%;
     --title-body-text-1: 0 0% 8%;
     --body-text-2: 0 0% 8%;
-    --subtext: 0 0% 76%;
+    --subtext: 0 0% 50%;
     --theme-button-1: 229 22% 15%;
     --theme-button-2: 230 12% 30%;
   }
 
   .dark {
-    --main-1: 210 25% 2%;
+    --main-1: 227 9% 19%;
     --input-field-1: 0 0% 7%;
     --input-field-2: 0 0% 13%;
-    --button-1: 227 36% 5%;
-    --button-2: 210 25% 2%;
-    --button-border: 227 36% 5%;
-    --layout-hover: 228 36% 89%;
+    --button-1: 227 9% 19%;
+    --button-2: 225 6% 13%;
+    --button-border: ;
+    --button-hover: 215 16% 47%;
+    --delete-button: 0 91% 36%;
+    --delete-button-hover: 0 96% 44%;
+    --layout-hover: 227 9% 19%;
     --layout-1: 0 0% 8%;
     --layout-2: 228 3% 31%;
     --layout-3: 227 8% 23%;
-    --layout-text-1: 0 0% 8%;
+    --layout-text-1: 0 0% 100%;
     --layout-text-2: 0 0% 100%;
     --bg: 0 0% 4%;
     --bg-container: 0 0% 8%;
     --title-body-text-1: 0 0% 100%;
     --body-text-2: 0 0% 100%;
-    --subtext: 0 0% 76%;
+    --subtext: 0 0% 80%;
     --theme-button-1: 229 22% 15%;
     --theme-button-2: 230 12% 30%;
   }
 
   .system {
     --main-1: 229 22% 15%;
-    --input-field-1: 0 0% 100%;
-    --input-field-2: 214 32% 91%;
+    --input-field-1: 210 20% 98%;
+    --input-field-2: 0 0% 52%;
     --button-1: 228 28% 10%;
     --button-2: 228 36% 89%;
     --button-border: ;
+    --button-hover: 215 16% 47%;
+    --delete-button: 0 91% 36%;
+    --delete-button-hover: 0 96% 44%;
     --layout-hover: 228 36% 89%;
     --layout-1: 229 22% 15%;
     --layout-2: 228 4% 50%;
@@ -76,7 +85,7 @@ body {
     --bg-container: 0 0% 100%;
     --title-body-text-1: 0 0% 100%;
     --body-text-2: 0 0% 8%;
-    --subtext: 0 0% 76%;
+    --subtext: 0 0% 50%;
     --theme-button-1: 229 22% 15%;
     --theme-button-2: 230 12% 30%;
   }
@@ -88,17 +97,21 @@ body {
   body {
     @apply bg-bg text-bodytext2;
   }
+
+    /* Hide built-in password reveal icons in Chrome/Edge */
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
+
+  input[type="password"]::-webkit-credentials-auto-fill-button,
+  input[type="password"]::-webkit-textfield-decoration-container,
+  input[type="password"]::-webkit-inner-spin-button,
+  input[type="password"]::-webkit-clear-button {
+    display: none !important;
+  }
+
+  body, header, main, aside, div, a, button {
+    @apply transition-colors duration-300 ease-in-out;
+  }
 } 
-
-/* Hide built-in password reveal icons in Chrome/Edge */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
-  display: none;
-}
-
-input[type="password"]::-webkit-credentials-auto-fill-button,
-input[type="password"]::-webkit-textfield-decoration-container,
-input[type="password"]::-webkit-inner-spin-button,
-input[type="password"]::-webkit-clear-button {
-  display: none !important;
-}
