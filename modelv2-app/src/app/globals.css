@@ -23,6 +23,8 @@ body {
     --button-2: 225 18% 96%;
     --button-border: ;
     --button-hover: 215 16% 47%;
+    --delete-button: 0 91% 36%;
+    --delete-button-hover: 0 96% 44%;
     --layout-hover: 228 36% 89%;
     --layout-1: 0 0% 100%;
     --layout-2: 228 4% 50%;
@@ -46,6 +48,8 @@ body {
     --button-2: 225 6% 13%;
     --button-border: ;
     --button-hover: 215 16% 47%;
+    --delete-button: 0 91% 36%;
+    --delete-button-hover: 0 96% 44%;
     --layout-hover: 227 9% 19%;
     --layout-1: 0 0% 8%;
     --layout-2: 228 3% 31%;
@@ -69,6 +73,8 @@ body {
     --button-2: 228 36% 89%;
     --button-border: ;
     --button-hover: 215 16% 47%;
+    --delete-button: 0 91% 36%;
+    --delete-button-hover: 0 96% 44%;
     --layout-hover: 228 36% 89%;
     --layout-1: 229 22% 15%;
     --layout-2: 228 4% 50%;
@@ -90,5 +96,9 @@ body {
 
   body {
     @apply bg-bg text-bodytext2;
+  }
+
+  body, header, main, aside, div, a, button {
+    @apply transition-colors duration-300 ease-in-out;
   }
 } 

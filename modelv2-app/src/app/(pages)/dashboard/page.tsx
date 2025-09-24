@@ -25,6 +25,13 @@ function DashboardPage() {
                             >
                                 CLEAR
                             </button>
+                             <button
+                                type="button"
+                                className="px-6 h-8 bg-deleteButton hover:bg-deleteButtonHover hover:text-white text-white font-semibold text-sm rounded-[5px] transition-colors duration-200 
+                                focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 font-titleFont"
+                            >
+                                DELETE
+                            </button>
                         </div>
     </div>
    

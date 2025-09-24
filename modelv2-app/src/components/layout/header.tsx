@@ -19,7 +19,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full h-28 bg-layout1 text-foreground shadow-lg z-40 flex items-center px-4 transition-colors duration-300">
+    <header className="fixed top-0 left-0 w-full h-28 bg-layout1 text-foreground shadow-lg z-50 flex items-center px-4 transition-colors duration-300 ease-in-out">
       <div className="absolute top-0 right-0 w-full h-full pointer-events-none z-0">
         <div
           className="absolute top-0 right-0 w-3/4 h-full bg-layout3 opacity-50"
@@ -36,14 +36,17 @@ export default function Header() {
             alt="MODEL Logo"
             width={240}
             height={80}
-            className="h-auto w-[15rem]"
+            className="h-auto w-[15rem] transition-opacity duration-300 ease-in-out"
           />
         </a>
-        <div className="text-base text-layoutText2 font-semibold uppercase mr-5">
-          <h2>
-            {fullName ? `Welcome, ${fullName}` : ""}
-          </h2>
+        <div className="mr-6">
+          {fullName && (
+            <span className="px-4 py-2 rounded-lg text-layoutText2 tracking-wide uppercase shadow-sm backdrop-blur-sm transition-colors duration-300 ease-in-out">
+              Welcome,&nbsp;<span className="text-primary font-bold">{fullName}</span>
+            </span>
+          )}
         </div>
+
       </div>
     </header>
   );
