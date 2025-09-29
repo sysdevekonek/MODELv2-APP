@@ -1,8 +1,10 @@
 "use client"
-
+import toast from "react-hot-toast";
 import { ColumnDef } from "@tanstack/react-table"
 import ComboBox  from "@/components/comboBox"
 import { useSADDropdown } from "@/components/dropdownAPI"
+import { usenslreport } from "@/hooks/reports/usenslreport";
+
 
 // NSL Table
 export type NSLdata = {
@@ -16,9 +18,12 @@ export type NSLdata = {
 type ColumnsProps = {
   updateRow: (id: string, updates: Partial<NSLdata>) => void
   removeRow: (id: string, updates: Partial<NSLdata>) => void
+  rowError: { [key: string]: boolean }
 }
 
-export const columns = ({ updateRow, removeRow,  }: ColumnsProps): ColumnDef<NSLdata>[] => {
+
+
+export const columns = ({ updateRow, removeRow, rowError }: ColumnsProps): ColumnDef<NSLdata>[] => {
   return [
     {
       accessorKey: "number",
@@ -33,34 +38,79 @@ export const columns = ({ updateRow, removeRow,  }: ColumnsProps): ColumnDef<NSL
     {
       accessorKey: "description",
       header: () => <div className="w-[7rem] pl-24">DESCRIPTION</div>,
-      cell: ({ row }) => {
+      cell: ({ row, table }) => {
         const { SADDropdown, fetchSAD, fetchNextPageSAD } = useSADDropdown()
+    
+        // detects only the rows at the current table
+        // const allSelectedCodes = table
+        //   .getRowModel()
+        //   .rows.map(r => r.original.label)
+        //   .filter(Boolean)
+        const allSelectedCodes = (table.options.data as NSLdata[])
+        .map(r => r.label)
+        .filter(Boolean)
+    
         return (
           <div className="flex flex-col pl-[5.4rem]">
-                <ComboBox
-                  items={SADDropdown}
-                  displayKey="PARAMETER_DESC"
-                  valueKey="COLUMN_CODE"
-                  selectedValue={row.original.label}
-                  setSelectedValue={(code) => {
-                    const selectedObj = SADDropdown.find(item => item.COLUMN_CODE === code);
-                    if (selectedObj) {
-                      updateRow(row.original.id, {
-                        label: selectedObj.COLUMN_CODE,
-                        description: selectedObj.PARAMETER_DESC, // update if user changes it
-                      });
-                    }
-                  }}
-                  placeholder={row.original.description || "Select SAD Parameter"}
-                  onInputChange={(val) => fetchSAD(val)}
-                  onScrollEnd={fetchNextPageSAD}
-                  hasMore={true}
-                  className="border rounded px-2 py-1 w-full border-none"
-                />
-
+            <ComboBox
+              items={SADDropdown.map(item => ({
+                ...item,
+                disabled: allSelectedCodes.includes(item.COLUMN_CODE) &&
+                item.COLUMN_CODE !== row.original.label, 
+              }))}
+              displayKey="PARAMETER_DESC"
+              valueKey="COLUMN_CODE"
+              selectedValue={row.original.label || ""}
+              setSelectedValue={(code) => {
+                if (!code) {
+                  updateRow(row.original.id, {
+                    label: "",
+                    description: "",
+                  });
+                  return;
+                }
+    
+                // Prevent duplicates
+                if (
+                  allSelectedCodes.includes(code) &&
+                  code !== row.original.label
+                ) {
+                  updateRow(row.original.id, {
+                    label: "",
+                    description: "",
+                  });
+                  toast.error("This description is already selected in another row.");
+                  return;
+                }
+    
+                const selectedObj = SADDropdown.find(
+                  (item) => item.COLUMN_CODE === code
+                )
+                if (selectedObj) {
+                  updateRow(row.original.id, {
+                    label: selectedObj.COLUMN_CODE,
+                    description: selectedObj.PARAMETER_DESC,
+                  });
+                }
+              }}
+              placeholder={row.original.description || "Select SAD Parameter"}
+              onInputChange={(val) => fetchSAD(val)}
+              onScrollEnd={fetchNextPageSAD}
+              hasMore={true}
+              className={`border rounded px-2 py-1 w-full ${
+                !row.original.description && rowError
+                  ? "border-red-500"
+                  : "border-none"
+              }`}
+            />
+            {rowError[row.original.id] && (
+              <p className="text-sm text-red-500 mt-1">
+                Please select a description.
+              </p>
+            )}
           </div>
         )
-      }
+      },
     },
     {
       id: "actions",

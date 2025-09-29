@@ -47,6 +47,13 @@ export const usenslreport = () => {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [isValid, setIsValid] = useState<boolean | null>(null); 
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+  const [dateError, setDateError] = useState("");
+  const [detailedInvoice, setDetailedInvoice] = useState(false);
+  const [rowError, setRowError] = useState<Record<string, boolean>>({});
 
   // dropdown hooks
   const { templateDropdown, selectedTemplate, setSelectedTemplate, descValue } = useTemplateDropdown();
@@ -55,10 +62,6 @@ export const usenslreport = () => {
   const { warehouseDropdown, selectedWarehouse, setSelectedWarehouse, fetchWarehouse, fetchNextPageWarehouse } = useWarehouseDropdown();
   const { departmentDropdown, selectedDepartment, setSelectedDepartment } = useDepartmentDropdown();
   const { SADDropdown, fetchSAD, fetchNextPageSAD  } = useSADDropdown();
-  const [checking, setChecking] = useState(false);
-  const [isValid, setIsValid] = useState<boolean | null>(null); 
-  const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
 
   useEffect(() => {
     getData().then(setData);
@@ -76,70 +79,142 @@ export const usenslreport = () => {
       })
     );
   }, [SADDropdown]);
-  
+
   useEffect(() => {
     if (!templateName.trim()) {
       setIsValid(null);
+      setChecking(false);
       return;
     }
+  
     setIsValid(null);
-    const delayDebounce = setTimeout(async () => {
-      setChecking(true);
+    setChecking(true);
+  
+    const controller = new AbortController();
+    const id = setTimeout(async () => {
       try {
         const res = await api.get("/search/template/check/name", {
           params: { value: templateName },
+          signal: controller.signal, // axios supports AbortSignal
         });
         setIsValid(res.data.STATUS === "Valid");
-      } catch (err) {
+      } catch (err: any) {
+        // Ignore cancellations
+        if (axios.isAxiosError(err) && err.code === "ERR_CANCELED") return;
         console.error("Check name error:", err);
-        setIsValid(null); 
+        setIsValid(null);
       } finally {
         setChecking(false);
       }
     }, 600);
   
-    return () => clearTimeout(delayDebounce);
+    return () => {
+      clearTimeout(id);
+      controller.abort(); // cancel in-flight request if still running
+    };
   }, [templateName]);
+  
+
+  useEffect(() => {
+    // whenever data changes, check if there are still empty descriptions
+    const hasEmptyDescriptions = data.some(row => !row.description || row.description === "--- Select SAD ---");
+    if (!hasEmptyDescriptions) {
+      setRowError({}); // clear error automatically
+    }
+  }, [data]);
 
   function formatDateForOracle(dateStr: string): string {
     if (!dateStr) return "";
-    const d = new Date(dateStr);
+  
+    // If ISO date 'YYYY-MM-DD', treat as local date (avoid UTC parse quirks)
+    const isoDateMatch = /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
+    let d: Date;
+    if (isoDateMatch) {
+      const [y, m, day] = dateStr.split("-").map(Number);
+      d = new Date(y, m - 1, day); // local midnight
+    } else {
+      d = new Date(dateStr);
+    }
+  
+    if (Number.isNaN(d.getTime())) return "";
+  
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
     const yyyy = d.getFullYear();
     return `${mm}/${dd}/${yyyy}`; // MM/DD/YYYY
   }
-  
-  const useExcelExport = async (data: any[], filtersFromState: any) => {
+
+  const exportToExcel = async (columns: NSLdata[], filtersFromState: any) => {
+    setSaving(true);
     try {
-      const filters = {
+      const normalizedLabels = columns.map(c => c.label.replace(/\s+/g, "_"));
+      const payload = {
         ...filtersFromState,
         fromDate: formatDateForOracle(filtersFromState.fromDate),
         toDate: formatDateForOracle(filtersFromState.toDate),
-        columns: data.map((row) => row.label).join(";"),
+        columns: normalizedLabels.join(";"),
       };
-  
-      console.log("📤 Filters sent to backend:", filters);
-  
-      const res = await api.post("/reports/nsl", filters);
-      const responseData = res.data.data || [];
-      console.log("📥 First row from backend:", responseData[0]);
+      const res = await api.post("/reports/nsl", payload);
+      const responseData = res.data?.data ?? [];
   
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("NSL Report");
   
-      worksheet.columns = data.map((row) => ({
-        header: row.label, 
-        key: row.label,  
-        width: 20,
-      }));
+      const headers = columns.map(c => c.label);
+      worksheet.columns = headers.map(h => ({ header: h, key: h, width: 20 }));
+      worksheet.getRow(1).font = { bold: true };
+  
+      if (Array.isArray(responseData) && responseData.length > 0) {
+        const first = responseData[0];
+        if (Array.isArray(first)) {
+          worksheet.addRows(responseData as any[]);
+        } else if (typeof first === "object" && first !== null) {
+          const rows = (responseData as Record<string, any>[]).map(obj =>
+            headers.map(h => obj[h] ?? "")
+          );
+          worksheet.addRows(rows);
+        } else {
+          worksheet.addRow([String(responseData)]);
+        }
+      }
+  
+      // Auto-fit column widths (safe approach)
+      worksheet.columns.forEach((column, colIndex) => {
+        let maxLength = 10; // minimum width
+        worksheet.eachRow((row) => {
+          const cell = row.getCell(colIndex + 1);
+          const cellValue = cell.value ? cell.value.toString() : "";
+          if (cellValue.length > maxLength) {
+            maxLength = cellValue.length;
+          }
+        });
+        // Make columns a bit wider than the string length
+        column.width = Math.floor(maxLength * 1.2) + 5;
+      });
 
-      worksheet.addRows(responseData);
-      const buffer = await workbook.xlsx.writeBuffer();
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
+      worksheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell) => {
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+      
+          if (rowNumber === 1) {
+            // Header row: centered + bold
+            cell.alignment = { horizontal: "left", vertical: "middle" };
+            cell.font = { bold: true };
+          } else {
+            // Data rows: left aligned
+            cell.alignment = { horizontal: "left", vertical: "middle", wrapText: true };
+          }
+        });
       });
   
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -147,17 +222,41 @@ export const usenslreport = () => {
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("❌ Export failed:", err);
-      alert("Failed to generate report");
+      console.error("Excel export failed", err);
+      toast.error("Failed exporting report");
+    } finally {
+      setSaving(false);
     }
   };
   
   
   const updateRow = (id: string, updates: Partial<NSLdata>) => {
-    setData((prev) => prev.map((row) => (row.id === id ? { ...row, ...updates } : row)));
+    setData(prev =>
+      prev.map(row => (row.id === id ? { ...row, ...updates } : row))
+    );
+  
+    if (updates.description && updates.description !== "--- Select SAD ---") {
+      setRowError(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[id];
+        return newErrors;
+      });
+    }
   };
 
   const handleAddField = () => {
+    // check if any row has empty description
+    const hasEmpty = data.some(
+      row => !row.description || row.description === "--- Select SAD ---"
+    );
+  
+    if (hasEmpty) {
+      toast("Please fill out all rows before adding a new one",{
+        icon: '⚠️',
+      });
+      return; 
+    }
+  
     setData((prev) => [
       ...prev,
       {
@@ -169,6 +268,7 @@ export const usenslreport = () => {
       },
     ]);
   };
+  
 
   const handleResetRows = () => {
     setData([{ ...defaultRow, id: crypto.randomUUID() }]);
@@ -208,29 +308,25 @@ export const usenslreport = () => {
       toast.error("Please enter a template name");
       return;
     }
-  
-    const columns = data.map((row) => row.label).join(";");
-  
+    setSaving(true);
     try {
-      const res = await api.post("/reports/nsl/save/template", {
-        templateName,
-        columns,
-      });
-    
-      toast.success(res.data.STATUS || "Template saved successfully!");
+      const columns = data.map(r => r.label).join(";");
+      const res = await api.post("/reports/nsl/save/template", { templateName, columns });
+      toast.success(res.data.STATUS || "Template saved!");
       setTemplateName("");
+      setShowSaveDialog(false);
     } catch (err: any) {
       if (axios.isAxiosError(err) && err.response) {
         toast.error(err.response.data.message || "Failed to save template");
       } else {
-        // unexpected error
         console.error("Unexpected save error:", err);
         toast.error("Unexpected error occurred");
       }
+    } finally {
+      setSaving(false);
     }
-    
   };
-
+  
   const handleOpenDialog = () => {
     setShowSaveDialog(true);
   }
@@ -238,6 +334,29 @@ export const usenslreport = () => {
     setShowSaveDialog(false);
     setTemplateName("");
   };
+
+  const validateForm = (data: NSLdata[], fromDate: string, toDate: string) => {
+    let valid = true;
+  
+    if (!fromDate || !toDate) {
+      setDateError("Both dates are required.");
+      valid = false;
+    } else {
+      setDateError("");
+    }
+  
+    const newErrors: Record<string, boolean> = {};
+    data.forEach(row => {
+      if (!row.description || row.description === "--- Select SAD ---") {
+        newErrors[row.id] = true;
+        valid = false;
+      }
+    });
+
+    setRowError(newErrors);
+    return valid;
+  };
+  
 
   return {
     comboRef,
@@ -281,6 +400,8 @@ export const usenslreport = () => {
     departmentDropdown,
     selectedDepartment,
     setSelectedDepartment,
+    detailedInvoice,
+    setDetailedInvoice,
 
     // SAD DROPDOWN & DATA TABLE
     SADDropdown,
@@ -290,10 +411,18 @@ export const usenslreport = () => {
     checking,
     isValid,
 
-    useExcelExport,
+    // EXCEL EXPORT
+    // useExcelExport,
+    exportToExcel,
     fromDate,
     setFromDate,
     toDate,
     setToDate,
+
+    validateForm,
+    dateError,
+    setDateError,
+    rowError,
+    setRowError,
   };
 };

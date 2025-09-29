@@ -1,7 +1,7 @@
 "use client"
-import React, { useRef, useState, useEffect } from "react";
 import ComboBox, { ComboBoxRef } from "@/components/comboBox";
-import { columns, NSLdata } from "../../utils/nslDatatable/columns"
+import toast from "react-hot-toast";
+import { columns } from "../../utils/nslDatatable/columns"
 import { DataTable } from "../../utils/nslDatatable/datatable"
 import { usenslreport } from "@/hooks/reports/usenslreport";
 
@@ -49,13 +49,19 @@ const state = usenslreport();
     departmentDropdown,
     selectedDepartment,
     setSelectedDepartment,
+    detailedInvoice,
+    setDetailedInvoice,
     checking,
     isValid,
-    useExcelExport,
+    // useExcelExport,
+    exportToExcel,
     fromDate,
     setFromDate,
     toDate,
     setToDate,
+    validateForm,
+    dateError,
+    rowError,
   } = state;
 
 
@@ -100,15 +106,23 @@ const state = usenslreport();
                                 <input  type="date"
                                         value={fromDate}
                                         onChange={(e) => setFromDate(e.target.value)}
-                                        className='border border-[#858585] text-[#858585] rounded-md pl-3 p-1 w-[40%] h-10 text-xs' />
+                                        className={`rounded-md pl-3 p-1 w-[40%] h-10 text-xs
+                                        border ${!fromDate && dateError ? "border-red-500 text-red-500" : "border-[#858585] text-[#858585]"}`} />
                                 <label>To: </label>
                                 <input  type="date"
                                         value={toDate}
                                         onChange={(e) => setToDate(e.target.value)}
-                                        className='border border-[#858585] text-[#858585] rounded-md pl-3 p-1 w-[40%] h-10 text-xs' />
+                                        className={`rounded-md pl-3 p-1 w-[40%] h-10 text-xs
+                                        border ${!toDate && dateError ? "border-red-500 text-red-500" : "border-[#858585] text-[#858585]"}`} />
                               </div>
                             </div>
                           </div>
+                          {dateError && (!fromDate || !toDate) && (
+                            <div className="w-full flex justify-around">
+                              <p className="text-red-500 text-xs mt-1 pl-1">{dateError}</p>
+                            </div>
+                          )}
+
                           <div>
                             <div className='flex flex-col gap-1 w-full'>
                               <div className='w-full flex justify-around items-center'>
@@ -181,7 +195,10 @@ const state = usenslreport();
                               <div className='w-full flex justify-start items-center'>
                                 <div className="w-[30%] flex justify-between">
                                   <label className=' text-sm font-semibold w-full pl-[20px]'>Detailed Invoice:</label>
-                                  <input type="checkbox" className="w-[20px] h-[20px]"/>
+                                  <input type="checkbox"
+                                        checked={detailedInvoice}
+                                        onChange={(e) => setDetailedInvoice(e.target.checked)}
+                                        className="w-[20px] h-[20px]"/>
                                 </div>
                               </div>
                             </div>
@@ -200,11 +217,11 @@ const state = usenslreport();
                   <button 
                     onClick={handleAddField}
                     title="Add Rows"
-                    className="font-medium w-32 h-full bg-main1 text-titlebodytext1 rounded-sm flex justify-center items-center gap-3">Add Field <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                    className="transition font-medium w-32 h-full bg-main1 text-titlebodytext1 rounded-sm flex justify-center items-center gap-3 hover:bg-buttonHover">Add Field <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
                   </button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center">
+                      <button className="transition font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center hover:bg-buttonHover hover:text-white" title="Options">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
                       </button>
                     </DropdownMenuTrigger>
@@ -213,16 +230,26 @@ const state = usenslreport();
                         Save
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() =>
-                          useExcelExport(data, {
-                            fromDate,
-                            toDate,
-                            ConsigneeCode: selectedConsignee,
-                            ConsolidatorCode: selectedConsolidator,
-                            WarehouseCode: selectedWarehouse,
-                            DepartmentCode: selectedDepartment,
-                          })
-                        }
+                        onClick={() => {
+                          if (!validateForm(data, fromDate, toDate)) return;
+
+                          toast.promise(
+                            exportToExcel(data, {
+                              fromDate,
+                              toDate,
+                              ConsigneeCode: selectedConsignee,
+                              DetailedInvoice: detailedInvoice,
+                              ConsolidatorCode: selectedConsolidator,
+                              WarehouseCode: selectedWarehouse,
+                              DepartmentCode: selectedDepartment,
+                            }),
+                            {
+                              loading: "Generating report...",
+                              success: <b>Report generated successfully!</b>,
+                              error: <b>Failed to generate report.</b>,
+                            }
+                          );
+                        }}
                       >
                         Generate Report
                       </DropdownMenuItem>
@@ -234,7 +261,7 @@ const state = usenslreport();
                   <button 
                     onClick={handleResetRows}
                     title="Reset Rows"
-                    className="font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-ccw-icon lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-ccw-icon lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                   </button>
                 </div>
                 {/* start of form */}
@@ -243,6 +270,7 @@ const state = usenslreport();
                       columns={columns({
                         updateRow,
                         removeRow,
+                        rowError,
                       })}
                       data={data}
                     />
@@ -291,35 +319,13 @@ const state = usenslreport();
                       </svg>
                     )}
                     {isValid === true && (
-                      <svg
-                        className="h-5 w-5 text-green-500"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
+                      <svg className="w-6 h-6 me-1 text-green-500 dark:text-green-400 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
                       </svg>
                     )}
                     {isValid === false && !checking && (
-                      <svg
-                        className="h-5 w-5 text-red-500"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
+                      <svg className="w-6 h-6 me-2 text-gray-800 dark:text-white shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 20">
+                        <path fillRule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clipRule="evenodd"/>
                       </svg>
                     )}
                   </div>
