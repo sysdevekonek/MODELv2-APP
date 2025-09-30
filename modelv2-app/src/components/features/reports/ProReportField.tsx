@@ -12,11 +12,13 @@ const ProReportField = () => {
     fields,
     validationResults,
     loadingStates,
+    isGenerating,
+    activeReport,
+    handleGenerate,
     handleAdd,
     handleRemove,
     handleChange,
     areAllValid,
-    generateValList,
     clearFields,
   } = useDynamicInputs(activeTab);
 
@@ -46,11 +48,13 @@ const ProReportField = () => {
       <div className='{border border-purple-900} py-5 w-full flex flex-col justify-start items-center max-h-[240px] overflow-y-auto bg-bgDefcont scrollbar-thin scrollbar-thumb-mainDef3 scrollbar-track-bgDef'>
         <div className="{border border-pink-700} h-full w-full flex flex-col justify-start items-center">
         <div className="{border border-red-700} flex flex-col h-full w-6/12 justify-center items-center">
-          <div className='{border border-green-700} w-full h-fullfont-bold text-[1.1vw] flex justify-start'>
-            <p className='{border border-blue-700 } font-semibold w-3/5 flex justify-center'>
-              {activeTab === 'airwaybill' ? 'Insert AIRWAYBILL' : 'Insert PRO NUMBER'}
-            </p>
-            <div className='{border border-green-700} w-2/5 h-full flex justify-center items-center'>
+          <div className='{border border-green-700} w-[90%] font-bold text-[1.1vw] flex pl-7'>
+            <div className='{border border-blue-700} font-semibold w-2/4 flex justify-start items-center'>
+              <p>
+                {activeTab === 'airwaybill' ? 'Insert AIRWAYBILL' : 'Insert PRO NUMBER'}
+              </p>
+            </div>
+            <div className='{border border-yellow-700} w-1/5 h-full flex justify-center items-center'>
               <button className='hover:underline text-mainTextDef2 hover:text-red-500'
                 onClick={clearFields}>Clear</button>
             </div> 
@@ -68,7 +72,7 @@ const ProReportField = () => {
           return (
             <div
               key={index}
-              className="flex flex-row items-center gap-2 text-mainTextDef3 w-[90%] h-full"
+              className="{border border-red-700} flex flex-row items-center gap-2 text-mainTextDef3 w-full h-full"
             >   
             <span className="w-6 h-6 flex justify-center items-center">
                 {isLoading && (
@@ -127,33 +131,42 @@ const ProReportField = () => {
       {/* Buttons */}
       <div className='w-full h-auto text-mainTextDef3 flex justify-center items-center gap-4'>
         <button className={`flex flex-row justify-center items-center h-8 w-36 rounded gap-1 transition
-          ${areAllValid() ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
+          ${areAllValid() && !isGenerating 
+          ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
           : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
-          onClick={() => generateValList('PRO')}
-          disabled={!areAllValid()}
+          onClick={() => handleGenerate('PRO')}
+          disabled={!areAllValid() || isGenerating}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
           >
-          <span className='text-[1vw]'>PRO Report</span>
+          <span className="text-[1vw]">
+            {isGenerating && activeReport === "PRO" ? "Generating..." : "PRO Report"}
+          </span>
           <Download size={16} strokeWidth={2} />
         </button>
         <button className={`flex flex-row justify-center items-center h-8 w-36 rounded gap-1 transition
-          ${areAllValid() ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
+          ${areAllValid() && !isGenerating 
+          ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
           : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
-          onClick={() => generateValList('BRC')}
+          onClick={() => handleGenerate('BRC')}
           disabled={!areAllValid()}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
           >
-          <span className='text-[1vw]'>BRC Report</span>
+          <span className="text-[1vw]">
+            {isGenerating && activeReport === "BRC" ? "Generating..." : "BRC Report"}
+          </span>
           <Download size={16} strokeWidth={2} />
         </button>
         <button className={`flex flex-row justify-center items-center h-8 w-40 rounded gap-1 transition
-          ${areAllValid() ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
+          ${areAllValid() && !isGenerating 
+          ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
           : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
-          onClick={() => generateValList('MNF')}
+          onClick={() => handleGenerate('MNF')}
           disabled={!areAllValid()}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
           >
-          <span className='text-[1vw]'>Manifest Report</span>
+          <span className="text-[1vw]">
+            {isGenerating && activeReport === "MNF" ? "Generating..." : "Manifest Report"}
+          </span>
           <Download size={16} strokeWidth={2} />
         </button>
       </div>

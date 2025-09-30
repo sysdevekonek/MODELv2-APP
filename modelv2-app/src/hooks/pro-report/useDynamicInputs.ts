@@ -8,6 +8,9 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
   const [fields, setFields] = useState<string[]>([""]);
   const [validationResults, setValidationResults] = useState<(boolean | undefined)[]>([undefined]);
   const [loadingStates, setLoadingStates] = useState<boolean[]>([false]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [activeReport, setActiveReport] = useState<"PRO" | "BRC" | "MNF" | null>(null);
+  const [maxFieldsWarned, setMaxFieldsWarned] = useState(false);
   const debounceMap = useRef<{ [key: number]: ReturnType<typeof debounce> }>({});
   const MAX_FIELDS = 10;
 
@@ -60,43 +63,51 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
   );
 
   const handleChange = (value: string, index: number) => {
-    const updatedFields   = [...fields];
-    updatedFields[index]  = value;
+    const updatedFields = [...fields];
+    updatedFields[index] = value;
     setFields(updatedFields);
-
-    const normalizedFields = updatedFields.map((f) => f.trim().toLowerCase());
-    const newValidationResults: (boolean | undefined)[] = [];
-    const newLoadingStates: boolean[] = [];
-
-    normalizedFields.forEach((val, i) => {
-      const isDuplicate   = normalizedFields.filter((v, j) => v === val && v && i !== j).length > 0;
-      const originalInput = updatedFields[i].trim();
-
-      if (val.length < 2 || !val.trim()) {
-        newValidationResults[i] = undefined;
-        newLoadingStates[i]     = false;
-      } else if (isDuplicate) {
-        newValidationResults[i] = false;
-        newLoadingStates[i]     = false;
-      } else {
-        newLoadingStates[i] = true;
-        getDebouncedValidator(i)(originalInput);
-        newValidationResults[i] = validationResults[i];
-      }
-    });
-
+  
+    const normalizedValue = value.trim().toLowerCase();
+    const originalInput = value.trim();
+  
+    // Check duplicates
+    const isDuplicate = updatedFields.some(
+      (f, i) => f.trim().toLowerCase() === normalizedValue && i !== index
+    );
+  
+    // Prepare new states
+    const newValidationResults = [...validationResults];
+    const newLoadingStates = [...loadingStates];
+  
+    if (normalizedValue.length < 2 || !normalizedValue) {
+      newValidationResults[index] = undefined;
+      newLoadingStates[index] = false;
+    } else if (isDuplicate) {
+      newValidationResults[index] = false;
+      newLoadingStates[index] = false;
+    } else {
+      newLoadingStates[index] = true;
+      // 🔥 only validate the field that changed
+      getDebouncedValidator(index)(originalInput);
+    }
+  
     setValidationResults(newValidationResults);
     setLoadingStates(newLoadingStates);
   };
-
+  
   const handleAdd = () => {
     if (fields.length >= MAX_FIELDS) {
-      toast.error(`Maximum ${MAX_FIELDS} fields allowed`);
+      if (!maxFieldsWarned) {
+        toast.error(`Maximum ${MAX_FIELDS} fields allowed`);
+        setMaxFieldsWarned(true);
+      }
       return;
     }
-    setFields((prev)            => [...prev, ""]);
+  
+    setMaxFieldsWarned(false); // reset once user goes below max again
+    setFields((prev) => [...prev, ""]);
     setValidationResults((prev) => [...prev, undefined]);
-    setLoadingStates((prev)     => [...prev, false]);
+    setLoadingStates((prev) => [...prev, false]);
   };
 
   const handleRemove = (index: number) => {
@@ -122,14 +133,27 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
     );
   };
 
-  const generateValList = async (generateType: "PRO" | "BRC" | "MNF") => {
-    const workbook      = new ExcelJS.Workbook();
-    const worksheet     = workbook.addWorksheet("PRO_INFO_REPORT");
-    
-    if (!areAllValid()) {
-      toast.error("Not all fields are valid!");
-      return;
+  const handleGenerate = async (generateType: "PRO" | "BRC" | "MNF") => {
+    if (isGenerating) return; // block spamming
+  
+    setIsGenerating(true);
+    setActiveReport(generateType);
+  
+    try {
+      await toast.promise(generateValList(generateType), {
+        loading: `Generating ${generateType} report...`,
+        success: `${generateType} report downloaded!`,
+        error: "Failed to generate report",
+      });
+    } finally {
+      setIsGenerating(false);
+      setActiveReport(null);
     }
+  };
+
+  const generateValList = async (generateType: "PRO" | "BRC" | "MNF") => {
+    if (isGenerating) return;
+    setIsGenerating(true);
 
     try {
       const payload = {
@@ -145,7 +169,9 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
         toast.error("No data received.");
         return;
       }
-
+      
+      const workbook      = new ExcelJS.Workbook();
+      const worksheet     = workbook.addWorksheet("PRO_INFO_REPORT");
 
       // Create header row
       const headerKeys  = Object.keys(reportData[0]);
@@ -179,6 +205,17 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
         });
       });
 
+      worksheet.columns.forEach((column) => {
+        let maxLength = 15; // minimum width
+        column.eachCell?.({ includeEmpty: true }, (cell) => {
+          const val = cell.value ? cell.value.toString() : "";
+          if (val.length > maxLength) {
+            maxLength = val.length;
+          }
+        });
+        column.width = maxLength + 4; // add padding
+      });
+
       // Create a Blob and download
       const buffer = await workbook.xlsx.writeBuffer();
       const blob   = new Blob([buffer], {
@@ -191,8 +228,7 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
       a.download = "pro_info_report.xlsx";
       a.click();
       URL.revokeObjectURL(url);
-
-      toast.success("Excel file downloaded!");
+      clearFields();
     } catch (err) {
       console.error("Report fetch or Excel generation failed:", err);
       toast.error("Failed to generate Excel report");
@@ -203,6 +239,9 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
     fields,
     validationResults,
     loadingStates,
+    isGenerating,
+    activeReport,
+    handleGenerate,
     handleAdd,
     handleRemove,
     handleChange,
