@@ -3,6 +3,7 @@ import { useRegistrationContext } from "@/hooks/registration/RegistrationContext
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { UserData } from "@/components/data/dataTypes";
 import { validateField } from "@/hooks/registration/RegistrationValidation";
+import Button from "@/components/ui/Buttons";
 
 interface UserAuthenticationProps {
   goNext: () => void;
@@ -74,6 +75,7 @@ const UserAuthentication: React.FC<UserAuthenticationProps> = ({ goNext, goBack,
             <input
               id="confirm_password"
               type={showConfirmPassword ? "text" : "password"}
+              maxLength={32}
               placeholder="Confirm Password"
               value={userData.confirm_password || ""}
               onChange={(e) => handleChange("confirm_password", e.target.value)}
@@ -125,23 +127,21 @@ const UserAuthentication: React.FC<UserAuthenticationProps> = ({ goNext, goBack,
         </div>
 
         <div className="flex justify-between">
-          <button
+          <Button
             type="button"
             onClick={goBack}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition"
+            variant="secondary"
           >
             <ArrowLeft size={18} />
             Back
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            disabled={!!errors.password || !!errors.confirm_password}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium 
-              hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="secondary"
           >
             Next
             <ArrowRight size={18} />
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -4,6 +4,7 @@ import { useClientRoleDropdown } from "@/components/dropdownAPI";
 import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
 import { UserData } from "@/components/data/dataTypes";
 import { ArrowRight } from "lucide-react";
+import Button from "@/components/ui/Buttons";
 
 function useDebounce<F extends (...args: any[]) => void>(func: F, delay: number) {
   const timer = useRef<NodeJS.Timeout | null>(null);
@@ -204,13 +205,12 @@ const UserInformation: React.FC<UserInformationProps> = ({ goNext, errors, clear
                 </div>
 
                 <div className="flex justify-end">
-                    <button
+                    <Button
                         type="submit"
-                        className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition"
+                        variant="secondary"
                     >
-                        Next
-                        <ArrowRight size={18} />
-                    </button>
+                        Next <ArrowRight size={18} />
+                    </Button>
                 </div>
             </form>
         </div>

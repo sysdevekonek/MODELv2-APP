@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { useRegistrationContext } from "@/hooks/registration/RegistrationContext"
 import { useRegistration } from "@/hooks/registration/useRegistration";
+import Button from "@/components/ui/Buttons";
 
 interface reviewSubmitProps {
   goBack: () => void;
@@ -176,22 +177,22 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
 
         <div className="px-8 py-6">
           <div className='flex justify-between'>
-            <button
+            <Button
               type="button"
               onClick={goBack}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-button2 text-bodytext2 font-medium hover:bg-gray-300 transition"
+              variant="secondary"
             >
               <ArrowLeft size={18} />
               Back
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={loading}
-              className={`flex items-center gap-2 px-5 py-2 rounded-lg bg-button1 text-titlebodytext1 font-medium hover:bg-gray-300 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              variant="primary"
             >
               Submit
               <ArrowRight size={18} />
-            </button>
+            </Button>
           </div>
         </div>
       </form>

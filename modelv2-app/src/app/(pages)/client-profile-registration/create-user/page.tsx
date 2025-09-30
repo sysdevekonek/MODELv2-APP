@@ -73,7 +73,7 @@ function CreateUserContent() {
                 onClick={() => !isDisabled && handleTabChange(index)}
                 disabled={isDisabled}
                 className={`px-4 py-2 font-medium flex items-center space-x-2
-                  ${activeTab === index ? "bg-main1 rounded-t-lg text-titlebodytext1" : "text-subtext"}
+                  ${activeTab === index ? "bg-main1 rounded-t-md text-titlebodytext1" : "text-subtext"}
                   ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
                 `}
               >

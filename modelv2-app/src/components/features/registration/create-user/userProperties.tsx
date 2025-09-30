@@ -5,6 +5,7 @@ import ComboBox, { ComboBoxRef } from "@/components/comboBox";
 import { useDepartmentDropdown, useConsigneeDropdown } from "@/components/dropdownAPI";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRegistrationContext } from "@/hooks/registration/RegistrationContext"; // ✅ Use context
+import Button from "@/components/ui/Buttons";
 
 interface UserPropertiesProps {
   goNext?: () => void;
@@ -146,26 +147,27 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
 
       </form>
       <div className='flex justify-between'>
-        <button
+        <Button
           type="button"
           onClick={goBack}
-          className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition"
+          variant="secondary"
         >
           <ArrowLeft size={18} />
           Back
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={goNext}
+          variant="secondary"
           disabled={isReviewDisabled}
-          className={`flex items-center gap-2 px-5 py-2 rounded-lg font-medium transition ${isReviewDisabled
+          className={`${isReviewDisabled
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
         >
           Next
           <ArrowRight size={18} />
-        </button>
+        </Button>
       </div>
     </div>
   );

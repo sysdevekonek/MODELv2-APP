@@ -4,6 +4,7 @@ import { useRegistrationContext } from "@/hooks/registration/RegistrationContext
 import { useCountryDropdown } from "@/components/dropdownAPI";
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { UserData } from "@/components/data/dataTypes";
+import Button from "@/components/ui/Buttons";
 
 interface PersonalDataProps {
   goNext: () => void;
@@ -177,21 +178,21 @@ const personalData: React.FC<PersonalDataProps> = ({ goNext, goBack, errors, cle
                 </div>
 
                  <div className='flex justify-between'>
-                    <button
+                    <Button
                         type="button"
                         onClick={goBack}
-                        className="flex items-center gap-2 px-5 py-2 rounded-lg bg-button2 text-bodytext2 font-medium hover:bg-gray-300 transition"
+                        variant="secondary"
                     >
                         <ArrowLeft size={18} />
                         Back
-                    </button>
-                     <button
+                    </Button>
+                     <Button
                         type="submit"
-                        className="flex items-center gap-2 px-5 py-2 rounded-lg bg-button2 text-bodytext2 font-medium hover:bg-gray-300 transition"
+                        variant="secondary"
                     >
                         Next
                         <ArrowRight size={18} />
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>
