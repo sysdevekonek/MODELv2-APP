@@ -8,6 +8,7 @@ export const userLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleClear = () => {
@@ -38,6 +39,7 @@ export const userLogin = () => {
 
     const loadingToast = toast.loading('Logging in...');
     const token = btoa(`${username}:${password}`);
+    setLoading(true);
 
     try {
       const res = await api.post('/auth/login', null, {
@@ -75,8 +77,17 @@ export const userLogin = () => {
 
     } catch (err: any) {
       console.error('Login failed:', err.response?.data || err.message);
-      toast.error(err.response?.data?.message || 'Login failed');
       toast.dismiss(loadingToast);
+
+      if (err.response?.status === 401) {
+        setError('Invalid username or password');
+        toast.error('Invalid username or password');
+      } else {
+        setError('Login failed. Please try again.');
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,5 +114,6 @@ export const userLogin = () => {
     handleClear,
     togglePasswordVisibility,
     handleLogin,
+    loading
   };
 };
