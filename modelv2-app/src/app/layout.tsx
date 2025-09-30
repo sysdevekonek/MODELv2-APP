@@ -1,10 +1,11 @@
+// layout.tsx
 'use client';
 
 import type { Metadata } from "next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Roboto, Montserrat } from 'next/font/google'
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import "./globals.css";
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher';
@@ -23,26 +24,62 @@ const montserrat = Montserrat({
 
 function AutoLogoutWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [lastActivity, setLastActivity] = useState<number>(Date.now());
 
   useEffect(() => {
-    const token = sessionStorage.getItem("accessToken");
+    const handleActivity = () => {
+      setLastActivity(Date.now());
+    };
 
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const isExpired = payload.exp && Date.now() >= payload.exp * 1000;
+    window.addEventListener('click', handleActivity);
+    window.addEventListener('keypress', handleActivity);
+    window.addEventListener('scroll', handleActivity);
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('touchstart', handleActivity);
 
-        if (isExpired) {
+    return () => {
+      window.removeEventListener('click', handleActivity);
+      window.removeEventListener('keypress', handleActivity);
+      window.removeEventListener('scroll', handleActivity);
+      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener('touchstart', handleActivity);
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const token = sessionStorage.getItem("accessToken");
+      const now = Date.now();
+
+      const idleTime = now - lastActivity;
+      if (idleTime >= 900000) { // 15 minutes
+        sessionStorage.clear();
+        toast.error("Session expired due to inactivity");
+        router.push("/login");
+        return;
+      }
+
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const isExpired = payload.exp && Date.now() >= payload.exp * 1000;
+
+          if (isExpired) {
+            sessionStorage.clear();
+            toast.error("Session expired");
+            router.push("/login");
+          }
+        } catch (err) {
+          console.warn("Invalid token format:", err);
           sessionStorage.clear();
           router.push("/login");
         }
-      } catch (err) {
-        console.warn("Invalid token format:", err);
-        sessionStorage.clear();
-        router.push("/login");
       }
-    }
-  }, [router]);
+    };
+
+    const interval = setInterval(checkAuthStatus, 30000);
+    return () => clearInterval(interval);
+  }, [router, lastActivity]);
 
   return <>{children}</>;
 }
