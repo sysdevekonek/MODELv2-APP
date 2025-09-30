@@ -1,5 +1,6 @@
 import { userLogin } from "../../hooks/userLogin";
 import { Eye, EyeOff } from "lucide-react";
+import Button from "../ui/Buttons";
 
 export default function LoginForm() {
     const {
@@ -13,7 +14,8 @@ export default function LoginForm() {
         setShowPassword,
         handleClear,
         togglePasswordVisibility,
-        handleLogin
+        handleLogin,
+        loading
     } = userLogin();
 
     return(
@@ -29,6 +31,7 @@ export default function LoginForm() {
                                 placeholder="Username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                maxLength={32}
                                 required
                                 className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
                                 focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
@@ -44,6 +47,7 @@ export default function LoginForm() {
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    maxLength={32}
                                     required
                                     className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
                                     focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
@@ -68,24 +72,23 @@ export default function LoginForm() {
                         </div>
 
                         <div className="flex gap-[.25rem] justify-center align-center">
-                            <button
+                            <Button
                                 type="submit"
+                                variant="primary"
+                                disabled={loading}
+                                className={`${loading ? "bg-gray-300 cursor-not-allowed" : ""}`}
                                 onClick={handleLogin}
-                                className="px-6 h-8 bg-mainDef3 hover:bg-subDef text-white font-semibold text-xs rounded-[5px] transition-colors duration-200 
-                                focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 font-titleFont"
                             >
                                 LOGIN
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
+                                variant="secondary"
                                 onClick={handleClear}
-                                className="px-6 h-8 bg-mainDef2 hover:bg-slate-500 text-white font-semibold text-xs rounded-[5px] transition-colors duration-200 
-                                focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 font-titleFont"
                             >
                                 CLEAR
-                            </button>
-                            {error && <p className="text-red-500">{error}</p>}
+                            </Button>
                         </div>
-                    </form>
+        </form>
     )
 }
