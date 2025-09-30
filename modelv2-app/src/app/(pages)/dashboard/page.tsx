@@ -1,4 +1,5 @@
 "use client"
+import Button from "@/components/ui/Buttons";
 
 function DashboardPage() {
 
@@ -11,27 +12,24 @@ function DashboardPage() {
       
 
        <div className="flex gap-[.25rem] justify-center align-center p-5">
-                            <button
+                            <Button
                                 type="submit"
-                                className="px-6 h-8 bg-button1 hover:bg-buttonHover hover:text-white text-titlebodytext1 font-semibold text-sm rounded-[5px] transition-colors duration-200 
-                                focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 font-titleFont"
+                                variant="primary"
                             >
                                 LOGIN
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
-                                className="px-6 h-8 bg-button2 hover:bg-buttonHover  hover:text-white text-bodytext2 font-semibold text-sm rounded-[5px] transition-colors duration-200 
-                                focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 font-titleFont"
+                                variant="secondary"
                             >
                                 CLEAR
-                            </button>
-                             <button
+                            </Button>
+                             <Button
                                 type="button"
-                                className="px-6 h-8 bg-deleteButton hover:bg-deleteButtonHover hover:text-white text-white font-semibold text-sm rounded-[5px] transition-colors duration-200 
-                                focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 font-titleFont"
+                                variant="delete"
                             >
                                 DELETE
-                            </button>
+                            </Button>
                         </div>
     </div>
    
