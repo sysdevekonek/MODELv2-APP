@@ -9,6 +9,7 @@ export const userLogin = () => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const router = useRouter();
 
   const handleClear = () => {
@@ -37,6 +38,7 @@ export const userLogin = () => {
       return;
     }
 
+    setSubmitted(true);
     const loadingToast = toast.loading('Logging in...');
     const token = btoa(`${username}:${password}`);
     setLoading(true);
@@ -86,6 +88,7 @@ export const userLogin = () => {
         setError('Login failed. Please try again.');
         toast.error("Something went wrong. Please try again.");
       }
+      setSubmitted(false);
     } finally {
       setLoading(false);
     }
@@ -114,6 +117,7 @@ export const userLogin = () => {
     handleClear,
     togglePasswordVisibility,
     handleLogin,
-    loading
+    loading,
+    submitted
   };
 };
