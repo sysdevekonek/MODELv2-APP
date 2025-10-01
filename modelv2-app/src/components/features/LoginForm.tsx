@@ -15,12 +15,13 @@ export default function LoginForm() {
         handleClear,
         togglePasswordVisibility,
         handleLogin,
-        loading
+        loading,
+        submitted
     } = userLogin();
 
     return(
         <form
-                        className=" rounded-[5px] shadow-2xl p-5 sm:p-4 bg-white"
+                        className="rounded-[5px] shadow-2xl p-4 sm:p-5 bg-white"
                     >
                         <div className="mb-2">
                             <label htmlFor="username" className="block text-xs mb-1  text-mainTextDef1 ">
@@ -75,8 +76,7 @@ export default function LoginForm() {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                disabled={loading}
-                                className={`${loading ? "bg-gray-300 cursor-not-allowed" : ""}`}
+                                disabled={loading || submitted}
                                 onClick={handleLogin}
                             >
                                 LOGIN
