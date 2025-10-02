@@ -22,7 +22,7 @@ function useDebounce<F extends (...args: any[]) => void>(func: F, delay: number)
 
 interface UserInformationProps {
   goNext: () => void;
-  errors: Record<string, string>; 
+  errors: Record<string, string>;
   clearError: (field: keyof UserData) => void;
 }
 
@@ -55,166 +55,171 @@ const UserInformation: React.FC<UserInformationProps> = ({ goNext, errors, clear
   };
 
   return (
-    <div>
+    <div className="flex justify-center">
       <form
-        className="pl-5"
+         className="w-full max-w-3xl px-4 md:px-6"
         onSubmit={(e) => {
           e.preventDefault();
           goNext();
         }}
       >
-          <div className="mb-[3px] relative flex items-center">
-          <label htmlFor="username" className="block text-medium mb-1 w-56">
+        <div className="mb-1 flex flex-col justify-center md:flex-row md:items-center gap-2">
+          <label htmlFor="username" className="block text-sm md:w-56">
             Username: <span className="text-red-500">*</span>
             {errors?.username && (
               <p className="text-xs text-red-500 mt-1">{errors.username}</p>
             )}
           </label>
-          <div className="flex flex-col">
-            <input
-              id="username"
-              type="text"
-              maxLength={32}
-              placeholder="Insert Username"
-              value={userData.username}
-              onChange={(e) => handleUsernameField("username", e.target.value)}
-              className={`bg-inputField1 w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
+          <input
+            id="username"
+            type="text"
+            maxLength={32}
+            placeholder="Insert Username"
+            value={userData.username}
+            onChange={(e) => handleUsernameField("username", e.target.value)}
+            className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
                 ${errors?.username ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"}`}
-            />
+          />
+
+        </div>
+        <div className="mb-1 flex flex-col justify-center md:flex-row md:items-center gap-2">
+          <label htmlFor="accNumRef" className="block text-sm md:w-56">
+            Account Number Reference: <span className="text-red-500">*</span>
+            {errors?.account_reference && (
+              <p className="text-xs text-red-500 mt-1">{errors.account_reference}</p>
+            )}
+          </label>
+          <input
+            id="accNumRef"
+            type="text"
+            maxLength={17}
+            placeholder="Insert Account Number Reference"
+            value={userData.account_reference}
+            onChange={(e) => {
+              updateField("account_reference", e.target.value);
+              clearError("account_reference");
+            }}
+            className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
+                ${errors?.account_reference ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"}`}
+          />
+        </div>
+
+        <div className="mb-1 flex flex-col justify-center md:flex-row md:items-center gap-2">
+          <label htmlFor="accHolder" className="block text-sm md:w-56">
+            Account Holder
+            {errors?.account_holder && <p className="text-xs text-red-500 mt-1">{errors.account_holder}</p>}
+          </label>
+          <input
+            id="accHolder"
+            type="text"
+            maxLength={15}
+            placeholder="Insert Account Holder"
+            value={userData.account_holder ?? ""}
+            onChange={(e) => { updateField("account_holder", e.target.value); clearError("account_holder"); }}
+            className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
+                ${errors?.account_holder ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"}`}
+          />
+        </div>
+
+        <div className="mb-1 flex flex-col justify-center md:flex-row md:items-center gap-2">
+          <label htmlFor="company" className="block text-sm md:w-56">
+            Company: <span className="text-red-500">*</span>
+            {errors?.company && <p className="text-xs text-red-500 mt-1">{errors.company}</p>}
+          </label>
+          <ComboBox
+            ref={companyComboRef}
+            items={clientDropdown}
+            displayKey="CLIENT_NAME"
+            valueKey="CLIENT_CODE"
+            placeholder="Select Company"
+            selectedValue={userData.company}
+            setSelectedValue={(val) => { updateField("company", val); clearError("company"); }}
+            className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
+                ${errors?.company ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"}`}
+          />
+        </div>
+
+        <div className="mb-1 flex flex-col justify-center md:flex-row md:items-center gap-2">
+          <label className="block text-sm md:w-56">
+            Business Unit/s: <span className="text-red-500">*</span>
+            {errors?.profile && <p className="text-xs text-red-500 mt-1">{errors.profile}</p>}
+          </label>
+          <div className="flex flex-col">
+            <ComboBox
+              ref={roleComboRef}
+              items={profileDropdown}
+              displayKey="PROFILE_NAME"
+              valueKey="PROFILE_NAME"
+              placeholder="Select up to 5 Business Units"
+              selectedValue=""
+              setSelectedValue={handleRoleSelect}
+              className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 
+                ${errors?.profile ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"}`}
+          />
+
+            <div className="mb-4 flex flex-col md:flex-col md:items-center gap-2">
+              {userData.profile.length === 0 ? (
+              <span className="text-xs text-gray-400 w-full py-2 px-3 bg-inputField1 border border-gray-300 rounded">
+                No Business Selected
+              </span>
+              ) : (
+              userData.profile.map((role: string) => {
+                const roleObj = profileDropdown.find((r) => r.PROFILE_CODE === role || r.PROFILE_NAME === role);
+                return (
+                <span
+                  key={role}
+                  className="flex items-center text-xs md:w-96 justify-between bg-inputField1 border border-gray-300 rounded px-3 py-2"
+                >
+                  {roleObj?.PROFILE_NAME || role}
+                  <button
+                  type="button"
+                  onClick={() => {
+                    updateField("profile", userData.profile.filter((r: string) => r !== role));
+                  }}
+                  className="ml-1 text-xs text-red-200 hover:text-red-400"
+                  >
+                  ✕
+                  </button>
+                </span>
+                );
+              })
+              )}
+              {userData.profile.length >= 5 && (
+                <p className="text-xs text-bodyText2 mt-1">Maximum of 5 business units allowed.</p>
+              )}
+            </div>
+
+
           </div>
         </div>
-                <div className="mb-[3px] flex items-center">
-                    <label htmlFor="accNumRef" className="block text-medium mb-1 w-56">
-                        Account Number Reference: <span className="text-red-500">*</span>
-                        {errors?.account_reference && (<p className="text-xs text-red-500 mt-1">{errors.account_reference}</p>)}
-                    </label>
-                    <input
-                        id="accNumRef"
-                        type="text"
-                        maxLength={17}
-                        placeholder="Insert Account Number Reference"
-                        value={userData.account_reference}
-                        onChange={(e) => { updateField("account_reference", e.target.value); clearError("account_reference"); }}
-                        className={`bg-inputField1 w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs ${
-                            errors?.account_reference
-                                ? "border-red-500 ring-1 ring-red-500" : "border-inputField2"
-                        }`}
-                    />
-                </div>
 
-                <div className="mb-[3px] flex items-center">
-                    <label htmlFor="accHolder" className="block text-medium mb-1 w-56">
-                        Account Holder
-                        {errors?.account_holder && <p className="text-xs text-red-500 mt-1">{errors.account_holder}</p>}
-                    </label>
-                    <input
-                        id="accHolder"
-                        type="text"
-                        maxLength={15}
-                        placeholder="Insert Account Holder"
-                        value={userData.account_holder ?? ""}
-                        onChange={(e) => { updateField("account_holder", e.target.value); clearError("account_holder"); }}
-                        className={`bg-inputField1 w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs ${
-                            errors?.account_holder 
-                            ? "border-red-500 ring-1 ring-red-500" : "border-inputField2"
-                        }`} />
-                </div>
+        <div className="mb-1 flex flex-col justify-center md:flex-row md:items-center gap-2">
+        <label htmlFor="enableClientAccess" className="block text-sm md:w-56">
+          Enable Client Access
+        </label>
 
-                <div className="mb-[3px] flex items-center">
-                    <label htmlFor="company" className="block text-medium mb-1 w-56">
-                        Company: <span className="text-red-500">*</span>
-                        {errors?.company && <p className="text-xs text-red-500 mt-1">{errors.company}</p>}
-                    </label>
-                    <ComboBox
-                        ref={companyComboRef}
-                        items={clientDropdown}
-                        displayKey="CLIENT_NAME"
-                        valueKey="CLIENT_CODE"
-                        placeholder="Select Company"
-                        selectedValue={userData.company}
-                        setSelectedValue={(val) => { updateField("company", val); clearError("company"); }}
-                        className={`bg-inputField1 w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs ${
-                            errors?.company 
-                            ? "border-red-500 ring-1 ring-red-500" : "border-inputField2"
-                        }`}
-                    />
-                </div>
-
-                <div className="mb-4 flex items-start">
-                    <label className="block object-top pt-2 text-medium mb-1 w-56">
-                        Business Unit/s: <span className="text-red-500">*</span>
-                        {errors?.profile && <p className="text-xs text-red-500 mt-1">{errors.profile}</p>}
-                    </label>
-                    <div className="flex flex-col">
-                        <ComboBox
-                            ref={roleComboRef}
-                            items={profileDropdown}
-                            displayKey="PROFILE_NAME"
-                            valueKey="PROFILE_NAME"
-                            placeholder="Select up to 5 Business Units"
-                            selectedValue=""
-                            setSelectedValue={handleRoleSelect}
-                            className={`bg-inputField1 w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent placeholder:subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs ${
-                                errors?.profile 
-                                ? "border-red-500 ring-1 ring-red-500" : "border-inputField2"
-                            }`}
-                        />
-
-                        <div className="flex flex-col mt-2 gap-2">
-                            {userData.profile.map((role: string) => {
-                                const roleObj = profileDropdown.find((r) => r.PROFILE_CODE === role);
-                                return (
-                                    <span
-                                        key={role}
-                                        className="flex items-center text-xs w-96 justify-between bg-gray-50 border border-gray-200 rounded px-3 py-2"
-                                    >
-                                        {roleObj?.PROFILE_NAME || role}
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                updateField("profile", userData.profile.filter((r: string) => r !== role));
-
-                                            }}
-                                            className="ml-1 text-xs text-red-200 hover:text-red-400"
-                                        >
-                                            ✕
-                                        </button>
-                                    </span>
-                                );
-                            })}
-                        </div>
-
-                        {userData.profile.length >= 5 && (
-                            <p className="text-xs text-bodyText2 mt-1">Maximum of 5 business units allowed.</p>
-                        )}
-
-                    </div>
-                </div>
-
-                <div className="mb-4 flex items-center">
-                    <label htmlFor="enableClientAccess" className="block text-medium mb-1 w-56">
-                        Enable Client Access
-                    </label>
-                    <input
-                        id="enableClientAccess"
-                        type="checkbox"
-                        checked={!!userData.enable_client_access}
-                        onChange={(e) => updateField("enable_client_access", e.target.checked)}
-                        className="ml-2 h-5 w-5 bg-inputField1 border-inputField2"
-                    />
-                </div>
-
-                <div className="flex justify-end">
-                    <Button
-                        type="submit"
-                        variant="secondary"
-                    >
-                        Next <ArrowRight size={18} />
-                    </Button>
-                </div>
-            </form>
+        <div className="w-96 md:w-96 flex items-center">
+          <input
+            id="enableClientAccess"
+            type="checkbox"
+            checked={!!userData.enable_client_access}
+            onChange={(e) => updateField("enable_client_access", e.target.checked)}
+            className="h-5 w-5 bg-inputField1 border-inputField2"
+          />
         </div>
-    );
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <div className="w-40 md:w-32">
+
+        <Button type="submit" variant="secondary" className="md:w-full">
+          Next <ArrowRight size={18} />
+        </Button>
+        </div>
+      </div>
+      </form>
+    </div>
+  );
 };
 
 export default UserInformation;

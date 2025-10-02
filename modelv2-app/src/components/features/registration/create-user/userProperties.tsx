@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import ComboBox, { ComboBoxRef } from "@/components/comboBox";
 import { useDepartmentDropdown, useConsigneeDropdown } from "@/components/dropdownAPI";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useRegistrationContext } from "@/hooks/registration/RegistrationContext"; // ✅ Use context
+import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
 import Button from "@/components/ui/Buttons";
 
 interface UserPropertiesProps {
@@ -17,13 +17,13 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
   const comboRef = useRef<ComboBoxRef>(null);
   const { departmentDropdown } = useDepartmentDropdown();
   const { consigneeDropdown, fetchConsignee, fetchNextPage } = useConsigneeDropdown();
-  const [selectedDepartment, setSelectedDepartment] = React.useState<string>(" ");
-  const [selectedConsignee, setSelectedConsignee] = React.useState<string>(" ");
-  const [propertyName, setPropertyName] = useState(" ");
-  const [propertyValue, setPropertyValue] = useState(" ");
+
+  const [propertyName, setPropertyName] = useState("");
+  const [propertyValue, setPropertyValue] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedConsignee, setSelectedConsignee] = useState("");
 
   const { userData, updateField, isFormComplete } = useRegistrationContext();
-
   const isReviewDisabled = !isFormComplete(userData) || Object.keys(errors).length > 0;
 
   const handleProperties = (e: React.FormEvent) => {
@@ -37,9 +37,7 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
 
     if (!value) return;
 
-    updateField("properties", [...userData.properties,
-      { name: propertyName, value },
-    ]);
+    updateField("properties", [...userData.properties, { name: propertyName, value }]);
 
     setPropertyName("");
     setPropertyValue("");
@@ -48,30 +46,34 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
   };
 
   return (
-    <div>
-      <form onSubmit={handleProperties} className="pl-5">
-        <div className="mb-[3px] flex items-center">
-          <label htmlFor="propertyName" className="block text-medium mb-1 w-56">
-            <label>Property Name:</label>
+    <div className="flex justify-center">
+      <form onSubmit={handleProperties} className="w-full max-w-lg">
+        
+        {/* Property Name */}
+        <div className="mb-4 flex flex-col">
+          <label htmlFor="propertyName" className="text-sm font-medium mb-1">
+            Property Name:
           </label>
           <select
+            id="propertyName"
             value={propertyName}
             onChange={(e) => {
               setPropertyName(e.target.value);
               setPropertyValue("");
             }}
-            className="bg-inputField1 w-96 text-xs font-titleFont h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent text-subtext"
+            className="w-full bg-inputField1 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3"
           >
-            <option value="" className="text-bodytext2"> Select an option</option>
-            <option value="TIN" className="text-bodytext2">Tax Identification Number (TIN)</option>
-            <option value="DEPARTMENT" className="text-bodytext2">Department</option>
-            <option value="CONSIGNEE" className="text-bodytext2">Consignee</option>
+            <option value="">Select an option</option>
+            <option value="TIN">Tax Identification Number (TIN)</option>
+            <option value="DEPARTMENT">Department</option>
+            <option value="CONSIGNEE">Consignee</option>
           </select>
         </div>
 
-        <div className="mb-4 flex items-center">
-          <label htmlFor="propertyValue" className="block text-medium mb-1 w-56">
-            <label>Property Value:</label>
+        {/* Property Value */}
+        <div className="mb-4 flex flex-col">
+          <label htmlFor="propertyValue" className="text-sm font-medium mb-1">
+            Property Value:
           </label>
           {propertyName === "TIN" && (
             <input
@@ -82,7 +84,7 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
               required
               value={propertyValue}
               onChange={(e) => setPropertyValue(e.target.value)}
-              className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent placeholder:text-subtext text-bodytext2 placeholder:font-titleFont placeholder:text-xs"
+              className="w-full bg-inputField1 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3"
             />
           )}
           {propertyName === "DEPARTMENT" && (
@@ -95,7 +97,7 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
               placeholder="Select Department..."
               selectedValue={selectedDepartment}
               setSelectedValue={setSelectedDepartment}
-              className="bg-inputField1 w-96 text-xs text-bodytext2 h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent placeholder:text-subtext placeholder:font-titleFont placeholder:text-xs"
+              className="w-full bg-inputField1 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3"
             />
           )}
           {propertyName === "CONSIGNEE" && (
@@ -110,65 +112,65 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
               onInputChange={(val) => fetchConsignee(val, true)}
               onScrollEnd={fetchNextPage}
               placeholder="Type to search consignee..."
-              className="bg-inputField1 w-96 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3 focus:border-transparent placeholder:text-subtext placeholder:font-titleFont placeholder:text-xs"
+              className="w-full bg-inputField1 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3"
             />
           )}
         </div>
-        <div>
-          <button type="submit" className="w-full justify-center flex items-center gap-2 px-5 py-2 rounded bg-main1 text-white font-medium hover:bg-mainDef2 transition">
+
+        {/* Add Property Button */}
+        <div className="mb-6">
+          <Button type="submit" variant="secondary" className="w-full">
             Add Property
-          </button>
-        </div>
-        <div className="my-4">
-          <label className="font-medium">ADDED PROPERTIES </label>
-          <ul className="space-y-2 text-sm">
-            {userData.properties.map((p, idx) => (
-              <li
-                key={idx}
-                className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded px-3 py-2"
-              >
-                <span>
-                  <span className="font-semibold">{p.name}:</span> {p.value}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const updated = userData.properties.filter((_, i) => i !== idx);
-                    updateField("properties", updated);
-                  }}
-                  className="ml-4 text-red-500 hover:text-red-700 transition"
-                >
-                  ✕
-                </button>
-              </li>
-            ))}
-          </ul>
+          </Button>
         </div>
 
+        {/* Added Properties List */}
+        <div className="mb-6">
+          <label className="font-sm">Added Properties</label>
+          {userData.properties.length === 0 ? (
+            <div className="text-xs text-gray-400 w-full py-2 px-3 bg-inputField1 border border-gray-300 rounded">No Properties selected</div>
+          ) : (
+            <ul className="space-y-2 text-sm mt-2">
+              {userData.properties.map((p, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-center justify-between bg-inputField1 border border-gray-300 rounded px-3 py-2"
+                >
+                  <span>
+                    <span className="font-semibold">{p.name}:</span> {p.value}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = userData.properties.filter((_, i) => i !== idx);
+                      updateField("properties", updated);
+                    }}
+                    className="ml-4 text-red-500 hover:text-red-700 transition"
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="py-6 flex flex-col sm:flex-row justify-between gap-4">
+          <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-center">
+            <ArrowLeft size={18} /> Back
+          </Button>
+          <Button
+            type="button"
+            onClick={goNext}
+            variant="secondary"
+            disabled={isReviewDisabled}
+            className={"flex w-full sm:w-auto justify-center"}
+          >
+            Next <ArrowRight size={18} />
+          </Button>
+        </div>
       </form>
-      <div className='flex justify-between'>
-        <Button
-          type="button"
-          onClick={goBack}
-          variant="secondary"
-        >
-          <ArrowLeft size={18} />
-          Back
-        </Button>
-        <Button
-          type="button"
-          onClick={goNext}
-          variant="secondary"
-          disabled={isReviewDisabled}
-          className={`${isReviewDisabled
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-        >
-          Next
-          <ArrowRight size={18} />
-        </Button>
-      </div>
     </div>
   );
 };
