@@ -34,7 +34,7 @@ export default function LoginPage() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
         {/* Logo */}
-        <div className="relative w-[12rem] sm:w-[16rem] md:w-[24rem] lg:w-[30rem] h-[4rem] sm:h-[5rem] md:h-[6rem] lg:h-[7.5rem] mb-6 md:mb-8">
+        <div className="relative w-[30rem] sm:w-[30rem] md:w-[30rem] lg:w-[30rem] h-[4rem] sm:h-[5rem] md:h-[6rem] lg:h-[7.5rem] mb-6 md:mb-8">
           <Image
             src="/modellogo.png"
             alt="MODEL Logo"

@@ -26,31 +26,19 @@ export default function Sidebar() {
     setOpenDropdowns(expanded)
   }, [pathname])
 
-  // Keep dropdowns closed when collapsed (desktop behavior)
   useEffect(() => {
-    if (collapsed && !isHovered) {
-      setOpenDropdowns({})
-    }
+    if (collapsed && !isHovered) { setOpenDropdowns({}) }
   }, [collapsed, isHovered])
 
-  // Detect mobile / desktop
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024) // Tailwind lg breakpoint
-    }
+    const handleResize = () => { setIsMobile(window.innerWidth < 1024)}
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // When we enter mobile, ensure sidebar is collapsed (hidden)
   useEffect(() => {
-    if (isMobile && !collapsed) {
-      // collapse (hide) on mobile if currently expanded
-      toggleCollapsed()
-    }
-    // note: we intentionally don't auto-expand when leaving mobile to avoid unexpected UX flips
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isMobile && !collapsed) { toggleCollapsed() }
   }, [isMobile])
 
   const handleLogout = () => {
@@ -60,15 +48,12 @@ export default function Sidebar() {
 
   const shouldShowContent = !collapsed || isHovered
 
-  // Aside classes build
   const baseAside = "fixed top-28 left-0 h-[calc(100vh-6rem)] bg-layout1 text-foreground shadow-lg overflow-visible transition-all duration-300 ease-in-out transform"
   const desktopWidth = collapsed ? "w-12 hover:w-64 z-30" : "w-64 z-30"
-  // On mobile: w-64 when visible, but -translate-x-full when hidden
   const mobileTransform = isMobile ? (collapsed ? "-translate-x-full w-64 z-50" : "translate-x-0 w-64 z-50") : desktopWidth
 
   return (
     <>
-      {/* Mobile menu button (visible only on mobile) */}
       {isMobile && collapsed && (
         <>
            <div
@@ -85,7 +70,6 @@ export default function Sidebar() {
           </>
       )}
 
-      {/* Backdrop when sidebar is open on mobile */}
       {isMobile && !collapsed && (
         <div
           className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -117,7 +101,6 @@ export default function Sidebar() {
           />
         </div>
 
-        {/* Toggle button (desktop / inside sidebar) */}
         {!isMobile && (
         <button
           onClick={toggleCollapsed}
