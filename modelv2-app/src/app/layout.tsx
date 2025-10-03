@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Roboto, Montserrat } from 'next/font/google'
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher';
@@ -67,8 +67,9 @@ function AutoLogoutWrapper({ children }: { children: React.ReactNode }) {
 
           if (isExpired) {
             sessionStorage.clear();
-            toast.error("Session expired");
+            toastInfo("Session expired");
             router.push("/login");
+            console.clear();
           }
         } catch (err) {
           console.warn("Invalid token format:", err);
