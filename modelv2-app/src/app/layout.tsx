@@ -9,6 +9,7 @@ import { Toaster, toast } from "react-hot-toast";
 import "./globals.css";
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher';
+import { toastInfo } from "@/components/utils/customToasts";
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -54,7 +55,7 @@ function AutoLogoutWrapper({ children }: { children: React.ReactNode }) {
       const idleTime = now - lastActivity;
       if (idleTime >= 900000) { // 15 minutes
         sessionStorage.clear();
-        toast.error("Session expired due to inactivity");
+        toastInfo("Session expired due to inactivity");
         router.push("/login");
         return;
       }
