@@ -13,10 +13,10 @@ const Button: FC<ButtonProps> = ({ variant = "primary", className, disabled, chi
 
   const variants: Record<ButtonVariant, string> = {
     primary: disabled 
-    ? "bg-[#cccccc] text-[#848484] cursor-not-allowed"
+    ? "bg-notAvailableBG text-notAvailableText cursor-not-allowed"
     : "bg-button1 hover:bg-buttonHover text-titlebodytext1 hover:text-white focus:ring-slate-400",
     secondary: disabled
-    ? "bg-[#cccccc] text-[#848484] cursor-not-allowed"
+    ? "bg-notAvailableBG text-notAvailableText cursor-not-allowed"
     :  "bg-button2 hover:bg-buttonHover text-bodytext2 hover:text-white focus:ring-slate-300",
     delete:
       "bg-deleteButton hover:bg-deleteButtonHover text-white hover:text-white focus:ring-slate-300",
