@@ -18,6 +18,9 @@ module.exports = {
 			button1: 'hsl(var(--button-1))', 				//main button (generate, submit, etc)
 			button2: 'hsl(var(--button-2))', 				//sub button (next, back, clear, (not active), etc)
 			buttonBorder: 'hsl(var(--button-border))', 		//button border (use if necessary)
+			buttonHover: 'hsl(var(--button-hover))',		//button hover effect (when use, use hover:text-white)
+			deleteButton: 'hsl(var(--delete-button))', 		//delete button (trash icon, etc)
+			deleteButtonHover: 'hsl(var(--delete-button-hover))', //delete button hover effect
 			layouthover: 'hsl(var(--layout-hover))', 		//layout hover/active color
 			layout1: 'hsl(var(--layout-1))', 				//layout (header, sidebar) bg
 			layout2: 'hsl(var(--layout-2))', 				//layout elements 1
@@ -31,7 +34,9 @@ module.exports = {
 			subtext: 'hsl(var(--subtext))', 				//subtext/inactive elements color
 			themebutton1: 'hsl(var(--theme-button-1))', 	//theme button 1 color (active) [rarely used]
 			themebutton2: 'hsl(var(--theme-button-2))', 	//theme button 2 color (inactive) [rarely used]
-		
+			notAvailableBG: 'hsl(var(--not-available-bg))', //not available/disabled elements color
+			notAvailableText: 'hsl(var(--not-available-text))', //not available/disabled text color
+			
 			//Login Colors
 			'mainDef1': '#D9DDED', 
 			'mainDef2': '#8289A4',
@@ -99,7 +104,10 @@ module.exports = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		  screens: {
+			'xs': '390px',
+		},
   	}
   },
   plugins: [require("tailwindcss-animate")],
