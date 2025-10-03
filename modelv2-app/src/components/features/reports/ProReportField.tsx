@@ -1,8 +1,10 @@
 // components/report/pro-report/DynamicInputFields.tsx
 'use client';
 import react, { useState } from 'react';
+import Button from "@/components/ui/Buttons";
 import { useDynamicInputs } from '../../../hooks/pro-report/useDynamicInputs';
 import { Download } from 'lucide-react';
+
 
 
 const ProReportField = () => {
@@ -23,43 +25,58 @@ const ProReportField = () => {
   } = useDynamicInputs(activeTab);
 
   return (
-    <div className='w-full h-full flex justify-center items-center'>
-    <div className='w-[100%] h-[85%] flex flex-col justify-between'>
-      <div className='border-b-4 border-mainDef3 flex w-full h-12 items-center text-mainTextDef3'>
+    <>
+    <div className='w-full h-auto md:h-[75vh] sm:h-[60vh] xs:h-[70vh] min-h-[60vh]
+                    mt-6 flex flex-col items-center justify-start bg-bgContainer shadow rounded-md'>
+    <div className='w-full'>
+      <div className='w-2/5 h-[3em] min-w-60
+                      mt-[-1.5em] bg-main1 text-titlebodytext1 font-bold flex justify-center items-center rounded'>
+        <h1 className='text-xs md:text-base lg:text-lg'>PRO INFORMATION REPORT</h1>
+      </div>
+    </div>
+    {/* Tabs */}
+    <div className='w-[95%] md:w-[90%] h-10 md:h-12
+                    mt-6 border-b-4 border-mainDef3 flex items-center text-mainTextDef3'>
       <button 
-        className={`w-1/5 h-full flex items-center justify-center font-bold ${
+        className={`w-1/5 md:w-1/4 h-full text-xs md:text-sm xs:w-6/12
+                    flex items-center justify-center font-bold ${
           activeTab === 'airwaybill' ? 'bg-mainDef3' : 'bg-bgDef text-mainTextDef1'
         }`}
-        onClick={() => setActiveTab('airwaybill')}
-      >
+        onClick={() => setActiveTab('airwaybill')}>
         <h6>Airwaybill</h6>
       </button>
-
       <button
-        className={`w-1/5 h-full flex items-center justify-center font-bold ${
+        className={`w-1/5 md:w-1/4 h-full text-xs md:text-sm xs:w-6/12
+                    flex items-center justify-center font-bold ${
           activeTab === 'pronumber' ? 'bg-mainDef3' : 'bg-bgDef text-mainTextDef1'
         }`}
-        onClick={() => setActiveTab('pronumber')}
-      >
+        onClick={() => setActiveTab('pronumber')}>
         <h6>Pro Number</h6>
       </button>
       </div>
       {/* Content */}
-      <div className='{border border-purple-900} py-5 w-full flex flex-col justify-start items-center max-h-[240px] overflow-y-auto bg-bgDefcont scrollbar-thin scrollbar-thumb-mainDef3 scrollbar-track-bgDef'>
-        <div className="{border border-pink-700} h-full w-full flex flex-col justify-start items-center">
-        <div className="{border border-red-700} flex flex-col h-full w-6/12 justify-center items-center">
-          <div className='{border border-green-700} w-[90%] font-bold text-[1.1vw] flex pl-7'>
-            <div className='{border border-blue-700} font-semibold w-2/4 flex justify-start items-center'>
-              <p>
+      <div className='mt-2 {border border-purple-900} py-5 w-full flex flex-col justify-start items-center bg-bgDefcont'>
+        <div className="{border border-pink-700} h-full w-full xs:w-5/6 flex flex-col justify-start items-center">
+        {/* header row */}
+        <div className="{border border-red-700} flex flex-col w-full justify-start items-center">
+          <div className='{border border-green-700} w-2/4 md:w-4/5 xs:w-full font-bold text-[1.1vw] flex justify-around'>
+          <div className='{border border-teal-500} flex w-[90%] lg:w-[72%] md:ml-6 justify-between '>
+            <div className='{border border-blue-700} font-semibold flex justify-start items-center'>
+              <p className='text-xs md:text-sm'>
                 {activeTab === 'airwaybill' ? 'Insert AIRWAYBILL' : 'Insert PRO NUMBER'}
               </p>
             </div>
-            <div className='{border border-yellow-700} w-1/5 h-full flex justify-center items-center'>
-              <button className='hover:underline text-mainTextDef2 hover:text-red-500'
+            <div className='{border border-purple-700} h-full flex justify-center items-center'>
+              <button className='hover:underline text-mainTextDef2 hover:text-red-500 text-xs md:text-sm'
                 onClick={clearFields}>Clear</button>
             </div> 
           </div>
-        <div className='w-full max-h-[250px] overflow-y-auto flex flex-col justify-around gap-2 scrollbar-thin scrollbar-thumb-mainDef3 scrollbar-track-bgDef p-5'>
+          </div>
+
+        {/* Input Fields */}
+        <div className="{border border-yellow-700} w-full md:w-4/5 max-h-[150px] md:max-h-[200px]
+                        overflow-y-auto flex flex-col items-center gap-2
+                        scrollbar-thin scrollbar-thumb-mainDef3 scrollbar-track-bgDef">
         {fields.map((field, index) => {
           const trimmed = field.trim();
           const showValidation = trimmed.length >= 2;
@@ -72,12 +89,12 @@ const ProReportField = () => {
           return (
             <div
               key={index}
-              className="{border border-red-700} flex flex-row items-center gap-2 text-mainTextDef3 w-full h-full"
+              className="min-h-8 w-full {border border-red-700} flex flex-row justify-center items-center gap-2 text-mainTextDef3"
             >   
             <span className="w-6 h-6 flex justify-center items-center">
                 {isLoading && (
                   <div role="status">
-                    <svg aria-hidden="true" className="w-5 h-5 me-2 text-gray-400 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                      <svg className="animate-spin h-4 w-4 md:h-5 md:w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
                     <span className="sr-only">Loading...</span>
                   </div>
                 )}
@@ -94,7 +111,8 @@ const ProReportField = () => {
               </span>
               <input
                 type="text"
-                className={`pl-3 pr-10 text-[1vw] h-full rounded border text-mainTextDef1 ${
+                className={`lg:w-[65%] md:w-4/5 xs:w-[65%] md:text-sm sm:text-xs xs:text-[0.7rem]
+                  pl-3 pr-10 text-base h-full rounded border text-mainTextDef1 ${
                   isValid
                     ? 'border-green-500'
                     : isInvalid
@@ -108,16 +126,16 @@ const ProReportField = () => {
                 {index === 0 ? (
                   <button
                     onClick={handleAdd}
-                    className="flex justify-center items-center w-[10%] h-full rounded bg-mainDef3 hover:bg-[#353B55] transition font-bold"
+                    className="flex justify-center items-center w-10 h-full min-h-full rounded bg-mainDef3 hover:bg-[#353B55] transition text-bold"
                   >
-                    <h3 className="text-[1.5vw]">+</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                   </button>
                 ) : (
                   <button
                     onClick={() => handleRemove(index)}
-                    className="flex justify-center items-center w-[10%] h-[100%] rounded bg-mainDef3 hover:bg-[#353B55] transition font-bold"
+                    className="flex justify-center items-center w-10 h-full min-h-full rounded bg-mainDef3 hover:bg-[#353B55] transition font-bold"
                   >
-                    <h3 className="text-[1.5vw]">-</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-minus-icon lucide-minus"><path d="M5 12h14"/></svg>
                   </button>
                 )}
                 </div>
@@ -126,54 +144,46 @@ const ProReportField = () => {
           </div>
         </div>
       </div>
-        
       </div>
+
       {/* Buttons */}
-      <div className='w-full h-auto text-mainTextDef3 flex justify-center items-center gap-4'>
-        <button className={`flex flex-row justify-center items-center h-8 w-36 rounded gap-1 transition
-          ${areAllValid() && !isGenerating 
-          ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
-          : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
+      <div className='w-full flex flex-wrap justify-center items-center gap-2 md:gap-4'>
+        <Button
           onClick={() => handleGenerate('PRO')}
           disabled={!areAllValid() || isGenerating}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
+          variant='primary'
           >
-          <span className="text-[1vw]">
+          <span className="text-base md:text-sm sm:text-xs xs:text-[0.6rem]">
             {isGenerating && activeReport === "PRO" ? "Generating..." : "PRO Report"}
           </span>
           <Download size={16} strokeWidth={2} />
-        </button>
-        <button className={`flex flex-row justify-center items-center h-8 w-36 rounded gap-1 transition
-          ${areAllValid() && !isGenerating 
-          ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
-          : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
+        </Button>
+        <Button
           onClick={() => handleGenerate('BRC')}
-          disabled={!areAllValid()}
+          disabled={!areAllValid() || isGenerating}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
+          variant='primary'
           >
-          <span className="text-[1vw]">
+          <span className="text-base md:text-sm sm:text-xs xs:text-[0.6rem]">
             {isGenerating && activeReport === "BRC" ? "Generating..." : "BRC Report"}
           </span>
           <Download size={16} strokeWidth={2} />
-        </button>
-        <button className={`flex flex-row justify-center items-center h-8 w-40 rounded gap-1 transition
-          ${areAllValid() && !isGenerating 
-          ? 'bg-mainDef3 text-mainTextDef3 hover:bg-[#353B55]'
-          : 'bg-[#cccccc] text-[#848484] cursor-not-allowed'}`}
+        </Button>
+        <Button
           onClick={() => handleGenerate('MNF')}
-          disabled={!areAllValid()}
+          disabled={!areAllValid() || isGenerating}
           title={!areAllValid() ? 'All fields must be valid to proceed' : ''}
+          variant='primary'
           >
-          <span className="text-[1vw]">
+          <span className="text-base md:text-sm sm:text-xs xs:text-[0.6rem]">
             {isGenerating && activeReport === "MNF" ? "Generating..." : "Manifest Report"}
           </span>
           <Download size={16} strokeWidth={2} />
-        </button>
+        </Button>
       </div>
     </div>
-  </div>
-
-    
+    </>
   );
 };
 

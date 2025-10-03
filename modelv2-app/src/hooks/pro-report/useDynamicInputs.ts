@@ -225,7 +225,7 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement("a");
       a.href     = url;
-      a.download = "pro_info_report.xlsx";
+      a.download = "MODEL_REPORT.xlsx";
       a.click();
       URL.revokeObjectURL(url);
       clearFields();
