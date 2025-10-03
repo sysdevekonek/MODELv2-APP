@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import api from "../common/config";
-import toast from "react-hot-toast";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import api from '../common/config';
+import toast from 'react-hot-toast';
 
 //
 let cachedClients:
@@ -182,3 +182,285 @@ export const useConsigneeDropdown = () => {
 
   return { consigneeDropdown: items, loading, hasMore, fetchConsignee, fetchNextPage };
 };
+
+// Consolidator Dropdown
+export const useConsolidatorDropdown = () => {
+  const pageSize = 10;
+
+  const [items, setItems] = useState<{ NAME: string; CODE: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(0); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedConsolidator, setSelectedConsolidator] = React.useState<string>("");
+
+  const fetchConsolidator = useCallback(
+    async (term: string, reset = true) => {
+      const value = term.trim();
+      setSearchTerm(value);
+
+      if (!value) {
+        // empty input: clear results & stop paging
+        setItems([]);
+        setHasMore(false);
+        setPage(0);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const start = 1;
+        const end = pageSize;
+        const res = await api.get("/search/consolidator", {
+          params: { value, start, end },
+        });
+        const data = res.data || [];
+        setItems(data);
+        setPage(1);
+        setHasMore(data.length === pageSize);
+      } catch (err) {
+        console.error("Consolidator fetch error:", err);
+        toast.error("Failed to load Consolidator");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize]
+  );
+
+  const fetchNextPageConsi = useCallback(async () => {
+    if (loading || !hasMore || !searchTerm) return;
+
+    const nextPage = page + 1;
+    const start = (nextPage - 1) * pageSize + 1;
+    const end = nextPage * pageSize;
+
+    setLoading(true);
+    try {
+      const res = await api.get("/search/consolidator", {
+        params: { value: searchTerm, start, end },
+      });
+      const data = res.data || [];
+      setItems(prev => [...prev, ...data]);
+      setPage(nextPage);
+      setHasMore(data.length === pageSize);
+    } catch (err) {
+      console.error("Consolidator fetch error:", err);
+      toast.error("Failed to load Consolidator");
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, searchTerm, page, pageSize]);
+
+  return {
+    consolidatorDropdown: items,
+    selectedConsolidator,
+    setSelectedConsolidator,
+    loading,
+    hasMore,
+    fetchConsolidator,
+    fetchNextPageConsi, 
+  };
+};
+
+// Warehouse Dropdown
+export const useWarehouseDropdown = () => {
+  const pageSize = 10;
+
+  const [items, setItems] = useState<{ NAME: string; CODE: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(0); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedWarehouse, setSelectedWarehouse] = React.useState<string>("");
+
+  const fetchWarehouse = useCallback(
+    async (term: string, reset = true) => {
+      const value = term.trim();
+      setSearchTerm(value);
+
+      if (!value) {
+        // empty input: clear results & stop paging
+        setItems([]);
+        setHasMore(false);
+        setPage(0);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const start = 1;
+        const end = pageSize;
+        const res = await api.get("/search/warehouse", {
+          params: { value, start, end },
+        });
+        const data = res.data || [];
+        setItems(data);
+        setPage(1);
+        setHasMore(data.length === pageSize);
+      } catch (err) {
+        console.error("warehouse fetch error:", err);
+        toast.error("Failed to load warehouse");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize]
+  );
+
+  const fetchNextPageWarehouse = useCallback(async () => {
+    if (loading || !hasMore || !searchTerm) return;
+
+    const nextPage = page + 1;
+    const start = (nextPage - 1) * pageSize + 1;
+    const end = nextPage * pageSize;
+
+    setLoading(true);
+    try {
+      const res = await api.get("/search/warehouse", {
+        params: { value: searchTerm, start, end },
+      });
+      const data = res.data || [];
+      setItems(prev => [...prev, ...data]);
+      setPage(nextPage);
+      setHasMore(data.length === pageSize);
+    } catch (err) {
+      console.error("warehouse fetch error:", err);
+      toast.error("Failed to load warehouse");
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, searchTerm, page, pageSize]);
+
+  return {
+    warehouseDropdown: items,
+    selectedWarehouse,
+    setSelectedWarehouse,
+    loading,
+    hasMore,
+    fetchWarehouse,
+    fetchNextPageWarehouse, 
+  };
+};
+
+// Template Dropdown
+export const useTemplateDropdown = () => {
+  const [templateDropdown, setTemplateDropdown] = useState<
+    { TEMPLATE_NAME: string; TEMPLATE_ID: string; COLUMNS: number; TEMPLATE_CODE: string }[]
+  >([]);
+  
+  const [descValue, setDescValue] = useState<
+    { PARAMETER_CODE: string; PARAMETER_DESC: string; COLUMN_CODE: string }[]
+  >([]);
+
+  const [selectedTemplate, setSelectedTemplate] = React.useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([
+      api.get("/reference/templates/NSL"),
+      api.get("/reference/sad/field/range?start=1&end=9999")
+    ])
+      .then(([templateRes, descRes]) => {
+        setTemplateDropdown(templateRes.data || []);
+        setDescValue(descRes.data || []);
+      })
+      .catch((err) => {
+        console.error("Error fetching template data:", err);
+        toast.error("Failed to load template data");
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  return {
+    templateDropdown,
+    setTemplateDropdown,
+    selectedTemplate,
+    setSelectedTemplate,
+    descValue,
+    setDescValue,
+    loading,
+  };
+};
+
+
+export const useSADDropdown = () => {
+  const pageSize = 10;
+
+  const [items, setItems] = useState<{ PARAMETER_DESC: string; COLUMN_CODE: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(0); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSAD, setSelectedSAD] = React.useState<string>("");
+
+  const fetchSAD = useCallback(
+    async (term: string, reset = true) => {
+      const value = term.trim();
+      setSearchTerm(value);
+
+      if (!value) {
+        // empty input: clear results & stop paging
+        setItems([]);
+        setHasMore(false);
+        setPage(0);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const start = 1;
+        const end = pageSize;
+        const res = await api.get("/search/sad/field", {
+          params: { value, start, end },
+        });
+        const data = res.data || [];
+        setItems(data);
+        setPage(1);
+        setHasMore(data.length === pageSize);
+      } catch (err) {
+        console.error("SAD fetch error:", err);
+        toast.error("Failed to load SAD");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize]
+  );
+
+  const fetchNextPageSAD = useCallback(async () => {
+    if (loading || !hasMore || !searchTerm) return;
+
+    const nextPage = page + 1;
+    const start = (nextPage - 1) * pageSize + 1;
+    const end = nextPage * pageSize;
+
+    setLoading(true);
+    try {
+      const res = await api.get("/search/sad/field", {
+        params: { value: searchTerm, start, end },
+      });
+      const data = res.data || [];
+      setItems(prev => [...prev, ...data]);
+      setPage(nextPage);
+      setHasMore(data.length === pageSize);
+    } catch (err) {
+      console.error("SAD fetch error:", err);
+      toast.error("Failed to load SAD");
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, searchTerm, page, pageSize]);
+
+  return {
+    SADDropdown: items,
+    selectedSAD,
+    setSelectedSAD,
+    loading,
+    hasMore,
+    fetchSAD,
+    fetchNextPageSAD, 
+  };
+};
+
