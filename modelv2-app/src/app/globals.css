@@ -40,12 +40,15 @@ body {
     --theme-button-2: 230 12% 30%;
     --not-available-bg: 220 14% 96%;
     --not-available-text: 218 11% 65%;
+    --table-odd-row: 0 0% 100%;
+    --table-even-row: 0 0% 95%;
+    --table-border: 0 0% 80%;
   }
 
   .dark {
     --main-1: 227 9% 19%;
     --input-field-1: 0 0% 7%;
-    --input-field-2: 0 0% 13%;
+    --input-field-2: 0 0% 30%;
     --button-1: 227 9% 19%;
     --button-2: 225 6% 13%;
     --button-border: ;
@@ -67,6 +70,9 @@ body {
     --theme-button-2: 230 12% 30%;
     --not-available-bg: 225 7% 11%;
     --not-available-text: 0 0% 28%;
+    --table-odd-row: 0 0% 8%;
+    --table-even-row: 227 9% 12%;
+    --table-border: 0 0% 30%;
   }
 
   .system {
@@ -94,7 +100,9 @@ body {
     --theme-button-2: 230 12% 30%;
     --not-available-bg: 220 14% 96%;
     --not-available-text: 218 11% 65%;
-    
+    --table-odd-row: 0 0% 100%;
+    --table-even-row: 0 0% 95%;
+    --table-border: 0 0% 80%;
   }
 
   * {

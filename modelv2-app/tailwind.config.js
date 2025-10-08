@@ -36,6 +36,9 @@ module.exports = {
 			themebutton2: 'hsl(var(--theme-button-2))', 	//theme button 2 color (inactive) [rarely used]
 			notAvailableBG: 'hsl(var(--not-available-bg))', //not available/disabled elements color
 			notAvailableText: 'hsl(var(--not-available-text))', //not available/disabled text color
+			tableOddRow: 'hsl(var(--table-odd-row))', 		//table odd row color
+			tableEvenRow: 'hsl(var(--table-even-row))', 	//table even row color
+			tableBorder: 'hsl(var(--table-border))', 		//table border color
 			
 			//Login Colors
 			'mainDef1': '#D9DDED', 
