@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { buildNavTree, expandOpenDropdowns } from "./sidebar.utils"
 import type { NavItem, OpenDropdowns } from "./sidebar.types"
 import SidebarTree from "./sidebarTree"
-import { Menu, LogOut } from "lucide-react"
+import { Menu, LogOut, Expand } from "lucide-react"
 import { useSidebar } from "./sidebarContext";
 
 export default function Sidebar() {
@@ -101,17 +101,21 @@ export default function Sidebar() {
           />
         </div>
 
-        {!isMobile && (
-        <button
-          onClick={toggleCollapsed}
-          className="absolute top-3 -right-3 transform w-6 h-6 flex items-center justify-center rounded-full bg-bg hover:bg-layout3 hover:border-gray-300 z-50 transition-all duration-200 hover:scale-110"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand Navigation" : "Collapse Navigation"}
-        >
-          <Menu size={14} />
-        </button>
-        )}
 
+        {!isMobile && (
+          <button
+            onClick={toggleCollapsed}
+            className="absolute  top-1/2 -right-10 -translate-x-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-lg bg-button3 hover:bg-layout3 hover:border-titlebodytext1 z-50 transition-all duration-200 hover:scale-110 border border-tableBorder shadow-lg"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand Navigation" : "Collapse Navigation"}
+          >
+            {!collapsed ? (
+              <Menu size={14} className="text-button3Content" />
+            ) : (
+              <Expand size={14} className="text-button3Content" />
+            )}
+          </button>
+        )}
 
         <div className="relative h-full flex flex-col">
           <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 pt-2 pb-20 custom-scrollbar">
@@ -125,15 +129,16 @@ export default function Sidebar() {
             />
           </nav>
 
-          <div className="absolute bottom-8 left-0 right-0 px-2">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 w-full px-2 py-2 text-left text-sm text-layoutText2 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200"
-            >
-              <LogOut className="w-4 h-4 shrink-0" />
-              {shouldShowContent && <span>Logout</span>}
-            </button>
-          </div>
+          <div className="mb-4 bottom-0">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full pl-4 mb-4 px-2 py-2 text-left text-sm text-layoutText2 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200"
+              >
+                <LogOut className="min-w-[1rem] min-h-[1rem] h-4 w-4" />
+                {shouldShowContent && <span>Logout</span>}
+              </button>
+            </div>
+
         </div>
 
         <style jsx global>{`
