@@ -42,6 +42,10 @@ body {
     --theme-button-2: 230 12% 30%;
     --not-available-bg: 220 14% 96%;
     --not-available-text: 218 11% 65%;
+    --table-odd-row: 0 0% 100%;
+    --table-even-row: 0 0% 95%;
+    --table-border: 0 0% 80%;
+    --table-hover: 0 0% 90%;
   }
 
   .dark {
@@ -71,6 +75,10 @@ body {
     --theme-button-2: 230 12% 30%;
     --not-available-bg: 225 7% 11%;
     --not-available-text: 0 0% 28%;
+    --table-odd-row: 0 0% 8%;
+    --table-even-row: 227 9% 12%;
+    --table-border: 0 0% 30%;
+    --table-hover: 0 0% 15%;
   }
 
   .system {
@@ -100,7 +108,10 @@ body {
     --theme-button-2: 230 12% 30%;
     --not-available-bg: 220 14% 96%;
     --not-available-text: 218 11% 65%;
-    
+    --table-odd-row: 0 0% 100%;
+    --table-even-row: 0 0% 95%;
+    --table-border: 0 0% 80%;
+    --table-hover: 0 0% 90%;
   }
 
   * {
