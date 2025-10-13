@@ -1,6 +1,6 @@
 // config.ts
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
+import { toastInfo } from '@/components/utils/customToasts';
 
 const api = axios.create({
   baseURL: 'http://localhost:4001',
@@ -99,7 +99,7 @@ api.interceptors.response.use(
         // Clear storage and redirect to login
         sessionStorage.clear();
         console.clear();
-        toast.error('Session failed. Please login again.');
+        toastInfo('Session failed. Please login again.');
         
         // Use window.location for reliable redirect
         setTimeout(() => {

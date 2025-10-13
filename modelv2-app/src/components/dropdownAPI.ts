@@ -4,75 +4,183 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import api from '../common/config';
 import toast from 'react-hot-toast';
 
-// Client & Role Dropdown
+//
+let cachedClients:
+  | { CLIENT_NAME: string; CLIENT_CODE: string }[]
+  | undefined;
+let cachedProfiles:
+  | { PROFILE_NAME: string; PROFILE_CODE: string }[]
+  | undefined;
+
 export const useClientRoleDropdown = () => {
-  const [clientDropdown, setClientDropdown] = useState<{ CLIENT_NAME: string; CLIENT_CODE: string }[]>([]);
-  const [roleDropdown, setRoleDropdown] = useState<{ PROFILE_NAME: string; PROFILE_CODE: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [clientDropdown, setClientDropdown] = useState(cachedClients ?? []);
+  const [profileDropdown, setProfileDropdown] = useState(cachedProfiles ?? []);
+  const [loading, setLoading] = useState(!cachedClients || !cachedProfiles);
 
   useEffect(() => {
-    const fetchDropdowns = async () => {
+    if (!cachedClients || !cachedProfiles) {
       setLoading(true);
-      try {
-        const [clientsResponse, roleResponse] = await Promise.all([
-          api.get("/reference/clients/all"),
-          api.get("/reference/profile/all")
-        ]);
-
-        // No need to dig into .data.clients — it's already the array
-        setClientDropdown(clientsResponse.data || []);
-        setRoleDropdown(roleResponse.data || []);
-      } catch (err) {
-        console.error("Error fetching client or role dropdown data:", err);
-        toast.error("Failed to load client or role data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDropdowns();
+      Promise.all([
+        api.get("/reference/clients/all"),
+        api.get("/reference/profile/all"),
+      ])
+        .then(([clientsResponse, profileResponse]) => {
+          cachedClients = clientsResponse.data || [];
+          cachedProfiles = profileResponse.data || [];
+          setClientDropdown(cachedClients ?? []);
+          setProfileDropdown(cachedProfiles ?? []);
+        })
+        .catch((err) => {
+          console.error("Error fetching client or role dropdown data:", err);
+          toast.error("Failed to load client or role data");
+        })
+        .finally(() => setLoading(false));
+    }
   }, []);
 
-  return { clientDropdown, setClientDropdown, roleDropdown, setRoleDropdown, loading };
-}
+  return { clientDropdown, setClientDropdown, profileDropdown, setProfileDropdown, loading };
+};
 
-// Country Dropdown
+//
+let cachedCountries:
+  | { COUNTRY_CODE: string; COUNTRY_NAME: string }[]
+  | undefined;
+
 export const useCountryDropdown = () => {
-  const [countryDropdown, setCountryDropdown] = useState<{ COUNTRY_CODE: string; COUNTRY_NAME: string }[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [countryDropdown, setCountryDropdown] = useState( cachedCountries ?? [] );
+  const [loading, setLoading] = useState(!cachedCountries);
 
   useEffect(() => {
-    setLoading(true);
-    api.get("/reference/country/all")
-      .then(res => setCountryDropdown(res.data || []))
-      .catch(err => {
-        console.error("Country list fetch error:", err);
-        toast.error("Failed to load countries");
-      })
-      .finally(() => setLoading(false));
+    if (!cachedCountries) {
+      setLoading(true);
+      api
+        .get("/reference/country/all")
+        .then((res) => {
+          cachedCountries = res.data || [];
+          setCountryDropdown(cachedCountries ?? []);
+        })
+        .catch((err) => {
+          console.error("Country list fetch error:", err);
+          toast.error("Failed to load countries");
+        })
+        .finally(() => setLoading(false));
+    }
   }, []);
 
   return { countryDropdown, setCountryDropdown, loading };
 };
 
-// Department Dropdown
+//
+let cachedDepartments:
+  | { DEPT_NAME: string; DEPT_CODE: string }[]
+  | undefined;
+
 export const useDepartmentDropdown = () => {
-  const [departmentDropdown, setDepartmentDropdown] = useState<{ DEPT_NAME: string; DEPT_CODE: string }[]>([]);
-  const [selectedDepartment, setSelectedDepartment] = React.useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const [departmentDropdown, setDepartmentDropdown] = useState( cachedDepartments ?? [] );
+  const [loading, setLoading] = useState(!cachedDepartments);
 
   useEffect(() => {
-    setLoading(true);
-    api.get('/reference/department/all')
-      .then(res => setDepartmentDropdown(res.data || []))
-      .catch(err => {
-        console.error("Department list fetch error:", err);
-        toast.error("Failed to load countries");
-      })
-      .finally(() => setLoading(false));
+    if (!cachedDepartments) {
+      setLoading(true);
+      api
+        .get("/reference/department/all")
+        .then((res) => {
+          cachedDepartments = res.data || [];
+          setDepartmentDropdown(cachedDepartments ?? []);
+        })
+        .catch((err) => {
+          console.error("Department list fetch error:", err);
+          toast.error("Failed to load departments");
+        })
+        .finally(() => setLoading(false));
+    }
   }, []);
 
-  return { departmentDropdown, setDepartmentDropdown, selectedDepartment, setSelectedDepartment, loading };
+  return { departmentDropdown, setDepartmentDropdown, loading };
+};
+
+//
+const consigneeCache: Record<string,{ items: { CNEE_NAM: string; CNEE_COD: string }[]; page: number; hasMore: boolean }> = {};
+
+export const useConsigneeDropdown = () => {
+  const pageSize = 10;
+
+  const [items, setItems] = useState<{ CNEE_NAM: string; CNEE_COD: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchConsignee = useCallback(
+    async (term: string, reset = true) => {
+      const value = term.trim();
+      setSearchTerm(value);
+
+      if (!value) {
+        setItems([]);
+        setHasMore(false);
+        setPage(0);
+        return;
+      }
+
+      if (reset && consigneeCache[value]) {
+        setItems(consigneeCache[value].items);
+        setHasMore(consigneeCache[value].hasMore);
+        setPage(consigneeCache[value].page);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const start = 1;
+        const end = pageSize;
+        const res = await api.get("/search/consignee", {
+          params: { value, start, end },
+        });
+        const data = (res.data || []) as { CNEE_NAM: string; CNEE_COD: string }[];
+        setItems(data);
+        setPage(1);
+        setHasMore(data.length === pageSize);
+
+        consigneeCache[value] = { items: data, page: 1, hasMore: data.length === pageSize };
+      } catch (err) {
+        console.error("Consignee fetch error:", err);
+        toast.error("Failed to load consignees");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize]
+  );
+
+  const fetchNextPage = useCallback(async () => {
+    if (loading || !hasMore || !searchTerm) return;
+
+    const nextPage = page + 1;
+    const start = (nextPage - 1) * pageSize + 1;
+    const end = nextPage * pageSize;
+
+    setLoading(true);
+    try {
+      const res = await api.get("/search/consignee", {
+        params: { value: searchTerm, start, end },
+      });
+      const data = (res.data || []) as { CNEE_NAM: string; CNEE_COD: string }[];
+      const newItems = [...items, ...data];
+      setItems(newItems);
+      setPage(nextPage);
+      setHasMore(data.length === pageSize);
+
+      consigneeCache[searchTerm] = { items: newItems, page: nextPage, hasMore: data.length === pageSize };
+    } catch (err) {
+      console.error("Consignee fetch error:", err);
+      toast.error("Failed to load consignees");
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, searchTerm, page, pageSize, items]);
+
+  return { consigneeDropdown: items, loading, hasMore, fetchConsignee, fetchNextPage };
 };
 
 // Consolidator Dropdown
@@ -235,87 +343,6 @@ export const useWarehouseDropdown = () => {
   };
 };
 
-
-// Consignee Dropdown
-export const useConsigneeDropdown = () => {
-  const pageSize = 10;
-
-  const [items, setItems] = useState<{ CNEE_NAM: string; CNEE_COD: string }[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [page, setPage] = useState(0); 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedConsignee, setSelectedConsignee] = React.useState<string>("");
-
-  const fetchConsignee = useCallback(
-    async (term: string, reset = true) => {
-      const value = term.trim();
-      setSearchTerm(value);
-
-      if (!value) {
-        // empty input: clear results & stop paging
-        setItems([]);
-        setHasMore(false);
-        setPage(0);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const start = 1;
-        const end = pageSize;
-        const res = await api.get("/search/consignee", {
-          params: { value, start, end },
-        });
-        const data = res.data || [];
-        setItems(data);
-        setPage(1);
-        setHasMore(data.length === pageSize);
-      } catch (err) {
-        console.error("Consignee fetch error:", err);
-        toast.error("Failed to load consignees");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [pageSize]
-  );
-
-  const fetchNextPage = useCallback(async () => {
-    if (loading || !hasMore || !searchTerm) return;
-
-    const nextPage = page + 1;
-    const start = (nextPage - 1) * pageSize + 1;
-    const end = nextPage * pageSize;
-
-    setLoading(true);
-    try {
-      const res = await api.get("/search/consignee", {
-        params: { value: searchTerm, start, end },
-      });
-      const data = res.data || [];
-      setItems(prev => [...prev, ...data]);
-      setPage(nextPage);
-      setHasMore(data.length === pageSize);
-    } catch (err) {
-      console.error("Consignee fetch error:", err);
-      toast.error("Failed to load consignees");
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, hasMore, searchTerm, page, pageSize]);
-
-  return {
-    consigneeDropdown: items,
-    selectedConsignee,
-    setSelectedConsignee,
-    loading,
-    hasMore,
-    fetchConsignee,
-    fetchNextPage, 
-  };
-};
-
 // Template Dropdown
 export const useTemplateDropdown = () => {
   const [templateDropdown, setTemplateDropdown] = useState<
@@ -329,21 +356,26 @@ export const useTemplateDropdown = () => {
   const [selectedTemplate, setSelectedTemplate] = React.useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchTemplateDropdown = async () => {
     setLoading(true);
-    Promise.all([
-      api.get("/reference/templates/NSL"),
-      api.get("/reference/sad/field/range?start=1&end=9999")
-    ])
-      .then(([templateRes, descRes]) => {
-        setTemplateDropdown(templateRes.data || []);
-        setDescValue(descRes.data || []);
-      })
-      .catch((err) => {
-        console.error("Error fetching template data:", err);
-        toast.error("Failed to load template data");
-      })
-      .finally(() => setLoading(false));
+    try {
+      const [templateRes, descRes] = await Promise.all([
+        api.get("/reference/templates/NSL"),
+        api.get("/reference/sad/field/range?start=1&end=9999"),
+      ]);
+      setTemplateDropdown(templateRes.data || []);
+      setDescValue(descRes.data || []);
+    } catch (err) {
+      console.error("Error fetching template data:", err);
+      toast.error("Failed to load template data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // initial fetch
+  useEffect(() => {
+    fetchTemplateDropdown();
   }, []);
 
   return {
@@ -354,6 +386,7 @@ export const useTemplateDropdown = () => {
     descValue,
     setDescValue,
     loading,
+    fetchTemplateDropdown,
   };
 };
 
@@ -436,4 +469,3 @@ export const useSADDropdown = () => {
     fetchNextPageSAD, 
   };
 };
-
