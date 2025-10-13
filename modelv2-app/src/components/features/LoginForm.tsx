@@ -1,5 +1,7 @@
 import { userLogin } from "../../hooks/userLogin";
 import { Eye, EyeOff } from "lucide-react";
+import Button from "../ui/Buttons";
+import LoadingScreen from "../loadingScreen";
 
 export default function LoginForm() {
     const {
@@ -13,12 +15,18 @@ export default function LoginForm() {
         setShowPassword,
         handleClear,
         togglePasswordVisibility,
-        handleLogin
+        handleLogin,
+        loading,
+        submitted
     } = userLogin();
+
+    if (loading){
+        return <LoadingScreen/>
+    }
 
     return(
         <form
-                        className=" rounded-[5px] shadow-2xl p-5 sm:p-4 bg-white"
+                        className="rounded-[5px] shadow-2xl p-4 sm:p-5 bg-white"
                     >
                         <div className="mb-2">
                             <label htmlFor="username" className="block text-xs mb-1  text-mainTextDef1 ">
@@ -29,6 +37,7 @@ export default function LoginForm() {
                                 placeholder="Username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                maxLength={32}
                                 required
                                 className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
                                 focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
@@ -44,6 +53,7 @@ export default function LoginForm() {
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    maxLength={32}
                                     required
                                     className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
                                     focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
@@ -67,25 +77,25 @@ export default function LoginForm() {
                             </span>
                         </div>
 
-                        <div className="flex gap-[.25rem] justify-center align-center">
-                            <button
+                        <div className="flex gap-2 flex flex-col sm:flex-row justify-center align-center">
+                            <Button
                                 type="submit"
+                                variant="primary"
+                                disabled={loading || submitted}
                                 onClick={handleLogin}
-                                className="px-6 h-8 bg-mainDef3 hover:bg-subDef text-white font-semibold text-xs rounded-[5px] transition-colors duration-200 
-                                focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 font-titleFont"
+                                className=" flex justify-center"
                             >
                                 LOGIN
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
+                                variant="secondary"
                                 onClick={handleClear}
-                                className="px-6 h-8 bg-mainDef2 hover:bg-slate-500 text-white font-semibold text-xs rounded-[5px] transition-colors duration-200 
-                                focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 font-titleFont"
+                                className=" flex justify-center"
                             >
                                 CLEAR
-                            </button>
-                            {error && <p className="text-red-500">{error}</p>}
+                            </Button>
                         </div>
-                    </form>
+        </form>
     )
 }
