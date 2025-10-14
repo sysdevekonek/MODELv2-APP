@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { useSummaryReports } from "@/hooks/useSummaryReport";
 import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import Button from "@/components/ui/Buttons";
 
 export default function SummaryReportFields() {
   const comboRef = useRef<ComboBoxRef>(null);
@@ -23,12 +24,13 @@ export default function SummaryReportFields() {
   };
 
   return (
-    <>
-      <form className="flex items-center justify-center flex-col my-4">
-        <div className="flex items-center gap-x-4 mb-4">
-          <label className="text-medium text-bodytext1 w-32">
-            <span className="font-semibold">Client:</span>
-          </label>
+  <div className="w-full max-w-xl mx-auto p-6">
+    <form className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+        <label className="w-full sm:w-auto text-sm font-semibold text-bodytext2">
+          Client:
+        </label>
+        <div className="w-full">
           <ComboBox
             ref={comboRef}
             items={clients}
@@ -36,61 +38,68 @@ export default function SummaryReportFields() {
             valueKey="CMP_CON_COD"
             selectedValue={selectedClient}
             setSelectedValue={setSelectedClient}
-            className="text-xs bg-inputField1 h-10 px-4 w-full border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
-
+            className="w-full bg-inputField1 border border-inputField2 text-sm rounded-lg focus:ring-2 focus:ring-main1 focus:outline-none text-sm px-3 py-2"
           />
         </div>
+      </div>
 
-        <div className="flex items-center gap-x-4 mb-2">
-          <label htmlFor="entryDateFrom" className="text-medium text-bodytext2 w-32">
-            <span className="font-semibold">Entry Date From:</span>
+      {/* Date Range */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="flex flex-col">
+          <label
+            htmlFor="entryDateFrom"
+            className="text-sm font-semibold text-bodytext2 mb-1"
+          >
+            Entry Date From:
           </label>
           <input
             id="entryDateFrom"
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="w-80 text-xs h-10 px-4 bg-inputField1 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
+            className="w-full bg-inputField1 border border-inputField2 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-main1 focus:outline-none"
           />
         </div>
 
-        <div className="flex items-center gap-x-4 mb-4">
-          <label htmlFor="entryDateTo" className="text-medium text-bodytext2 w-32">
-            <span className="font-semibold">Entry Date To:</span>
+        <div className="flex flex-col">
+          <label
+            htmlFor="entryDateTo"
+            className="text-sm font-semibold text-bodytext2 mb-1"
+          >
+            Entry Date To:
           </label>
           <input
             id="entryDateTo"
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="w-80 text-xs h-10 px-4 bg-inputField1 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
+            className="w-full bg-inputField1 border border-inputField2 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-main1 focus:outline-none"
           />
         </div>
-      </form>
+      </div>
 
-      <div className="flex items-center justify-center gap-4">
-        <button
+      {/* Buttons */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <Button
           onClick={fetchAndExportReport}
           disabled={loading}
-          className={loading ? "pointer-events-none opacity-50" : ""}
+          variant="primary"
+          className="w-full sm:w-auto flex justify-center"
         >
-          <div className="h-10 w-40 bg-button1 rounded flex justify-center items-center hover:bg-mainDef2 hover:text-mainTextDef2 transition">
-        <span className="text-white font-semibold">
           {loading ? "LOADING..." : "GENERATE"}
-        </span>
-          </div>
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleClear}
           disabled={loading}
-          className={loading ? "pointer-events-none opacity-50" : ""}
+          variant="secondary"
+          className="w-full sm:w-auto flex justify-center"
         >
-          <div className="h-10 w-40 bg-button2 rounded flex justify-center items-center hover:bg-mainDef2 text-bodytext2 font-semibold">
-        CLEAR
-          </div>
-        </button>
+          CLEAR
+        </Button>
       </div>
-    </>
-  );
+    </form>
+  </div>
+);
+
 }
