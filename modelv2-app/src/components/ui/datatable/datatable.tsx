@@ -15,8 +15,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/datatable/table"
+import { Button } from "@/components/ui/datatable/button"
 
 import {
   Pagination,
@@ -26,7 +26,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/datatable/pagination"
 import * as React from "react"
 
 interface DataTableProps<TData, TValue> {

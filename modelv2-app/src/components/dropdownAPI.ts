@@ -356,21 +356,26 @@ export const useTemplateDropdown = () => {
   const [selectedTemplate, setSelectedTemplate] = React.useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchTemplateDropdown = async () => {
     setLoading(true);
-    Promise.all([
-      api.get("/reference/templates/NSL"),
-      api.get("/reference/sad/field/range?start=1&end=9999")
-    ])
-      .then(([templateRes, descRes]) => {
-        setTemplateDropdown(templateRes.data || []);
-        setDescValue(descRes.data || []);
-      })
-      .catch((err) => {
-        console.error("Error fetching template data:", err);
-        toast.error("Failed to load template data");
-      })
-      .finally(() => setLoading(false));
+    try {
+      const [templateRes, descRes] = await Promise.all([
+        api.get("/reference/templates/NSL"),
+        api.get("/reference/sad/field/range?start=1&end=9999"),
+      ]);
+      setTemplateDropdown(templateRes.data || []);
+      setDescValue(descRes.data || []);
+    } catch (err) {
+      console.error("Error fetching template data:", err);
+      toast.error("Failed to load template data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // initial fetch
+  useEffect(() => {
+    fetchTemplateDropdown();
   }, []);
 
   return {
@@ -381,6 +386,7 @@ export const useTemplateDropdown = () => {
     descValue,
     setDescValue,
     loading,
+    fetchTemplateDropdown,
   };
 };
 
@@ -463,4 +469,3 @@ export const useSADDropdown = () => {
     fetchNextPageSAD, 
   };
 };
-
