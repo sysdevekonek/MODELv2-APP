@@ -56,12 +56,16 @@ export const usenslreport = () => {
   const [rowError, setRowError] = useState<Record<string, boolean>>({});
 
   // dropdown hooks
-  const { templateDropdown, selectedTemplate, setSelectedTemplate, descValue } = useTemplateDropdown();
-  const { consigneeDropdown, selectedConsignee, setSelectedConsignee, fetchConsignee, fetchNextPage } = useConsigneeDropdown();
+  const { departmentDropdown } = useDepartmentDropdown();
+  const { consigneeDropdown, fetchConsignee, fetchNextPage  } = useConsigneeDropdown();
+  const [ selectedDepartment, setSelectedDepartment ] = useState("");
+  const [ selectedConsignee, setSelectedConsignee, ] = useState("");
+  const { templateDropdown, selectedTemplate, setSelectedTemplate, descValue, fetchTemplateDropdown } = useTemplateDropdown();
   const { consolidatorDropdown, selectedConsolidator, setSelectedConsolidator, fetchConsolidator, fetchNextPageConsi } = useConsolidatorDropdown();
   const { warehouseDropdown, selectedWarehouse, setSelectedWarehouse, fetchWarehouse, fetchNextPageWarehouse } = useWarehouseDropdown();
-  const { departmentDropdown, selectedDepartment, setSelectedDepartment } = useDepartmentDropdown();
   const { SADDropdown, fetchSAD, fetchNextPageSAD  } = useSADDropdown();
+  const lastToastRef = useRef<number>(0);
+
 
   useEffect(() => {
     getData().then(setData);
@@ -150,6 +154,7 @@ export const usenslreport = () => {
       const normalizedLabels = columns.map(c => c.label.replace(/\s+/g, "_"));
       const payload = {
         ...filtersFromState,
+        Invoice: filtersFromState.Invoice ? "1" : "0",
         fromDate: formatDateForOracle(filtersFromState.fromDate),
         toDate: formatDateForOracle(filtersFromState.toDate),
         columns: normalizedLabels.join(";"),
@@ -245,16 +250,19 @@ export const usenslreport = () => {
   };
 
   const handleAddField = () => {
-    // check if any row has empty description
     const hasEmpty = data.some(
       row => !row.description || row.description === "--- Select SAD ---"
     );
-  
+    
     if (hasEmpty) {
-      toast("Please fill out all rows before adding a new one",{
-        icon: '⚠️',
-      });
-      return; 
+      const now = Date.now();
+      if (now - lastToastRef.current > 3000) {
+        lastToastRef.current = now;
+        toast("Please fill out all rows before adding a new one", {
+          icon: "⚠️",
+        });
+      }
+      return;
     }
   
     setData((prev) => [
@@ -315,6 +323,20 @@ export const usenslreport = () => {
       toast.success(res.data.STATUS || "Template saved!");
       setTemplateName("");
       setShowSaveDialog(false);
+      setData([{ ...defaultRow, id: crypto.randomUUID() }]);
+      setSelectedTemplate("");
+      setRowError({});
+      setFromDate("");
+      setToDate("");
+
+    // Refresh dropdown to include the new template
+    await fetchTemplateDropdown();
+
+    const newTemplate = res.data?.TEMPLATE_ID;
+    if (newTemplate) {
+      setSelectedTemplate(newTemplate);
+    }
+  
     } catch (err: any) {
       if (axios.isAxiosError(err) && err.response) {
         toast.error(err.response.data.message || "Failed to save template");
@@ -328,8 +350,25 @@ export const usenslreport = () => {
   };
   
   const handleOpenDialog = () => {
+    const hasEmpty = data.some(
+      (row) => !row.description || row.description === "--- Select SAD ---"
+    );
+  
+    if (hasEmpty) {
+      const now = Date.now();
+      // prevent toast spam: show only every 3 seconds
+      if (now - lastToastRef.current > 3000) {
+        lastToastRef.current = now;
+        toast("Please fill out all columns before saving a template", {
+          icon: "⚠️",
+        });
+      }
+      return; 
+    }
+  
     setShowSaveDialog(true);
-  }
+  };
+  
   const handleCancelTemplate = () => {
     setShowSaveDialog(false);
     setTemplateName("");
@@ -412,7 +451,6 @@ export const usenslreport = () => {
     isValid,
 
     // EXCEL EXPORT
-    // useExcelExport,
     exportToExcel,
     fromDate,
     setFromDate,

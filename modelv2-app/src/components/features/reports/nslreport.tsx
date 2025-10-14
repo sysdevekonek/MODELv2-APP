@@ -1,16 +1,20 @@
 "use client"
 import ComboBox, { ComboBoxRef } from "@/components/comboBox";
 import toast from "react-hot-toast";
+import { useRef, useEffect } from "react";
 import { columns } from "../../utils/nslDatatable/columns"
-import { DataTable } from "../../utils/nslDatatable/datatable"
+import { DataTable } from "../../ui/datatable/datatable"
 import { usenslreport } from "@/hooks/reports/usenslreport";
+import { CirclePlus } from 'lucide-react';
+import { Settings } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/datatable/dropdown-menu"
 
 const nslreport = () => {
 const state = usenslreport();
@@ -53,7 +57,6 @@ const state = usenslreport();
     setDetailedInvoice,
     checking,
     isValid,
-    // useExcelExport,
     exportToExcel,
     fromDate,
     setFromDate,
@@ -64,13 +67,23 @@ const state = usenslreport();
     rowError,
   } = state;
 
+  const dateErrorRef = useRef<HTMLDivElement | null>(null);
+  const rowErrorRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (dateError && dateErrorRef.current) {
+      dateErrorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else if (rowError && Object.keys(rowError).length > 0 && rowErrorRef.current) {
+      rowErrorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [dateError, rowError]);
+  
 
   
   return (
     <>
       <div className='mt-6 w-full h-[150vh] flex flex-col items-center justify-center bg-bgContainer shadow rounded-md'>
             <div className='w-full'>
-              <div className='mt-[-1.5em] bg-main1 text-titlebodytext1 font-bold w-[20%] h-[3em] flex justify-center items-center rounded'>
+              <div className='mt-[-1.5em] bg-main1 text-titlebodytext1 font-bold w-2/5 lg:w-1/4 h-[3em] flex justify-center items-center rounded'>
                   <h1>NSL REPORT</h1>
               </div>
             </div>
@@ -79,8 +92,8 @@ const state = usenslreport();
                     <h3>NSL REPORT EXTRACTION</h3>
                 </div>
                 {/* start of form */}
-                <div className='flex flex-col justify-center items-center w-full h-[90%]'>
-                  <div className='h-full w-[70%] flex flex-col justify-center'>
+                <div className='{border border-red-700} flex flex-col justify-center items-center w-full h-[90%]'>
+                  <div className='{border border-blue-700} h-full w-full lg:w-[70%] flex flex-col justify-center'>
                     <form>
                         <div className='gap-1 p-4 flex flex-col w-full'>
                           <div className='w-full flex flex-row justify-around items-center'>
@@ -102,7 +115,7 @@ const state = usenslreport();
                           <div className='w-full flex flex-row items-center0'>
                             <div className="w-full flex flex-row justify-around items-center">
                               <label className='text-sm font-semibold w-[20%]'>Date from:</label>
-                              <div className='w-[60.2%] flex flex-row justify-between items-center'>
+                              <div ref={dateErrorRef} className='w-[60.2%] flex flex-row justify-between items-center'>
                                 <input  type="date"
                                         value={fromDate}
                                         onChange={(e) => setFromDate(e.target.value)}
@@ -119,7 +132,7 @@ const state = usenslreport();
                           </div>
                           {dateError && (!fromDate || !toDate) && (
                             <div className="w-full flex justify-around">
-                              <p className="text-red-500 text-xs mt-1 pl-1">{dateError}</p>
+                              <p className="text-red-500 text-xs mt-1">{dateError}</p>
                             </div>
                           )}
 
@@ -217,12 +230,13 @@ const state = usenslreport();
                   <button 
                     onClick={handleAddField}
                     title="Add Rows"
-                    className="transition font-medium w-32 h-full bg-main1 text-titlebodytext1 rounded-sm flex justify-center items-center gap-3 hover:bg-buttonHover">Add Field <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                    className="transition font-medium w-32 h-full bg-main1 text-titlebodytext1 rounded-sm flex justify-center items-center gap-3 hover:bg-buttonHover">
+                      Add Field <CirclePlus height={20} width={20}/>
                   </button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="transition font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center hover:bg-buttonHover hover:text-white" title="Options">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+                        <Settings height={20} width={20}/>
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
@@ -238,7 +252,7 @@ const state = usenslreport();
                               fromDate,
                               toDate,
                               ConsigneeCode: selectedConsignee,
-                              DetailedInvoice: detailedInvoice,
+                              Invoice: detailedInvoice,
                               ConsolidatorCode: selectedConsolidator,
                               WarehouseCode: selectedWarehouse,
                               DepartmentCode: selectedDepartment,
@@ -261,11 +275,12 @@ const state = usenslreport();
                   <button 
                     onClick={handleResetRows}
                     title="Reset Rows"
-                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-ccw-icon lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3">
+                      <RotateCcw height={20} width={20}/>
                   </button>
                 </div>
                 {/* start of form */}
-                <div className=' w-full h-full'>
+                <div ref={rowErrorRef} className='w-full h-full'>
                     <DataTable
                       columns={columns({
                         updateRow,
