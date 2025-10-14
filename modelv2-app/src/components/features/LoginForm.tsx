@@ -1,6 +1,7 @@
 import { userLogin } from "../../hooks/userLogin";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "../ui/Buttons";
+import LoadingScreen from "../loadingScreen";
 
 export default function LoginForm() {
     const {
@@ -18,6 +19,10 @@ export default function LoginForm() {
         loading,
         submitted
     } = userLogin();
+
+    if (loading){
+        return <LoadingScreen/>
+    }
 
     return(
         <form
