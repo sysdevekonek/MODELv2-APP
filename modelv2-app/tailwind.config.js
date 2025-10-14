@@ -17,6 +17,8 @@ module.exports = {
 			inputField2: 'hsl(var(--input-field-2))',		//input field border
 			button1: 'hsl(var(--button-1))', 				//main button (generate, submit, etc)
 			button2: 'hsl(var(--button-2))', 				//sub button (next, back, clear, (not active), etc)
+			button3: 'hsl(var(--button-3))', 				//3rd type button (not used often)
+			button3Content: 'hsl(var(--button-3-content))', //3rd type button content color
 			buttonBorder: 'hsl(var(--button-border))', 		//button border (use if necessary)
 			buttonHover: 'hsl(var(--button-hover))',		//button hover effect (when use, use hover:text-white)
 			deleteButton: 'hsl(var(--delete-button))', 		//delete button (trash icon, etc)
@@ -34,7 +36,13 @@ module.exports = {
 			subtext: 'hsl(var(--subtext))', 				//subtext/inactive elements color
 			themebutton1: 'hsl(var(--theme-button-1))', 	//theme button 1 color (active) [rarely used]
 			themebutton2: 'hsl(var(--theme-button-2))', 	//theme button 2 color (inactive) [rarely used]
-		
+			notAvailableBG: 'hsl(var(--not-available-bg))', //not available/disabled elements color
+			notAvailableText: 'hsl(var(--not-available-text))', //not available/disabled text color
+			tableOddRow: 'hsl(var(--table-odd-row))', 		//table odd row color
+			tableEvenRow: 'hsl(var(--table-even-row))', 	//table even row color
+			tableBorder: 'hsl(var(--table-border))', 		//table border color
+			tableHover: 'hsl(var(--table-hover))', 		    //table row hover color
+			
 			//Login Colors
 			'mainDef1': '#D9DDED', 
 			'mainDef2': '#8289A4',
@@ -96,7 +104,8 @@ module.exports = {
   			titleFont: [
   				'Montserrat',
   				'sans-serif'
-  			]
+  			],
+			righteous: ['Righteous', 'sans-serif'],
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { buildNavTree, expandOpenDropdowns } from "./sidebar.utils"
 import type { NavItem, OpenDropdowns } from "./sidebar.types"
 import SidebarTree from "./sidebarTree"
-import { Menu, LogOut } from "lucide-react"
+import { Menu, LogOut, Expand } from "lucide-react"
 import { useSidebar } from "./sidebarContext";
 
 export default function Sidebar() {
@@ -26,31 +26,19 @@ export default function Sidebar() {
     setOpenDropdowns(expanded)
   }, [pathname])
 
-  // Keep dropdowns closed when collapsed (desktop behavior)
   useEffect(() => {
-    if (collapsed && !isHovered) {
-      setOpenDropdowns({})
-    }
+    if (collapsed && !isHovered) { setOpenDropdowns({}) }
   }, [collapsed, isHovered])
 
-  // Detect mobile / desktop
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024) // Tailwind lg breakpoint
-    }
+    const handleResize = () => { setIsMobile(window.innerWidth < 1024)}
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [])
 
-  // When we enter mobile, ensure sidebar is collapsed (hidden)
   useEffect(() => {
-    if (isMobile && !collapsed) {
-      // collapse (hide) on mobile if currently expanded
-      toggleCollapsed()
-    }
-    // note: we intentionally don't auto-expand when leaving mobile to avoid unexpected UX flips
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isMobile && !collapsed) { toggleCollapsed() }
   }, [isMobile])
 
   const handleLogout = () => {
@@ -60,15 +48,12 @@ export default function Sidebar() {
 
   const shouldShowContent = !collapsed || isHovered
 
-  // Aside classes build
   const baseAside = "fixed top-28 left-0 h-[calc(100vh-6rem)] bg-layout1 text-foreground shadow-lg overflow-visible transition-all duration-300 ease-in-out transform"
   const desktopWidth = collapsed ? "w-12 hover:w-64 z-30" : "w-64 z-30"
-  // On mobile: w-64 when visible, but -translate-x-full when hidden
   const mobileTransform = isMobile ? (collapsed ? "-translate-x-full w-64 z-50" : "translate-x-0 w-64 z-50") : desktopWidth
 
   return (
     <>
-      {/* Mobile menu button (visible only on mobile) */}
       {isMobile && collapsed && (
         <>
            <div
@@ -85,7 +70,6 @@ export default function Sidebar() {
           </>
       )}
 
-      {/* Backdrop when sidebar is open on mobile */}
       {isMobile && !collapsed && (
         <div
           className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -117,18 +101,21 @@ export default function Sidebar() {
           />
         </div>
 
-        {/* Toggle button (desktop / inside sidebar) */}
-        {!isMobile && (
-        <button
-          onClick={toggleCollapsed}
-          className="absolute top-3 -right-3 transform w-6 h-6 flex items-center justify-center rounded-full bg-bg hover:bg-layout3 hover:border-gray-300 z-50 transition-all duration-200 hover:scale-110"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand Navigation" : "Collapse Navigation"}
-        >
-          <Menu size={14} />
-        </button>
-        )}
 
+        {!isMobile && (
+          <button
+            onClick={toggleCollapsed}
+            className="absolute  top-1/2 -right-10 -translate-x-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-lg bg-button3 hover:bg-layout3 hover:border-titlebodytext1 z-50 transition-all duration-200 hover:scale-110 border border-tableBorder shadow-lg"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand Navigation" : "Collapse Navigation"}
+          >
+            {!collapsed ? (
+              <Menu size={14} className="text-button3Content" />
+            ) : (
+              <Expand size={14} className="text-button3Content" />
+            )}
+          </button>
+        )}
 
         <div className="relative h-full flex flex-col">
           <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 pt-2 pb-20 custom-scrollbar">
@@ -142,15 +129,16 @@ export default function Sidebar() {
             />
           </nav>
 
-          <div className="absolute bottom-8 left-0 right-0 px-2">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 w-full px-2 py-2 text-left text-sm text-layoutText2 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200"
-            >
-              <LogOut className="w-4 h-4 shrink-0" />
-              {shouldShowContent && <span>Logout</span>}
-            </button>
-          </div>
+          <div className="mb-4 bottom-0">
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full pl-4 mb-4 px-2 py-2 text-left text-sm text-layoutText2 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200"
+              >
+                <LogOut className="min-w-[1rem] min-h-[1rem] h-4 w-4" />
+                {shouldShowContent && <span>Logout</span>}
+              </button>
+            </div>
+
         </div>
 
         <style jsx global>{`

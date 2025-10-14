@@ -1,6 +1,7 @@
 import { userLogin } from "../../hooks/userLogin";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "../ui/Buttons";
+import LoadingScreen from "../loadingScreen";
 
 export default function LoginForm() {
     const {
@@ -18,6 +19,10 @@ export default function LoginForm() {
         loading,
         submitted
     } = userLogin();
+
+    if (loading){
+        return <LoadingScreen/>
+    }
 
     return(
         <form
@@ -72,12 +77,13 @@ export default function LoginForm() {
                             </span>
                         </div>
 
-                        <div className="flex gap-[.25rem] justify-center align-center">
+                        <div className="flex gap-2 flex flex-col sm:flex-row justify-center align-center">
                             <Button
                                 type="submit"
                                 variant="primary"
                                 disabled={loading || submitted}
                                 onClick={handleLogin}
+                                className=" flex justify-center"
                             >
                                 LOGIN
                             </Button>
@@ -85,6 +91,7 @@ export default function LoginForm() {
                                 type="button"
                                 variant="secondary"
                                 onClick={handleClear}
+                                className=" flex justify-center"
                             >
                                 CLEAR
                             </Button>
