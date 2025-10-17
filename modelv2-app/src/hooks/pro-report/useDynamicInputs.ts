@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import debounce from "lodash.debounce";
 import api from "@/common/config";
 import ExcelJS from "exceljs";
+import { toastInfo } from "@/components/utils/customToasts";
 
 export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
   const [fields, setFields] = useState<string[]>([""]);
@@ -12,6 +13,7 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
   const [activeReport, setActiveReport] = useState<"PRO" | "BRC" | "MNF" | null>(null);
   const [maxFieldsWarned, setMaxFieldsWarned] = useState(false);
   const debounceMap = useRef<{ [key: number]: ReturnType<typeof debounce> }>({});
+  const [lengthWarned, setLengthWarned] = useState(false);
   const MAX_FIELDS = 10;
 
   useEffect(() => {
@@ -63,6 +65,19 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
   );
 
   const handleChange = (value: string, index: number) => {
+    const trimmedValue = value.trim();
+
+    if (trimmedValue.length > 20) {
+      if (!lengthWarned) {
+        toastInfo("Maximum 20 characters allowed.");
+        setLengthWarned(true);
+      }
+      return;
+    } else if (lengthWarned && trimmedValue.length <= 20) {
+      // Reset warning when user goes back under limit
+      setLengthWarned(false);
+    }
+
     const updatedFields = [...fields];
     updatedFields[index] = value;
     setFields(updatedFields);
@@ -86,8 +101,8 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
       newValidationResults[index] = false;
       newLoadingStates[index] = false;
     } else {
+      newValidationResults[index] = undefined;
       newLoadingStates[index] = true;
-      // 🔥 only validate the field that changed
       getDebouncedValidator(index)(originalInput);
     }
   
@@ -98,7 +113,7 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
   const handleAdd = () => {
     if (fields.length >= MAX_FIELDS) {
       if (!maxFieldsWarned) {
-        toast.error(`Maximum ${MAX_FIELDS} fields allowed`);
+         toastInfo(`Maximum ${MAX_FIELDS} fields allowed`);
         setMaxFieldsWarned(true);
       }
       return;
