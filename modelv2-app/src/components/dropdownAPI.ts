@@ -211,8 +211,11 @@ export const useConsolidatorDropdown = () => {
       try {
         const start = 1;
         const end = pageSize;
-        const res = await api.get("/search/consolidator", {
-          params: { value, start, end },
+        const res = await api.get("/reference/consolidators/range", {
+          params: {
+            value: value.length === 0 ? "all" : value,
+            start,
+            end },
         });
         const data = res.data || [];
         setItems(data);
@@ -237,8 +240,11 @@ export const useConsolidatorDropdown = () => {
 
     setLoading(true);
     try {
-      const res = await api.get("/search/consolidator", {
-        params: { value: searchTerm, start, end },
+      const res = await api.get("/reference/consolidators/range", {
+        params: {
+          value: searchTerm.length === 0 ? "all" : searchTerm,
+          start,
+          end },
       });
       const data = res.data || [];
       setItems(prev => [...prev, ...data]);
@@ -291,8 +297,12 @@ export const useWarehouseDropdown = () => {
       try {
         const start = 1;
         const end = pageSize;
-        const res = await api.get("/search/warehouse", {
-          params: { value, start, end },
+        const res = await api.get("/reference/warehouse/range", {
+          params: { 
+            value: value.length === 0 ? "all" : value,
+            start,
+            end
+          },
         });
         const data = res.data || [];
         setItems(data);
@@ -317,8 +327,11 @@ export const useWarehouseDropdown = () => {
 
     setLoading(true);
     try {
-      const res = await api.get("/search/warehouse", {
-        params: { value: searchTerm, start, end },
+      const res = await api.get("/reference/warehouse/range", {
+        params: { 
+          value: searchTerm.length === 0 ? "all" : searchTerm,
+          start,
+          end },
       });
       const data = res.data || [];
       setItems(prev => [...prev, ...data]);
@@ -361,7 +374,9 @@ export const useTemplateDropdown = () => {
     try {
       const [templateRes, descRes] = await Promise.all([
         api.get("/reference/templates/NSL"),
-        api.get("/reference/sad/field/range?start=1&end=9999"),
+        api.get("/reference/sad/field/range", {
+          params: { value: "all", start: 1, end: 9999 },
+        }),
       ]);
       setTemplateDropdown(templateRes.data || []);
       setDescValue(descRes.data || []);
@@ -407,7 +422,6 @@ export const useSADDropdown = () => {
       setSearchTerm(value);
 
       if (!value) {
-        // empty input: clear results & stop paging
         setItems([]);
         setHasMore(false);
         setPage(0);
@@ -418,9 +432,17 @@ export const useSADDropdown = () => {
       try {
         const start = 1;
         const end = pageSize;
-        const res = await api.get("/search/sad/field", {
-          params: { value, start, end },
+
+        // 👇 Adjusted endpoint + parameters
+        const res = await api.get("/reference/sad/field/range", {
+          params: {
+            value: value.length === 0 ? "all" : value,
+            start,
+            end,
+          },
+          // Authorization header handled globally if axios interceptors are used
         });
+
         const data = res.data || [];
         setItems(data);
         setPage(1);
@@ -444,9 +466,14 @@ export const useSADDropdown = () => {
 
     setLoading(true);
     try {
-      const res = await api.get("/search/sad/field", {
-        params: { value: searchTerm, start, end },
+      const res = await api.get("/reference/sad/field/range", {
+        params: {
+          value: searchTerm.length === 0 ? "all" : searchTerm,
+          start,
+          end,
+        },
       });
+
       const data = res.data || [];
       setItems(prev => [...prev, ...data]);
       setPage(nextPage);
