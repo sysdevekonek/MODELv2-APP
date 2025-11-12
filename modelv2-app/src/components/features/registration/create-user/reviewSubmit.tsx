@@ -1,9 +1,11 @@
 "use client"
-import React, { useState } from "react"
+import React from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { useRegistrationContext } from "@/hooks/registration/RegistrationContext"
 import { useRegistration } from "@/hooks/registration/useRegistration";
 import Button from "@/components/ui/Buttons";
+import { Eye, EyeOff } from "lucide-react";
+import { useClientRoleDropdown, useCountryDropdown } from "@/components/dropdownAPI";
 
 interface reviewSubmitProps {
   goBack: () => void;
@@ -11,8 +13,11 @@ interface reviewSubmitProps {
 }
 
 const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
+  const [showPassword, setShowPassword] = React.useState(false);
   const { userData } = useRegistrationContext();
   const { handleSubmit, loading } = useRegistration();
+  const { clientDropdown } = useClientRoleDropdown();
+  const { countryDropdown } = useCountryDropdown();
   
   const onSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -21,18 +26,21 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
         resetTab();
       }
     };
+      const displayValue = (val?: string | number | null) =>
+    val && String(val).trim() !== "" ? val : "None";
 
   return (
-  <div className="w-full max-w-5xl mx-auto overflow-hidden px-4 sm:px-6 lg:px-8">
-    <div className="py-4 border-b border-gray-200 dark:border-gray-700">
-      <label className="text-xl font-bold text-bodytext2 block">Review & Submit</label>
-      <p className="text-gray-900 dark:text-white mt-1 text-sm sm:text-base">
-        Review and verify the information below before submission.
-      </p>
-    </div>
-
-    <form onSubmit={onSubmit} className="space-y-6">
+    <div className="w-full max-w-8xl mx-auto overflow-hidden">
+      <div className=" py-4 border-b border-gray-200 dark:border-gray-700">
+        <label className="text-xl font-bold text-bodytext2">Review & Submit</label>
+        <p className="text-black mt-1">
+          Review and verify the information below before submition.
+        </p>
+      </div>
+    <form onSubmit={onSubmit}>
       {/* User Information */}
+
+     
       <div className="py-4 border-b border-gray-200 dark:border-gray-700">
         <label className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
           User Information
@@ -45,7 +53,7 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
             </div>
             <div>
               <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Account Reference</span>
-              <p className="text-gray-900 dark:text-white font-mono text-sm">{userData.account_reference}</p>
+              <p className="text-gray-900 dark:text-white font-medium">{userData.account_reference}</p>
             </div>
           </div>
           <div className="space-y-2">
@@ -55,7 +63,7 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
             </div>
             <div>
               <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Company</span>
-              <p className="text-gray-900 dark:text-white font-medium">{userData.company}</p>
+              <p className="text-gray-900 dark:text-white font-medium"> {clientDropdown.find(c => c.CLIENT_CODE === userData.company)?.CLIENT_NAME || userData.company}</p>
             </div>
           </div>
 
@@ -68,7 +76,7 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
                     key={i}
                     className="flex justify-between items-center bg-inputField1 px-3 py-2 rounded-md shadow-sm border border-inputField2 dark:border-gray-700"
                   >
-                    <span className="text-gray-900 dark:text-white font-medium text-sm">{p}</span>
+                    <span className="text-gray-900 dark:text-white font-medium text-sm flex text-center">{p}</span>
                   </div>
                 ))}
               </div>
@@ -80,6 +88,9 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
       </div>
 
       {/* Personal Data */}
+
+
+  
       <div className="py-4 border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
         <label className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
           Personal Data
@@ -88,7 +99,7 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
           {[
             ["Name", userData.name],
             ["Address", userData.address],
-            ["Country", userData.country],
+            ["Country", countryDropdown.find((c: { COUNTRY_CODE: string; }) => c.COUNTRY_CODE === userData.country)?.COUNTRY_NAME || userData.country],
             ["City", userData.city],
             ["ZIP", userData.zip],
             ["Phone No", userData.phone_no],
@@ -98,7 +109,7 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
           ].map(([label, value], idx) => (
             <div key={idx}>
               <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</span>
-              <p className="text-gray-900 dark:text-white font-medium">{value}</p>
+              <p className="text-gray-900 dark:text-white font-medium">{displayValue(value)}</p>
             </div>
           ))}
         </div>
@@ -112,9 +123,28 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <div>
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Password</span>
-              <p className="text-gray-900 dark:text-white font-mono">{userData.password}</p>
+            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Password
+            </span>
+            <div className="flex items-center gap-2">
+              <p className="text-gray-900 dark:text-white font-mono">
+                {showPassword
+                  ? userData.password
+                  : "•".repeat(userData.password?.length || 8)}
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              >
+                {showPassword ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
+              </button>
             </div>
+          </div>
             <div>
               <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Enable Client Access</span>
               <p className="text-gray-900 dark:text-white">{userData.enable_client_access ? "Yes" : "No"}</p>
@@ -145,8 +175,8 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
                 key={idx}
                 className="flex items-center justify-between bg-inputField1 border border-inputFiel2 dark:border-gray-700 rounded px-3 py-2"
               >
-                <span>
-                  <span className="font-semibold text-sm">{p.name}:</span> {p.value}
+                <span className="flex flex-row md:flex-col items-center md:items-start gap-2 md:gap-0">
+                  <span className="font-semibold text-sm">{p.name}:</span> {p.displayValue}
                 </span>
               </li>
             ))}
@@ -158,10 +188,10 @@ const ReviewAndSave: React.FC<reviewSubmitProps> = ({ goBack, resetTab }) => {
 
       {/* Buttons */}
       <div className="py-6 flex flex-col sm:flex-row justify-between gap-4">
-        <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-center">
+        <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-start">
           <ArrowLeft size={18} /> Back
         </Button>
-        <Button type="submit" disabled={loading} variant="primary" className="w-full sm:w-auto justify-center">
+        <Button type="submit" disabled={loading} variant="primary" className="w-full sm:w-auto justify-end">
           Submit <ArrowRight size={18} />
         </Button>
       </div>

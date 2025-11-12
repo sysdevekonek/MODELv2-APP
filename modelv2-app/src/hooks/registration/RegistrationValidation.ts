@@ -108,7 +108,7 @@ export function validateForm(values: UserData, tab: number) {
     if (!values.username) errors.username = "Username is required";
     if (!values.account_reference) errors.account_reference = "Account Reference is required"
     if (!values.company) errors.company = "Company is required"
-    if (!values.profile) errors.profile = "Business Unit is required"
+    if (!values.profile || values.profile.length === 0) errors.profile = "At least one (1) Business Unit is required";
   }
   if (tab === 2) {
     if (!values.name) errors.name = "Full Name is required";
@@ -118,6 +118,7 @@ export function validateForm(values: UserData, tab: number) {
   }
   if (tab === 3) {
     if (!values.password) errors.password = "Password is required"
+    if (!values.confirm_password) errors.confirm_password = "Please Confirm your Password"
   }
 
   return errors;

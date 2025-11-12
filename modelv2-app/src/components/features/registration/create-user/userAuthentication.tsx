@@ -35,7 +35,7 @@ const UserAuthentication: React.FC<UserAuthenticationProps> = ({ goNext, goBack,
   };
 
   return (
-  <div className="flex justify-center">
+  <div className="flex justify-center px-4">
     <form
       className="w-full max-w-md sm:max-w-lg"
       onSubmit={handlePassword}

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import { Button as AriaButton, Label, ListBox, ListBoxItem, Popover, Select, SelectValue } from 'react-aria-components';
 import { useDepartmentDropdown, useConsigneeDropdown } from "@/components/dropdownAPI";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
 import Button from "@/components/ui/Buttons";
 
@@ -15,59 +16,96 @@ interface UserPropertiesProps {
 
 const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors }) => {
   const comboRef = useRef<ComboBoxRef>(null);
-  const { departmentDropdown } = useDepartmentDropdown();
-  const { consigneeDropdown, fetchConsignee, fetchNextPage } = useConsigneeDropdown();
-
+  const { consigneeDropdown, fetchConsignee, fetchNextPage, loading: consigneeLoading } = useConsigneeDropdown();
+  const { departmentDropdown, loading: deptLoading, departmentChange } = useDepartmentDropdown();
+  const { userData, updateField, isFormComplete } = useRegistrationContext();
+  
   const [propertyName, setPropertyName] = useState("");
   const [propertyValue, setPropertyValue] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [selectedConsignee, setSelectedConsignee] = useState("");
-
-  const { userData, updateField, isFormComplete } = useRegistrationContext();
+  
   const isReviewDisabled = !isFormComplete(userData) || Object.keys(errors).length > 0;
+
+  useEffect(() => {
+    setPropertyValue("");
+  }, [propertyName]);
 
   const handleProperties = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!propertyName) return;
 
-    let value = propertyValue;
-    if (propertyName === "DEPARTMENT") value = selectedDepartment;
-    if (propertyName === "CONSIGNEE") value = selectedConsignee;
+    let newProperty;
 
-    if (!value) return;
+    if (propertyName === "TIN") {
+      if (!propertyValue.trim()) return;
+      newProperty = {
+        name: propertyName,
+        value: propertyValue.trim(),
+        displayValue: propertyValue.trim(),
+      };
+    } else {
+      if (!propertyValue) return;
 
-    updateField("properties", [...userData.properties, { name: propertyName, value }]);
+      let displayValue = propertyValue;
 
+      if (propertyName === "DEPARTMENT") {
+        const selectedItem = departmentDropdown.find(item => item.DEPT_CODE === propertyValue);
+        displayValue = selectedItem ? selectedItem.DEPT_NAME : propertyValue;
+      } else if (propertyName === "CONSIGNEE") {
+        const selectedItem = consigneeDropdown.find(item => item.CNEE_COD === propertyValue);
+        displayValue = selectedItem ? selectedItem.CNEE_NAM : propertyValue;
+      }
+      newProperty = { name: propertyName, value: propertyValue, displayValue };
+    }
+
+    const alreadyExists = userData.properties.some( p => p.name === newProperty.name && p.value === newProperty.value );
+
+    if (alreadyExists) {
+      setPropertyName("");
+      setPropertyValue("");
+      return;
+    }
+    updateField("properties", [...userData.properties, newProperty]);
     setPropertyName("");
     setPropertyValue("");
-    setSelectedDepartment("");
-    setSelectedConsignee("");
   };
 
+
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center px-4">
       <form onSubmit={handleProperties} className="w-full max-w-lg">
-        
+
         {/* Property Name */}
         <div className="mb-4 flex flex-col">
-          <label htmlFor="propertyName" className="text-sm font-medium mb-1">
-            Property Name:
-          </label>
-          <select
-            id="propertyName"
-            value={propertyName}
-            onChange={(e) => {
-              setPropertyName(e.target.value);
-              setPropertyValue("");
-            }}
-            className="w-full bg-inputField1 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3"
+          <Select
+            selectedKey={propertyName}
+            onSelectionChange={(key) => setPropertyName(String(key))}
+            className="w-full"
           >
-            <option value="">Select an option</option>
-            <option value="TIN">Tax Identification Number (TIN)</option>
-            <option value="DEPARTMENT">Department</option>
-            <option value="CONSIGNEE">Consignee</option>
-          </select>
+            <Label id="propertyName-label" className="text-sm font-medium mb-1">Property Name:</Label>
+            <AriaButton
+              className={`flex justify-between items-center bg-inputField1 text-xs h-10 w-full px-4 border border-inputField2 rounded-lg 
+                  focus:outline-none focus:ring-2 focus:ring-mainDef3 transition-all`}
+            >
+              <SelectValue className={({ isPlaceholder }) => `truncate ${isPlaceholder ? "text-subtext" : "text-bodytext2"}`}>
+                {propertyName || "Select an option"}
+              </SelectValue>
+              <ChevronDown className="w-4 h-4 text-gray-400" aria-hidden="true" />
+            </AriaButton>
+            <Popover className="w-[--trigger-width] bg-bgContainer border border-tableBorder rounded-lg shadow-lg mt-1 z-50" placement="bottom start">
+              <ListBox className="max-h-60 overflow-auto text-xs" aria-label="Property name options">
+                <ListBoxItem id="TIN" className="px-3 py-2 hover:bg-button3 cursor-pointer">
+                  Tax Identification Number (TIN)
+                </ListBoxItem>
+                <ListBoxItem id="DEPARTMENT" className="px-3 py-2 hover:bg-button3 cursor-pointer">
+                  Department
+                </ListBoxItem>
+                <ListBoxItem id="CONSIGNEE" className="px-3 py-2 hover:bg-button3 cursor-pointer">
+                  Consignee
+                </ListBoxItem>
+              </ListBox>
+            </Popover>
+          </Select>
         </div>
 
         {/* Property Value */}
@@ -93,10 +131,12 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
               items={departmentDropdown}
               displayKey="DEPT_NAME"
               valueKey="DEPT_CODE"
-              required
-              placeholder="Select Department..."
-              selectedValue={selectedDepartment}
-              setSelectedValue={setSelectedDepartment}
+              placeholder="Search or select department..."
+              selectedValue={propertyValue}
+              setSelectedValue={setPropertyValue}
+              onInputChange={departmentChange}
+              showValueKeyInList={false}
+              loading={deptLoading}
               className="w-full bg-inputField1 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3"
             />
           )}
@@ -106,39 +146,39 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
               items={consigneeDropdown}
               displayKey="CNEE_NAM"
               valueKey="CNEE_COD"
-              required
-              selectedValue={selectedConsignee}
-              setSelectedValue={setSelectedConsignee}
+              selectedValue={propertyValue}
+              setSelectedValue={setPropertyValue}
               onInputChange={(val) => fetchConsignee(val, true)}
               onScrollEnd={fetchNextPage}
-              placeholder="Type to search consignee..."
+              loading={consigneeLoading}
+              placeholder="Search or select consignee..."
               className="w-full bg-inputField1 text-xs h-10 px-4 border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-mainDef3"
             />
           )}
         </div>
 
-        {/* Add Property Button */}
-        <div className="mb-6">
-          <Button type="submit" variant="secondary" className="w-full">
+        <div className="mb-4">
+          <Button
+            type="submit"
+            variant="secondary"
+            className="w-full justify-center transition-all duration-200"
+          >
             Add Property
           </Button>
         </div>
 
         {/* Added Properties List */}
         <div className="mb-6">
-          <label className="font-sm">Added Properties</label>
+          <label className="text-sm">Added Properties</label>
           {userData.properties.length === 0 ? (
-            <div className="text-xs text-gray-400 w-full py-2 px-3 bg-inputField1 border border-gray-300 rounded">No Properties selected</div>
+            <div className="text-xs text-bodytext2 w-full py-2 px-3 bg-inputField1 border border-inputField2 rounded">
+              No Properties selected
+            </div>
           ) : (
             <ul className="space-y-2 text-sm mt-2">
               {userData.properties.map((p, idx) => (
-                <li
-                  key={idx}
-                  className="flex items-center justify-between bg-inputField1 border border-gray-300 rounded px-3 py-2"
-                >
-                  <span>
-                    <span className="font-semibold">{p.name}:</span> {p.value}
-                  </span>
+                <li key={idx} className="flex items-center justify-between bg-inputField1 border border-tableBorder rounded px-3 py-2">
+                  <span> <span className="font-semibold">{p.name}:</span> {p.displayValue || p.value} </span>
                   <button
                     type="button"
                     onClick={() => {
@@ -157,7 +197,7 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
 
         {/* Navigation Buttons */}
         <div className="py-6 flex flex-col sm:flex-row justify-between gap-4">
-          <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-center">
+          <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-start">
             <ArrowLeft size={18} /> Back
           </Button>
           <Button
@@ -165,12 +205,13 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
             onClick={goNext}
             variant="secondary"
             disabled={isReviewDisabled}
-            className={"flex w-full sm:w-auto justify-center"}
+            className={"flex w-full sm:w-auto justify-end"}
           >
             Next <ArrowRight size={18} />
           </Button>
         </div>
       </form>
+      
     </div>
   );
 };
