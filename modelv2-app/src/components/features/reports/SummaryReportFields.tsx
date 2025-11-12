@@ -33,11 +33,14 @@ export default function SummaryReportFields() {
         <div className="w-full">
           <ComboBox
             ref={comboRef}
-            items={clients}
+            items={clients.length > 0 ? clients : [{ CMP_CON_NAM: "No clients found", CMP_CON_COD: "" }]}
             displayKey="CMP_CON_NAM"
             valueKey="CMP_CON_COD"
             selectedValue={selectedClient}
-            setSelectedValue={setSelectedClient}
+            setSelectedValue={(val) => {
+                if (val !== "") setSelectedClient(val);
+              }}
+              showValueKeyInList={false}
             className="w-full bg-inputField1 border border-inputField2 text-sm rounded-lg focus:ring-2 focus:ring-main1 focus:outline-none text-sm px-3 py-2"
           />
         </div>
