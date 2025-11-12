@@ -1,9 +1,31 @@
 "use client";
-
+import { userLogin } from "@/hooks/userLogin";
+import { Eye, EyeOff } from "lucide-react";
+import Button from "@/components/ui/Buttons";
+import LoadingScreen from "@/components/loadingScreen";
 import Image from "next/image";
-import LoginForm from "@/components/features/LoginForm";
 
 export default function LoginPage() {
+  const {
+          username,
+          setUsername,
+          password,
+          setPassword,
+          error,
+          setError,
+          showPassword,
+          setShowPassword,
+          handleClear,
+          togglePasswordVisibility,
+          handleLogin,
+          loading,
+          submitted
+      } = userLogin();
+  
+      if (loading){
+          return <LoadingScreen/>
+      }
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-bgDef">
       {/* Background shapes */}
@@ -47,7 +69,78 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <div className="w-full max-w-xs sm:max-w-sm md:max-w-md scale-95 sm:scale-100 transition-transform">
-          <LoginForm />
+          <form
+                        className="rounded-[5px] shadow-2xl p-4 sm:p-5 bg-white"
+                    >
+                        <div className="mb-2">
+                            <label htmlFor="username" className="block text-xs mb-1  text-mainTextDef1 ">
+                                <h3>Username</h3>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                maxLength={32}
+                                required
+                                className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
+                                focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label htmlFor="password" className="block text-xs mb-1 text-mainTextDef1 font-titleFont">
+                                <h3>Password</h3>
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    maxLength={32}
+                                    required
+                                    className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
+                                    focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="mb-10 text-left font-titleFont">
+                            <span className="text-xs text-slate-600">
+                                Forgot Password?{" "}
+                                <a href="#" className="text-mainDef3 hover:text-slate-800 underline font-bold font-titleFont">
+                                    Click Here
+                                </a>
+                            </span>
+                        </div>
+
+                        <div className="flex gap-2 flex flex-col sm:flex-row justify-center align-center">
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                disabled={loading || submitted}
+                                onClick={handleLogin}
+                                className=" flex justify-center"
+                            >
+                                LOGIN
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={handleClear}
+                                className=" flex justify-center"
+                            >
+                                CLEAR
+                            </Button>
+                        </div>
+        </form>
         </div>
 
         {/* Powered By */}
