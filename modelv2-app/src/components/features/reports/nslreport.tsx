@@ -106,6 +106,7 @@ const state = usenslreport();
                                 valueKey="TEMPLATE_ID"
                                 placeholder="Search Template..."
                                 selectedValue={selectedTemplate}
+                                showValueKeyInList={false}
                                 setSelectedValue={(val) => handleTemplateSelect(val)}
                                 className="text-xs bg-inputField1 h-10 px-4 w-full border border-inputField2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
                               />
@@ -119,14 +120,14 @@ const state = usenslreport();
                                 <input  type="date"
                                         value={fromDate}
                                         onChange={(e) => setFromDate(e.target.value)}
-                                        className={`rounded-md pl-3 p-1 w-[40%] h-10 text-xs
-                                        border ${!fromDate && dateError ? "border-red-500 text-red-500" : "border-[#858585] text-[#858585]"}`} />
+                                        className={`rounded-md pl-3 p-1 w-[40%] h-10 text-xs bg-inputField1
+                                        border ${!fromDate && dateError ? "border-red-500 text-red-500" : " text-[#858585]"}`} />
                                 <label>To: </label>
                                 <input  type="date"
                                         value={toDate}
                                         onChange={(e) => setToDate(e.target.value)}
-                                        className={`rounded-md pl-3 p-1 w-[40%] h-10 text-xs
-                                        border ${!toDate && dateError ? "border-red-500 text-red-500" : "border-[#858585] text-[#858585]"}`} />
+                                        className={`rounded-md pl-3 p-1 w-[40%] h-10 text-xs bg-inputField1
+                                        border ${!toDate && dateError ? "border-red-500 text-red-500" : " text-[#858585]"}`} />
                               </div>
                             </div>
                           </div>

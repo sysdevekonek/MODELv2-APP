@@ -40,12 +40,7 @@ export const columns = ({ updateRow, removeRow, rowError }: ColumnsProps): Colum
       header: () => <div className="w-[7rem] pl-24">DESCRIPTION</div>,
       cell: ({ row, table }) => {
         const { SADDropdown, fetchSAD, fetchNextPageSAD } = useSADDropdown()
-    
-        // detects only the rows at the current table
-        // const allSelectedCodes = table
-        //   .getRowModel()
-        //   .rows.map(r => r.original.label)
-        //   .filter(Boolean)
+
         const allSelectedCodes = (table.options.data as NSLdata[])
         .map(r => r.label)
         .filter(Boolean)
@@ -60,6 +55,7 @@ export const columns = ({ updateRow, removeRow, rowError }: ColumnsProps): Colum
               }))}
               displayKey="PARAMETER_DESC"
               valueKey="COLUMN_CODE"
+              showValueKeyInList={false}
               selectedValue={row.original.label || ""}
               setSelectedValue={(code) => {
                 if (!code) {
@@ -96,11 +92,10 @@ export const columns = ({ updateRow, removeRow, rowError }: ColumnsProps): Colum
               placeholder={row.original.description || "Select SAD Parameter"}
               onInputChange={(val) => fetchSAD(val)}
               onScrollEnd={fetchNextPageSAD}
-              hasMore={true}
-              className={`border rounded px-2 py-1 w-full ${
+              className={`text-xs bg-inputField1 h-10 px-4 w-full border border-inputField2 rounded-lg ${
                 !row.original.description && rowError
                   ? "border-red-500"
-                  : "border-none"
+                  : "border-inputField2"
               }`}
             />
             {rowError[row.original.id] && (
