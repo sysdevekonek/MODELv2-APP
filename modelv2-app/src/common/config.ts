@@ -34,9 +34,9 @@ api.interceptors.response.use(
     if (response.config.url !== '/auth/refresh' && 
         response.status >= 200 && 
         response.status < 300) {
-      refreshTokenSilently().catch(err => {
-        console.warn('Background token refresh failed:', err);
-      });
+      // refreshTokenSilently().catch(err => {
+      //   console.warn('Background token refresh failed:', err);
+      // });
     }
     return response;
   },
@@ -116,32 +116,7 @@ api.interceptors.response.use(
   }
 );
 
-async function refreshTokenSilently() {
-  const refreshToken = sessionStorage.getItem('refreshToken');
-  if (!refreshToken) return;
-
-  try {
-    const res = await axios.post(
-      'http://localhost:4001/auth/refresh',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      }
-    );
-
-    const { accessToken, refreshToken: newRefreshToken } = res.data;
-    sessionStorage.setItem('accessToken', accessToken);
-    sessionStorage.setItem('refreshToken', newRefreshToken);
-    
-    console.log('Token refreshed silently - Testing mode');
-  } catch (error) {
-    console.warn('Silent token refresh failed:', error);
-  }
-}
-
-// Helper Function to log token status for testing (adjust as needed)
+// Helper Function to log token status for testing 
 // export const logTokenStatus = () => {
 //   const accessToken = sessionStorage.getItem('accessToken');
 //   const refreshToken = sessionStorage.getItem('refreshToken');
