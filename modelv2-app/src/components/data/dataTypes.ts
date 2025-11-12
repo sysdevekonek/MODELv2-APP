@@ -23,4 +23,5 @@ export interface UserData{
 export interface UserProperty {
   name: string;
   value: string;
+  displayValue?: string;
 }

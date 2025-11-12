@@ -30,20 +30,20 @@ export const userLogin = () => {
     return null;
   };
 
-  const handleLogin = async (e?: React.FormEvent) => {
-    e?.preventDefault();
+  // In your userLogin hook, update the handleLogin function:
+const handleLogin = async (e?: React.FormEvent) => {
+  e?.preventDefault();
 
-    if (!username || !password) {
-      toast.error('Username and password are required');
-      return;
-    }
+  if (!username || !password) {
+    toast.error('Username and password are required');
+    return;
+  }
 
-    setSubmitted(true);
-    // const loadingToast = toast.loading('Logging in...');
-    const token = btoa(`${username}:${password}`);
-    setLoading(true);
+  setSubmitted(true);
+  setLoading(true);
 
-    try {
+  try {
+     const token = btoa(`${username}:${password}`);
       const res = await api.post('/auth/login', null, {
         headers: {
           Authorization: `Basic ${token}`,
@@ -66,36 +66,35 @@ export const userLogin = () => {
       sessionStorage.setItem('userRoles', userInfo.ACCESS_PROFILE);
       sessionStorage.setItem('navigation', JSON.stringify(navList));
 
+      console.log("Access Token", accessToken);
+      console.log("Refresh Token: ", refreshToken);
+
       const firstURL = getFirstAccessibleURL(navList);
-      // toast.dismiss(loadingToast);
 
-      if (firstURL) {
-        router.push(firstURL);
-      } else {
-        toast.error('No accessible page found.');
-      }
-
-      console.log('User access profile:', userInfo.ACCESS_PROFILE);
-      console.log('User full name:', userInfo.FULLNAME);
-
-    } catch (err: any) {
-      console.error('Login failed:', err.response?.data || err.message);
-      // toast.dismiss(loadingToast);
-
-      if (err.response?.status === 401) {
-        setError('Invalid username or password');
-        toast.error('Invalid username or password');
-        console.clear();
-      } else {
-        setError('Login failed. Please try again.');
-        toast.error("Something went wrong. Please try again.");
-        console.clear();
-      }
-      setSubmitted(false);
-    } finally {
+    if (firstURL) {
+      // Don't set loading to false - let the redirect happen
+      router.push(firstURL);
+      // The component will unmount during redirect, so no need to set loading false
+    } else {
       setLoading(false);
+      toast.error('No accessible page found.');
     }
-  };
+
+  } catch (err: any) {
+    console.error('Login failed:', err.response?.data || err.message);
+    
+    if (err.response?.status === 401) {
+      setError('Invalid username or password');
+      toast.error('Invalid username or password');
+    } else {
+      setError('Login failed. Please try again.');
+      toast.error("Something went wrong. Please try again.");
+    }
+    setLoading(false);
+    setSubmitted(false);
+  }
+  // Remove the finally block since we handle loading state in each case
+};
 
   useEffect(() => {
     const token = sessionStorage.getItem('accessToken');
