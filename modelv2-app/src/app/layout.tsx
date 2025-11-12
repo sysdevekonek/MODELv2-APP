@@ -1,139 +1,59 @@
-// layout.tsx
-'use client';
-
-import type { Metadata } from "next";
+"use client";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Roboto, Montserrat } from 'next/font/google'
-import { Toaster } from "react-hot-toast";
-import "./globals.css";
-import { ThemeProvider } from '@/components/ui/ThemeProvider';
-import ThemeSwitcher from '@/components/ui/ThemeSwitcher';
-import { toastInfo } from "@/components/utils/customToasts";
+import Header from "../components/layout/header";
+import Sidebar from "../components/layout/sidebar/sidebar";
+import { SidebarProvider, useSidebar } from "@/components/layout/sidebar/sidebarContext";
 
-const roboto = Roboto({
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-roboto',
-});
+type LayoutProps = {
+  children: React.ReactNode;
+};
 
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-montserrat',
-});
-
-function AutoLogoutWrapper({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const [lastActivity, setLastActivity] = useState<number>(Date.now());
+function LayoutBody({ children }: LayoutProps) {
+  const { collapsed } = useSidebar();
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleActivity = () => {
-      setLastActivity(Date.now());
-    };
-
-    window.addEventListener('click', handleActivity);
-    window.addEventListener('keypress', handleActivity);
-    window.addEventListener('scroll', handleActivity);
-    window.addEventListener('mousemove', handleActivity);
-    window.addEventListener('touchstart', handleActivity);
-
-    return () => {
-      window.removeEventListener('click', handleActivity);
-      window.removeEventListener('keypress', handleActivity);
-      window.removeEventListener('scroll', handleActivity);
-      window.removeEventListener('mousemove', handleActivity);
-      window.removeEventListener('touchstart', handleActivity);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    const checkAuthStatus = () => {
-      const token = sessionStorage.getItem("accessToken");
-      const now = Date.now();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative min-h-screen"
+    >
+      <div className="relative min-h-screen transition-opacity duration-500 ease-in-out">
+        <Header className="fixed top-0 left-0 right-0 z-20" />
+        <Sidebar />
 
-      const idleTime = now - lastActivity;
-      if (idleTime >= 900000) { // 15 minutes
-        sessionStorage.clear();
-        toastInfo("Session expired due to inactivity");
-        router.push("/login");
-        return;
-      }
+       <main
+          className={`pt-36 p-6 bg-bg min-h-screen transition-all duration-300 ${
+            isMobile
+              ? collapsed
+                ? "ml-12"   // 👈 small gap for the hamburger icon on mobile
+                : "ml-0"    // overlay sidebar fully covers content
+              : collapsed
+                ? "ml-16"   // compact desktop sidebar
+                : "ml-64"   // full desktop sidebar
+          }`}
+        >
+          {children}
+        </main>
 
-      if (token) {
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          const isExpired = payload.exp && Date.now() >= payload.exp * 1000;
-
-          if (isExpired) {
-            sessionStorage.clear();
-            toastInfo("Session expired");
-            router.push("/login");
-            console.clear();
-          }
-        } catch (err) {
-          console.warn("Invalid token format:", err);
-          sessionStorage.clear();
-          router.push("/login");
-        }
-      }
-    };
-
-    const interval = setInterval(checkAuthStatus, 30000);
-    return () => clearInterval(interval);
-  }, [router, lastActivity]);
-
-  return <>{children}</>;
+      </div>
+    </motion.div>
+  );
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function Layout({ children }: LayoutProps) {
   return (
-    <html lang="en">
-      <body className={`${roboto.variable} ${montserrat.variable} bg-bg text-text1`}>
-        <ThemeProvider>
-          <AutoLogoutWrapper>
-            {children}
-          </AutoLogoutWrapper>
-
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                fontFamily: 'Montserrat, sans-serif',
-                fontSize: '0.750rem',
-                background: '#fff',
-                color: '#1f2937',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-              },
-              success: {
-                style: {
-                  background: '#f0fdf4',
-                },
-                iconTheme: {
-                  primary: '#22c55e',
-                  secondary: '#f0fdf4',
-                },
-              },
-              error: {
-                style: {
-                  background: '#fef2f2',
-                },
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fef2f2',
-                },
-              },
-            }}
-          />
-
-          <div className="fixed object-bottom-right bottom-4 right-4 z-50">
-            <ThemeSwitcher />
-          </div>
-        </ThemeProvider>
-      </body>
-    </html>
+    <SidebarProvider>
+      <LayoutBody>{children}</LayoutBody>
+    </SidebarProvider>
   );
 }

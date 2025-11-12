@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
-import { buildNavTree, expandOpenDropdowns } from "./sidebar.utils"
-import type { NavItem, OpenDropdowns } from "./sidebar.types"
-import SidebarTree from "./sidebarTree"
 import { Menu, LogOut, Expand } from "lucide-react"
+
+import SidebarTree from "./sidebarTree"
+import { buildNavTree, expandOpenDropdowns } from "./sidebar.utils"
 import { useSidebar } from "./sidebarContext";
+import type { NavItem, OpenDropdowns } from "./sidebar.types"
 
 export default function Sidebar() {
   const [openDropdowns, setOpenDropdowns] = useState<OpenDropdowns>({})
@@ -31,7 +32,7 @@ export default function Sidebar() {
   }, [collapsed, isHovered])
 
   useEffect(() => {
-    const handleResize = () => { setIsMobile(window.innerWidth < 1024)}
+    const handleResize = () => { setIsMobile(window.innerWidth < 1024) }
     handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
@@ -55,19 +56,16 @@ export default function Sidebar() {
   return (
     <>
       {isMobile && collapsed && (
-        <>
-           <div
-            className="fixed top-28 left-8 -translate-x-1/2 h-screen w-[1px] bg-main1 z-40 lg:hidden"
-          />
-
-        <button
-          onClick={toggleCollapsed}
-          aria-label="Open navigation"
-          className="fixed top-32 left-4 z-50 p-2 rounded-full bg-layout1 text-titlebodytext1 shadow-md lg:hidden hover:bg-layout3 hover:border-gray-300 "
+        <div className="px-4">
+          <div className="fixed top-28 left-8 -translate-x-1/2 h-screen w-[1px] bg-main1 z-40 lg:hidden" />
+          <button
+            onClick={toggleCollapsed}
+            aria-label="Open navigation"
+            className="fixed top-32 left-4 z-50 p-2 rounded-full bg-layout1 text-titlebodytext1 shadow-md lg:hidden hover:bg-layout3 hover:border-gray-300 "
           >
-          <Menu size={14} />
-        </button>
-          </>
+            <Menu size={14} />
+          </button>
+        </div>
       )}
 
       {isMobile && !collapsed && (
@@ -130,43 +128,18 @@ export default function Sidebar() {
           </nav>
 
           <div className="mb-4 bottom-0">
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 w-full pl-4 mb-4 px-2 py-2 text-left text-sm text-layoutText2 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200"
-              >
-                <LogOut className="min-w-[1rem] min-h-[1rem] h-4 w-4" />
-                {shouldShowContent && <span>Logout</span>}
-              </button>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 w-full pl-4 mb-4 px-2 py-2 text-left text-sm text-layoutText2 rounded-md hover:bg-red-500 hover:text-white transition-all duration-200"
+            >
+              <LogOut className="min-w-[1rem] min-h-[1rem] h-4 w-4" />
+              {shouldShowContent && <span>Logout</span>}
+            </button>
+          </div>
 
         </div>
 
-        <style jsx global>{`
-          .custom-scrollbar {
-            scrollbar-width: thin;
-            scrollbar-color: #94a3b8 transparent;
-          }
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-            margin: 4px 0;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
-            border-radius: 9999px;
-            border: 2px solid transparent;
-            background-clip: content-box;
-            transition: background 0.3s ease;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
-          }
-          .custom-scrollbar::-webkit-scrollbar-corner {
-            background: transparent;
-          }
-        `}</style>
+        
       </aside>
     </>
   )
