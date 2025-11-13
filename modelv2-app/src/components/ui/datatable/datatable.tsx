@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="odd:bg-[#ececec] even:bg-bgContainer hover:bg-gray-100 transition-colors"
+                className="odd:bg-bg even:bg-bgContainer hover:bg-bg transition-colors"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
