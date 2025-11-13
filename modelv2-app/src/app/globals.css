@@ -51,7 +51,7 @@ body {
   .dark {
     --main-1: 227 9% 19%;
     --input-field-1: 0 0% 7%;
-    --input-field-2: 0 0% 13%;
+    --input-field-2: 0 0% 30%;
     --button-1: 227 9% 19%;
     --button-2: 225 6% 13%;
     --button-3: 227 9% 19%;
@@ -178,4 +178,38 @@ body {
   50%  { transform: translateY(0);                opacity: 1; }
   80%  { transform: translateY(100%);             opacity: 0; }
   100% { transform: translateY(100%);             opacity: 0; }
+}
+/* === GLOBAL SCROLLBAR STYLING === */
+
+/* Applies to everything */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 transparent;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
