@@ -14,10 +14,7 @@ export default function LoginPage() {
     setUsername,
     password,
     setPassword,
-    error,
-    setError,
     showPassword,
-    setShowPassword,
     handleClear,
     togglePasswordVisibility,
     handleLogin,
@@ -29,16 +26,14 @@ export default function LoginPage() {
     if (loading) {
       setIsTransitioning(true);
     } else {
-      // When loading becomes false, wait a bit for smooth transition then hide loading screen
       const timer = setTimeout(() => {
         setIsTransitioning(false);
-      }, 300); // Short delay for smooth transition 
+      }, 300);
 
       return () => clearTimeout(timer);
     }
   }, [loading]);
 
-  // Show loading screen only when actually transitioning
   if (isTransitioning && loading) {
     return <LoadingScreen />;
   }
@@ -46,34 +41,22 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-bgDef">
-      {/* Background shapes */}
       <div className="absolute inset-0 z-0 border border-slate-200 border-solid">
         <div
           className="absolute bottom-0 w-full h-full bg-mainDef1"
-          style={{
-            clipPath:
-              "polygon(73.1% 43.3%, 100% 0%, 100% 100%, 0% 100%, 0% 16.3%)",
-          }}
+          style={{ clipPath: "polygon(73.1% 43.3%, 100% 0%, 100% 100%, 0% 100%, 0% 16.3%)"}}
         />
         <div
           className="absolute bottom-0 w-full h-full bg-mainDef2"
-          style={{
-            clipPath:
-              "polygon(70.7% 56.3%, 100% 14.5%, 100% 100%, 0% 100%, 0% 16.3%)",
-          }}
+          style={{ clipPath: "polygon(70.7% 56.3%, 100% 14.5%, 100% 100%, 0% 100%, 0% 16.3%)"}}
         />
         <div
           className="absolute bottom-0 w-full h-full bg-mainDef3"
-          style={{
-            clipPath:
-              "polygon(85.5% 80.8%, 100% 49.5%, 100% 100%, 0% 100%, 0% 40%)",
-          }}
+          style={{ clipPath: "polygon(85.5% 80.8%, 100% 49.5%, 100% 100%, 0% 100%, 0% 40%)"}}
         />
       </div>
 
-      {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
-        {/* Logo */}
         <div className="relative w-[30rem] sm:w-[30rem] md:w-[30rem] lg:w-[30rem] h-[4rem] sm:h-[5rem] md:h-[6rem] lg:h-[7.5rem] mb-6 md:mb-8">
           <Image
             src="/modellogo.png"
@@ -85,11 +68,8 @@ export default function LoginPage() {
           />
         </div>
 
-        {/* Login Form */}
         <div className="w-full max-w-xs sm:max-w-sm md:max-w-md scale-95 sm:scale-100 transition-transform">
-          <form
-            className="rounded-[5px] shadow-2xl p-4 sm:p-5 bg-white"
-          >
+          <form className="rounded-[5px] shadow-2xl p-4 sm:p-5 bg-white">
             <div className="mb-2">
               <label htmlFor="username" className="block text-xs mb-1  text-mainTextDef1 ">
                 <h3>Username</h3>
@@ -102,7 +82,7 @@ export default function LoginPage() {
                 maxLength={32}
                 required
                 className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
-                                focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
               />
             </div>
             <div className="mb-2">
@@ -118,7 +98,7 @@ export default function LoginPage() {
                   maxLength={32}
                   required
                   className="w-full text-xs h-10 px-4 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 
-                                    focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
+                  focus:border-transparent placeholder:text-slate-400 text-slate-700 placeholder:font-titleFont placeholder:text-xs"
                 />
                 <button
                   type="button"
@@ -139,7 +119,7 @@ export default function LoginPage() {
               </span>
             </div>
 
-            <div className="gap-2 flex flex-col sm:flex-row justify-center align-center">
+            <div className="flex gap-2 flex flex-col sm:flex-row justify-center align-center">
               <Button
                 type="submit"
                 variant="primary"
