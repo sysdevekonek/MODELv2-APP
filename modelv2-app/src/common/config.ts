@@ -1,6 +1,6 @@
 // config.ts
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
+import { toastInfo } from '@/components/utils/customToasts';
 
 const api = axios.create({
   baseURL: 'http://localhost:4001',
@@ -34,9 +34,9 @@ api.interceptors.response.use(
     if (response.config.url !== '/auth/refresh' && 
         response.status >= 200 && 
         response.status < 300) {
-      refreshTokenSilently().catch(err => {
-        console.warn('Background token refresh failed:', err);
-      });
+      // refreshTokenSilently().catch(err => {
+      //   console.warn('Background token refresh failed:', err);
+      // });
     }
     return response;
   },
@@ -99,7 +99,7 @@ api.interceptors.response.use(
         // Clear storage and redirect to login
         sessionStorage.clear();
         console.clear();
-        toast.error('Session failed. Please login again.');
+        toastInfo('Session failed. Please login again.');
         
         // Use window.location for reliable redirect
         setTimeout(() => {
@@ -116,32 +116,7 @@ api.interceptors.response.use(
   }
 );
 
-async function refreshTokenSilently() {
-  const refreshToken = sessionStorage.getItem('refreshToken');
-  if (!refreshToken) return;
-
-  try {
-    const res = await axios.post(
-      'http://localhost:4001/auth/refresh',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      }
-    );
-
-    const { accessToken, refreshToken: newRefreshToken } = res.data;
-    sessionStorage.setItem('accessToken', accessToken);
-    sessionStorage.setItem('refreshToken', newRefreshToken);
-    
-    console.log('Token refreshed silently - Testing mode');
-  } catch (error) {
-    console.warn('Silent token refresh failed:', error);
-  }
-}
-
-// Helper Function to log token status for testing (adjust as needed)
+// Helper Function to log token status for testing 
 // export const logTokenStatus = () => {
 //   const accessToken = sessionStorage.getItem('accessToken');
 //   const refreshToken = sessionStorage.getItem('refreshToken');
