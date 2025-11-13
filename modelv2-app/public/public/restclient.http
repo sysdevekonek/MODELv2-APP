@@ -1,44 +1,163 @@
-###
-POST http://localhost:4001/auth/login
+### REQUEST REFERENCES
+@host= http://localhost:4001
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTY5ODI2MDQsImV4cCI6MTc1Njk4MzUwNH0._sl3d6wsw_l-x5SXeCOYw0WVenyLuQW85gXyUm0U_IU
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTAzODcwMzEsImV4cCI6MTc1MDM4NzkzMX0._P_0MVY2wCRO-f87fKdGnEApaeznUkFNkGIXA4Ht-eo
+
+### TOKEN REQUEST
+POST {{host}}/auth/login
 Content-Type: application/json
 Authorization: Basic bXV0eWEtYnJva2VyMTpwYXNzMTIz
 
-###
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzUyNTU4NTI2LCJleHAiOjE3NTI1NTk3MjZ9.CR6b2JXE2-6z8lhSJUYwgwh5uBRG9Q9egXEfdayMIl4
-POST http://localhost:4001/auth/refresh
+### REFRESH TOKEN
+POST {{host}}/auth/refresh
 Authorization: Bearer {{refreshToken}}
 
-###
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dHlhLWJyb2tlcjEiLCJ0b2tlblR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NTQyODYzMzksImV4cCI6MTc1NDI4NzIzOX0.Yy6q_HBsuQYEZ2YHGk-RzYMaKVNMPT9U8PKi6kQvLB8
-GET http://localhost:4001/user/info
+### USER DETAILS
+GET {{host}}/user/info
 Authorization: Bearer {{accessToken}}
 
-###
-GET http://localhost:4001/reference/clients
+### CLIENTS USED BY USER
+GET {{host}}/reference/clients
 Authorization: Bearer {{accessToken}}
 
-###
-GET http://localhost:4001/reports/summary?from_date=01/01/2025&to_date=07/08/2025&client_code=479354463000
+### REPORTS || SUMMARY REPORT
+GET {{host}}/reports/summary?from_date=01/01/2025&to_date=07/08/2025&client_code=479354463000
 Authorization: Bearer {{accessToken}}
 
+###  REGISTRATION || CHECK IF USERNAME EXIST
+GET {{host}}/utilities/registration/check/username?value=mutya-broker11
+Authorization: Bearer {{accessToken}}
 
-###
-POST http://localhost:4001/reports/pro-info
+### ALL CLIENT
+GET {{host}}/reference/clients/all
+Authorization: Bearer {{accessToken}}
+
+### ALL PROFILE TYPE
+GET {{host}}/reference/profile/all
+Authorization: Bearer {{accessToken}}
+
+### ALL COUNTRY
+GET {{host}}/reference/country/all
+Authorization: Bearer {{accessToken}}
+
+### ALL DEPARTMENT
+GET {{host}}/reference/department/all
+Authorization: Bearer {{accessToken}}
+
+### SEARCH CONSIGNEE
+GET {{host}}/search/consignee?value=EMBASSY&start=1&end=2
+Authorization: Bearer {{accessToken}}
+
+### GET CONSIGNEE BY RANGE
+GET {{host}}/reference/consignees/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### REGISTATION || CREATE USER
+POST {{host}}/user/create
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
-[
-  {
-    "val_type"     : "airwaybill",
-    "val_list"     : "AAGJ003921",
-    "generate_type": "PRO"
-  }
-]
+{
+  "username": "jdoe",
+  "password": "pass123",
+  "account_reference": "REF-2025",
+  "account_holder": "REF-2025",
+  "address": "123 Main St",
+  "city": "Metro Manila",
+  "zip": "1700",
+  "country": "PH",
+  "phone_no": "02-12345678",
+  "cellphone_no": "09171234567",
+  "fax": "02-87654321",
+  "email": "jdoe@example.com",
+  "name": "John Doe",
+  "company": "C001",
+  "enable_client_access": 1,
+  "auto_submit_capable": 0,
+  "auto_submit_capable2": 0,
+  "profile": "USER",
+  "properties":[
+    {
+      "name": "TIN",
+      "value": "215061306000"
+    },
+    {
+      "name": "DEPARTMENT",
+      "value": "W"
+    },
+    {
+      "name": "",
+      "value": "W"
+    },
+    {
+      "name": "TIN",
+      "value": ""
+    }
+  ]
+}
 
-###
-GET http://localhost:4001/reference/check/pro-exist?val_type=pronumber&value=RVM2500013T
+### REPORT | NSL GET USER TEMPLATE
+GET {{host}}/reference/templates/NSL
 Authorization: Bearer {{accessToken}}
 
-###
-GET http://localhost:4001/reference/transactions/details?value=RVM2500013T
+### GET CONSOLIDATOR BY RANGE
+GET {{host}}/reference/consolidators/range?start=1&end=20
 Authorization: Bearer {{accessToken}}
+
+### SEARCH CONSOLIDATOR
+GET {{host}}/search/consolidator?value=EMBASSY
+Authorization: Bearer {{accessToken}}
+
+### GET WAREHOUSE BY RANGE
+GET {{host}}/reference/warehouse/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### SEARCH WAREHOUSE
+GET {{host}}/search/warehouse?value=TMW
+Authorization: Bearer {{accessToken}}
+
+### GET DEPARTMENT BY RANGE
+GET {{host}}/reference/department/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### SEARCH DEPARTMENT
+GET {{host}}/search/department?value=EXPORT
+Authorization: Bearer {{accessToken}}
+
+### SEARCH SAD FIELD
+GET {{host}}/search/sad/field?value=PRO
+Authorization: Bearer {{accessToken}}
+
+### GET SAD FIELD BY RANGE
+GET {{host}}/reference/sad/field/range?start=1&end=20
+Authorization: Bearer {{accessToken}}
+
+### REPORT | NSL CHECK IF TEMPLATE NAME EXIST
+GET {{host}}/search/template/check/name?value=MUTYA
+Authorization: Bearer {{accessToken}}
+
+### REPORT | NSL SAVE TEMPLATE
+POST {{host}}/reports/nsl/save/template
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "templateName": "Monthly Summary",
+  "columns": "DEPT;PRO;HAWB",
+}
+
+### REPORT | NSL GENERATE REPORT
+POST {{host}}/reports/nsl
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "fromDate":"01/01/2025",
+  "toDate":"08/24/2025",
+  "ConsigneeCode":"",
+  "Invoice":"1",
+  "ConsolidatorCode":"",
+  "WarehouseCode":"",
+  "DepartmentCode":"",
+  "columns":"DEPT;PRO;HAWB;CNEE;TOTAL_DUTIES_AND_TAXES"
+}
