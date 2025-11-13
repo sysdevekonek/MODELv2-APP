@@ -39,11 +39,10 @@ export const userLogin = () => {
     }
 
     setSubmitted(true);
-    // const loadingToast = toast.loading('Logging in...');
-    const token = btoa(`${username}:${password}`);
     setLoading(true);
 
     try {
+      const token = btoa(`${username}:${password}`);
       const res = await api.post('/auth/login', null, {
         headers: {
           Authorization: `Basic ${token}`,
@@ -63,38 +62,28 @@ export const userLogin = () => {
       sessionStorage.setItem('fullName', userInfo.FULLNAME);
       sessionStorage.setItem('userRoles', userInfo.ACCESS_PROFILE);
       sessionStorage.setItem('navigation', JSON.stringify(navList));
-
-      console.log("Access Token", accessToken);
-      console.log("Refresh Token: ", refreshToken);
-
+      
       const firstURL = getFirstAccessibleURL(navList);
-      // toast.dismiss(loadingToast);
 
       if (firstURL) {
         router.push(firstURL);
       } else {
+        setLoading(false);
         toast.error('No accessible page found.');
       }
 
-      console.log('User access profile:', userInfo.ACCESS_PROFILE);
-      console.log('User full name:', userInfo.FULLNAME);
-
     } catch (err: any) {
       console.error('Login failed:', err.response?.data || err.message);
-      // toast.dismiss(loadingToast);
 
       if (err.response?.status === 401) {
         setError('Invalid username or password');
         toast.error('Invalid username or password');
-        console.clear();
       } else {
         setError('Login failed. Please try again.');
         toast.error("Something went wrong. Please try again.");
-        console.clear();
       }
-      setSubmitted(false);
-    } finally {
       setLoading(false);
+      setSubmitted(false);
     }
   };
 
