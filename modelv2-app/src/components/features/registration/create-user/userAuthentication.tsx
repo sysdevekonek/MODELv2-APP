@@ -133,15 +133,20 @@ const UserAuthentication: React.FC<UserAuthenticationProps> = ({ goNext, goBack,
         />
       </div>
 
-      {/* Buttons */}
-      <div className="py-6 flex flex-col sm:flex-row justify-between gap-4">
-        <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-center">
-          <ArrowLeft size={18} /> Back
-        </Button>
-        <Button type="submit" variant="secondary" className="w-full sm:w-auto justify-center">
-          Next <ArrowRight size={18} />
-        </Button>
-      </div>
+           {/* Navigation Buttons */}
+        <div className="py-6 flex flex-col sm:flex-row justify-between gap-4">
+          <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-start">
+            <ArrowLeft size={18} /> Back
+          </Button>
+          <Button
+            type="button"
+            onClick={goNext}
+            variant="secondary"
+            className={"flex w-full sm:w-auto justify-end"}
+          >
+            Next <ArrowRight size={18} />
+          </Button>
+        </div>
     </form>
   </div>
 );
