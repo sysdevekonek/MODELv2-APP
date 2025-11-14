@@ -8,6 +8,7 @@ import { usenslreport } from "@/hooks/reports/usenslreport";
 import { CirclePlus } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import { RotateCcw } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -234,6 +235,37 @@ const state = usenslreport();
                     className="transition font-medium w-32 h-full bg-main1 text-titlebodytext1 rounded-sm flex justify-center items-center gap-3 hover:bg-buttonHover">
                       Add Field <CirclePlus height={20} width={20}/>
                   </button>
+                  <button 
+                    onClick={() => {
+                      if (!validateForm(data, fromDate, toDate)) return;
+
+                      toast.promise(
+                        exportToExcel(data, {
+                          fromDate,
+                          toDate,
+                          ConsigneeCode: selectedConsignee,
+                          Invoice: detailedInvoice,
+                          ConsolidatorCode: selectedConsolidator,
+                          WarehouseCode: selectedWarehouse,
+                          DepartmentCode: selectedDepartment,
+                        }),
+                        {
+                          loading: "Generating report...",
+                          success: <b>Report generated successfully!</b>,
+                          error: <b>Failed to generate report.</b>,
+                        }
+                      );
+                    }}
+                    title="Download Rows"
+                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3">
+                      <Download height={20} width={20}/>
+                  </button>
+                  <button 
+                    onClick={handleResetRows}
+                    title="Reset Rows"
+                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3">
+                      <RotateCcw height={20} width={20}/>
+                  </button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="transition font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center hover:bg-buttonHover hover:text-white" title="Options">
@@ -244,41 +276,11 @@ const state = usenslreport();
                       <DropdownMenuItem onClick={handleOpenDialog}>
                         Save
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (!validateForm(data, fromDate, toDate)) return;
-
-                          toast.promise(
-                            exportToExcel(data, {
-                              fromDate,
-                              toDate,
-                              ConsigneeCode: selectedConsignee,
-                              Invoice: detailedInvoice,
-                              ConsolidatorCode: selectedConsolidator,
-                              WarehouseCode: selectedWarehouse,
-                              DepartmentCode: selectedDepartment,
-                            }),
-                            {
-                              loading: "Generating report...",
-                              success: <b>Report generated successfully!</b>,
-                              error: <b>Failed to generate report.</b>,
-                            }
-                          );
-                        }}
-                      >
-                        Generate Report
-                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => {/* your print logic */}}>
                         Generate All
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <button 
-                    onClick={handleResetRows}
-                    title="Reset Rows"
-                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3">
-                      <RotateCcw height={20} width={20}/>
-                  </button>
                 </div>
                 {/* start of form */}
                 <div ref={rowErrorRef} className='w-full h-full'>
