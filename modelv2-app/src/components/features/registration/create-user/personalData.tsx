@@ -19,7 +19,6 @@ const PersonalData: React.FC<PersonalDataProps> = ({ goNext, goBack, errors, cle
   const { countryDropdown, loading, countriesChange } = useCountryDropdown();
   const { userData, updateField } = useRegistrationContext();
 
-  // 🔹 Reusable renderer for regular inputs
   const renderInputField = (
     id: keyof UserData,
     label: string,
@@ -44,9 +43,8 @@ const PersonalData: React.FC<PersonalDataProps> = ({ goNext, goBack, errors, cle
           clearError(id);
         }}
         placeholder={placeholder}
-        className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 ${
-          errors?.[id] ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"
-        }`}
+        className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 ${errors?.[id] ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"
+          }`}
       />
     </div>
   );
@@ -76,14 +74,12 @@ const PersonalData: React.FC<PersonalDataProps> = ({ goNext, goBack, errors, cle
           updateField("country", val);
           clearError("country");
         }}
-        className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 ${
-          errors?.[id] ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"
-        }`}
+        className={`bg-inputField1 w-full md:w-96 text-xs h-10 px-4 border rounded-lg focus:outline-none focus:ring-2 ${errors?.[id] ? "border-red-500 ring-1 ring-red-500" : "border-inputField2 focus:ring-mainDef3"
+          }`}
       />
     </div>
   );
 
-  // 🔹 Submit handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     goNext();

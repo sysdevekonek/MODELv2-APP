@@ -19,10 +19,10 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
   const { consigneeDropdown, fetchConsignee, fetchNextPage, loading: consigneeLoading } = useConsigneeDropdown();
   const { departmentDropdown, loading: deptLoading, departmentChange } = useDepartmentDropdown();
   const { userData, updateField, isFormComplete } = useRegistrationContext();
-  
+
   const [propertyName, setPropertyName] = useState("");
   const [propertyValue, setPropertyValue] = useState("");
-  
+
   const isReviewDisabled = !isFormComplete(userData) || Object.keys(errors).length > 0;
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
       newProperty = { name: propertyName, value: propertyValue, displayValue };
     }
 
-    const alreadyExists = userData.properties.some( p => p.name === newProperty.name && p.value === newProperty.value );
+    const alreadyExists = userData.properties.some(p => p.name === newProperty.name && p.value === newProperty.value);
 
     if (alreadyExists) {
       setPropertyName("");
@@ -83,10 +83,8 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
             className="w-full"
           >
             <Label id="propertyName-label" className="text-sm font-medium mb-1">Property Name:</Label>
-            <AriaButton
-              className={`flex justify-between items-center bg-inputField1 text-xs h-10 w-full px-4 border border-inputField2 rounded-lg 
-                  focus:outline-none focus:ring-2 focus:ring-mainDef3 transition-all`}
-            >
+            <AriaButton className={`flex justify-between items-center bg-inputField1 text-xs h-10 w-full px-4 border border-inputField2 rounded-lg 
+            focus:outline-none focus:ring-2 focus:ring-mainDef3 transition-all`}>
               <SelectValue className={({ isPlaceholder }) => `truncate ${isPlaceholder ? "text-subtext" : "text-bodytext2"}`}>
                 {propertyName || "Select an option"}
               </SelectValue>
@@ -200,18 +198,11 @@ const UserProperties: React.FC<UserPropertiesProps> = ({ goNext, goBack, errors 
           <Button type="button" onClick={goBack} variant="secondary" className="w-full sm:w-auto justify-start">
             <ArrowLeft size={18} /> Back
           </Button>
-          <Button
-            type="button"
-            onClick={goNext}
-            variant="secondary"
-            disabled={isReviewDisabled}
-            className={"flex w-full sm:w-auto justify-end"}
-          >
+          <Button type="button" onClick={goNext} variant="secondary" disabled={isReviewDisabled} className={"flex w-full sm:w-auto justify-end"}>
             Next <ArrowRight size={18} />
           </Button>
         </div>
       </form>
-      
     </div>
   );
 };
