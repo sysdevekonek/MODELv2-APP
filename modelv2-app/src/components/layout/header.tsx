@@ -42,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({ className = "" }) => {
             alt="MODEL Logo"
             width={240}
             height={80}
-            className="h-auto w-[15rem] transition-opacity duration-300 ease-in-out"
+            className="h-auto w-auto transition-opacity duration-300 ease-in-out"
           />
         </a>
         <div className="mr-6">
