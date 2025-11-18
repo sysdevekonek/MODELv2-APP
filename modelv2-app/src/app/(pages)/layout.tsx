@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Header from "../../components/layout/header";
 import Sidebar from "../../components/layout/sidebar/sidebar";
+import { ThemeProvider } from '@/components/ui/ThemeProvider';
+import ThemeSwitcher from '@/components/ui/ThemeSwitcher';
 import { SidebarProvider, useSidebar } from "@/components/layout/sidebar/sidebarContext";
 
 type LayoutProps = {
@@ -28,6 +30,7 @@ function LayoutBody({ children }: LayoutProps) {
       className="relative min-h-screen"
     >
       <div className="relative min-h-screen transition-opacity duration-500 ease-in-out">
+        <ThemeProvider>
         <Header className="fixed top-0 left-0 right-0 z-20" />
         <Sidebar />
 
@@ -43,8 +46,11 @@ function LayoutBody({ children }: LayoutProps) {
           }`}
         >
           {children}
+          <div className="fixed object-bottom-right bottom-4 right-4 z-50">
+            <ThemeSwitcher />
+          </div>
         </main>
-
+        </ThemeProvider>
       </div>
     </motion.div>
   );
