@@ -7,8 +7,6 @@ import { useRouter } from "next/navigation";
 import { Roboto, Montserrat } from 'next/font/google'
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import { ThemeProvider } from '@/components/ui/ThemeProvider';
-import ThemeSwitcher from '@/components/ui/ThemeSwitcher';
 import { toastInfo } from "@/components/utils/customToasts";
 
 const roboto = Roboto({
@@ -92,7 +90,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${roboto.variable} ${montserrat.variable} bg-bg text-text1`}>
-        <ThemeProvider>
           <AutoLogoutWrapper>
             {children}
           </AutoLogoutWrapper>
@@ -128,11 +125,6 @@ export default function RootLayout({
               },
             }}
           />
-
-          <div className="fixed object-bottom-right bottom-4 right-4 z-50">
-            <ThemeSwitcher />
-          </div>
-        </ThemeProvider>
       </body>
     </html>
   );
