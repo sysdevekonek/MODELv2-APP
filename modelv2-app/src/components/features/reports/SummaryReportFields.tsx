@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { useSummaryReports } from "@/hooks/useSummaryReport";
-import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import { useSummaryReports } from "@/hooks/reports/useSummaryReport";
+import ComboBox, { ComboBoxRef } from "@/components/utils/comboBox";
 import Button from "@/components/ui/Buttons";
 
 export default function SummaryReportFields() {
