@@ -2,7 +2,7 @@
 import { userLogin } from "@/hooks/userLogin";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "@/components/ui/Buttons";
-import LoadingScreen from "@/components/loadingScreen";
+import LoadingScreen from "@/components/utils/loadingScreen";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -120,23 +120,21 @@ export default function LoginPage() {
             </div>
 
             <div className="flex gap-2 flex flex-col sm:flex-row justify-center align-center">
-              <Button
+              <button
                 type="submit"
-                variant="primary"
                 disabled={loading || submitted}
                 onClick={handleLogin}
-                className=" flex justify-center"
+                className="flex items-center gap-2 px-6 h-8 font-semibold text-sm rounded-[5px] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 font-titleFont i bg-mainDef3 text-white hover:bg-mainDef1 hover:text-mainDef2"
               >
                 LOGIN
-              </Button>
-              <Button
+             </button>
+              <button
                 type="button"
-                variant="secondary"
                 onClick={handleClear}
-                className=" flex justify-center"
+                className="flex items-center gap-2 px-6 h-8 font-semibold text-sm rounded-[5px] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 font-titleFont i bg-mainDef2 text-white hover:bg-mainDef1 hover:text-mainDef2"
               >
                 CLEAR
-              </Button>
+              </button>
             </div>
           </form>
         </div>
