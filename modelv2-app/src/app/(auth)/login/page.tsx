@@ -2,7 +2,7 @@
 import { userLogin } from "@/hooks/userLogin";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "@/components/ui/Buttons";
-import LoadingScreen from "@/components/loadingScreen";
+import LoadingScreen from "@/components/utils/loadingScreen";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
