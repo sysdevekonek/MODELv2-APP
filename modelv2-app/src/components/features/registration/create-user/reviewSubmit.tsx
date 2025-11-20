@@ -5,7 +5,7 @@ import { useRegistrationContext } from "@/hooks/registration/RegistrationContext
 import { useRegistration } from "@/hooks/registration/useRegistration";
 import Button from "@/components/ui/Buttons";
 import { Eye, EyeOff } from "lucide-react";
-import { useClientRoleDropdown, useCountryDropdown } from "@/components/dropdownAPI";
+import { useClientRoleDropdown, useCountryDropdown } from "@/components/utils/dropdownAPI";
 
 interface reviewSubmitProps {
   goBack: () => void;

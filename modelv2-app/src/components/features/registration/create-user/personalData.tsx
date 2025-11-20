@@ -1,8 +1,8 @@
 'use client';
 import React, { useRef } from "react";
-import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import ComboBox, { ComboBoxRef } from "@/components/utils/comboBox";
 import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
-import { useCountryDropdown } from "@/components/dropdownAPI";
+import { useCountryDropdown } from "@/components/utils/dropdownAPI";
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { UserData } from "@/components/data/dataTypes";
 import Button from "@/components/ui/Buttons";
