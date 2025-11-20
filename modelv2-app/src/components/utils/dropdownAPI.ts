@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef, cache } from "react";
-import api from '../common/config';
+import api from '../../common/config';
 import toast from 'react-hot-toast';
 import { debounce } from "lodash";
 
