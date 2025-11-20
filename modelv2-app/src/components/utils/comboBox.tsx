@@ -22,6 +22,7 @@ export interface ComboBoxProps {
   loading?: boolean;                   // Loading state indicator
   ariaLabel?: string;                  // Accessibility label
   showValueKeyInList?: boolean;        // Whether to display code + name together
+  onOpen?: () => void;  
 }
 
 const ComboBox = forwardRef<ComboBoxRef, ComboBoxProps>(
@@ -40,6 +41,7 @@ const ComboBox = forwardRef<ComboBoxRef, ComboBoxProps>(
       loading = false,
       ariaLabel = '',
       showValueKeyInList = true,
+      onOpen,
     },
     ref
   ) => {
@@ -113,6 +115,8 @@ const ComboBox = forwardRef<ComboBoxRef, ComboBoxProps>(
 
     // fetches initial list on first open.
     const handleFocus = () => {
+       onOpen?.();
+
       if (onInputChange && !hasUserInteracted) {
         onInputChange('ALL');
       }
