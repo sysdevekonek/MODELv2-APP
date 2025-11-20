@@ -1,8 +1,15 @@
+import DeleteSADPage from "@/components/features/deleteSAD";
+
 export default function DeleteSAD() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen text-center text-gray-600">
-      <h1 className="text-3xl font-bold mb-2">🚧 Under Maintenance</h1>
-      <p className="text-lg">This feature is not yet available. Please check back soon.</p>
+    <div className="bg-bgContainer w-full">
+      <div className="bg-main1 text-titlebodytext1 font-semibold p-4 inline-block rounded-[5px] mb-4 -translate-y-1/4 -top-6 shadow-lg">
+        <h1>DELETE SAD</h1>
+      </div>
+      <div className="p-4">
+        <DeleteSADPage />
+      </div>
     </div>
+   
   );
 }
