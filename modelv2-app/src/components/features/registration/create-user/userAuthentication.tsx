@@ -1,8 +1,8 @@
 import React, { useState }from "react";
-import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
+import { useRegistrationContext } from "@/hooks/registration/create-user/RegistrationContext";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { UserData } from "@/components/data/dataTypes";
-import { validateField } from "@/hooks/registration/RegistrationValidation";
+import { validateField } from "@/hooks/registration/create-user/RegistrationValidation";
 import Button from "@/components/ui/Buttons";
 
 interface UserAuthenticationProps {

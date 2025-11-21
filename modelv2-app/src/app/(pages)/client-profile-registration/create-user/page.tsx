@@ -10,7 +10,7 @@ import UserAuthentication from "@/components/features/registration/create-user/u
 import UserProperties from "@/components/features/registration/create-user/userProperties";
 import ReviewAndSave from "@/components/features/registration/create-user/reviewSubmit";
 
-import { RegistrationProvider, useRegistrationContext } from "@/hooks/registration/RegistrationContext";
+import { RegistrationProvider, useRegistrationContext } from "@/hooks/registration/create-user/RegistrationContext";
 
 const tabs = ["User Information", "Personal Data", "User Authentication", "User Specific Properties", "Review & Submit"];
 

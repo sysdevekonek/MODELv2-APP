@@ -5,7 +5,7 @@ import ComboBox, { ComboBoxRef } from "@/components/utils/comboBox";
 import { Button as AriaButton, Label, ListBox, ListBoxItem, Popover, Select, SelectValue } from 'react-aria-components';
 import { useDepartmentDropdown, useConsigneeDropdown } from "@/components/utils/dropdownAPI";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
-import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
+import { useRegistrationContext } from "@/hooks/registration/create-user/RegistrationContext";
 import Button from "@/components/ui/Buttons";
 
 interface UserPropertiesProps {

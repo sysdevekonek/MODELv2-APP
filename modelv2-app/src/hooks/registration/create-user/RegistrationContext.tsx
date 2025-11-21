@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { UserData } from "@/components/data/dataTypes";
-import { validateForm, validateFieldAsync } from "@/hooks/registration/RegistrationValidation";
+import { validateForm, validateFieldAsync } from "@/hooks/registration/create-user/RegistrationValidation";
 
 const initialUserData: UserData = {
   username: "",

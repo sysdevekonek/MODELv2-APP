@@ -1,8 +1,8 @@
 "use client"
 import React from "react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import { useRegistrationContext } from "@/hooks/registration/RegistrationContext"
-import { useRegistration } from "@/hooks/registration/useRegistration";
+import { useRegistrationContext } from "@/hooks/registration/create-user/RegistrationContext"
+import { useRegistration } from "@/hooks/registration/create-user/useRegistration";
 import Button from "@/components/ui/Buttons";
 import { Eye, EyeOff } from "lucide-react";
 import { useClientRoleDropdown, useCountryDropdown } from "@/components/utils/dropdownAPI";

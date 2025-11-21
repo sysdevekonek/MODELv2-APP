@@ -1,7 +1,7 @@
 import React, { useRef, useCallback } from "react";
 import ComboBox, { ComboBoxRef } from "@/components/utils/comboBox";
 import { useClientRoleDropdown } from "@/components/utils/dropdownAPI";
-import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
+import { useRegistrationContext } from "@/hooks/registration/create-user/RegistrationContext";
 import { UserData } from "@/components/data/dataTypes";
 import { ArrowRight } from "lucide-react";
 import Button from "@/components/ui/Buttons";

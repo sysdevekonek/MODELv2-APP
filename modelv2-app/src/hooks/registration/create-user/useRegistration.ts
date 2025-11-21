@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/common/config";
 import { toast } from "react-hot-toast";
-import { useRegistrationContext } from "@/hooks/registration/RegistrationContext";
+import { useRegistrationContext } from "@/hooks/registration/create-user/RegistrationContext";
 
 export function useRegistration() {
   const { userData, clearData } = useRegistrationContext();
