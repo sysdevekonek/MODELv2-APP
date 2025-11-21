@@ -26,6 +26,25 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     autoResetPageIndex: false,
   })
 
+  React.useEffect(() => {
+    const { pageIndex, pageSize } = table.getState().pagination
+    const totalRows = data.length
+    const totalPages = Math.ceil(totalRows / pageSize)
+    const maxVisibleRows = (pageIndex + 1) * pageSize
+  
+    if (totalRows > maxVisibleRows && table.getCanNextPage()) {
+      const timer = setTimeout(() => {
+        table.setPageIndex(totalPages - 1)
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  
+    if (pageIndex > 0 && totalRows <= pageIndex * pageSize) {
+      table.setPageIndex(totalPages - 1)
+    }
+  }, [data.length, table])
+  
+
   return (
     <div className="overflow-hidden rounded-md">
       <Table>
