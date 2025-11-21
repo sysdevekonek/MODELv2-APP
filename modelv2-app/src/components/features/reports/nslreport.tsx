@@ -1,5 +1,5 @@
 "use client"
-import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import ComboBox, { ComboBoxRef } from "@/components/utils/comboBox";
 import toast from "react-hot-toast";
 import { useRef, useEffect } from "react";
 import { columns } from "../../utils/nslDatatable/columns"
@@ -66,6 +66,7 @@ const state = usenslreport();
     validateForm,
     dateError,
     rowError,
+    fetchAndExportReport
   } = state;
 
   const dateErrorRef = useRef<HTMLDivElement | null>(null);
@@ -82,14 +83,14 @@ const state = usenslreport();
   
   return (
     <>
-      <div className='mt-6 w-full h-[150vh] flex flex-col items-center justify-center bg-bgContainer shadow rounded-md'>
+      <div className='border border-red-700 mt-6 w-full h-auto flex flex-col items-center justify-center bg-bgContainer shadow rounded-md'>
             <div className='w-full'>
               <div className='mt-[-1.5em] bg-main1 text-titlebodytext1 font-bold w-2/5 lg:w-1/4 h-[3em] flex justify-center items-center rounded'>
                   <h1>NSL REPORT</h1>
               </div>
             </div>
             <div className='mt-5 w-[95%] h-[30em] flex flex-col'>
-                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-full flex items-center'>
+                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-[8%] flex items-center'>
                     <h3>NSL REPORT EXTRACTION</h3>
                 </div>
                 {/* start of form */}
@@ -225,7 +226,7 @@ const state = usenslreport();
             </div>
             {/* end of form */}
             <div className='mt-5 w-[95%] h-full flex flex-col mb-5'>
-                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-[3em] flex items-center'>
+                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-[2.5em] flex items-center'>
                     <h3>REPORT TABLE</h3>
                 </div>
                 <div className="flex flex-row w-full h-[2.5em] gap-2 my-2">
@@ -240,7 +241,7 @@ const state = usenslreport();
                       if (!validateForm(data, fromDate, toDate)) return;
 
                       toast.promise(
-                        exportToExcel(data, {
+                        fetchAndExportReport(data, {
                           fromDate,
                           toDate,
                           ConsigneeCode: selectedConsignee,
