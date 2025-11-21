@@ -83,7 +83,7 @@ const state = usenslreport();
   
   return (
     <>
-      <div className='border border-red-700 mt-6 w-full h-auto flex flex-col items-center justify-center bg-bgContainer shadow rounded-md'>
+      <div className='mt-6 w-full h-auto flex flex-col items-center justify-center bg-bgContainer shadow rounded-md'>
             <div className='w-full'>
               <div className='mt-[-1.5em] bg-main1 text-titlebodytext1 font-bold w-2/5 lg:w-1/4 h-[3em] flex justify-center items-center rounded'>
                   <h1>NSL REPORT</h1>
