@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import debounce from "lodash.debounce";
 import api from "@/common/config";
-import ExcelJS from "exceljs";
 import { toastInfo } from "@/components/utils/customToasts";
+import { exportToExcel } from "@/components/utils/exportExcel";
 
 export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
   const [fields, setFields] = useState<string[]>([""]);
@@ -185,64 +185,7 @@ export function useDynamicInputs(activeTab: "airwaybill" | "pronumber") {
         return;
       }
       
-      const workbook      = new ExcelJS.Workbook();
-      const worksheet     = workbook.addWorksheet("PRO_INFO_REPORT");
-
-      // Create header row
-      const headerKeys  = Object.keys(reportData[0]);
-      worksheet.columns = headerKeys.map((key) => ({
-        header: key,
-        key,
-        width: 20,
-      }));
-
-      // Add rows
-      reportData.forEach((item) => {
-        const row = worksheet.addRow(item);
-
-        // Add borders to each cell in the row
-        row.eachCell((cell) => {
-          cell.border = {
-            top:    { style: "thin" },
-            left:   { style: "thin" },
-            bottom: { style: "thin" },
-            right:  { style: "thin" },
-          };
-        });
-        worksheet.getRow(1).eachCell((cell) => {
-          cell.font = { bold: true };
-          cell.border = {
-            top:    { style: "thin" },
-            left:   { style: "thin" },
-            bottom: { style: "thin" },
-            right:  { style: "thin" },
-          };
-        });
-      });
-
-      worksheet.columns.forEach((column) => {
-        let maxLength = 15; // minimum width
-        column.eachCell?.({ includeEmpty: true }, (cell) => {
-          const val = cell.value ? cell.value.toString() : "";
-          if (val.length > maxLength) {
-            maxLength = val.length;
-          }
-        });
-        column.width = maxLength + 4; // add padding
-      });
-
-      // Create a Blob and download
-      const buffer = await workbook.xlsx.writeBuffer();
-      const blob   = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url;
-      a.download = "MODEL_REPORT.xlsx";
-      a.click();
-      URL.revokeObjectURL(url);
+      exportToExcel(reportData, `${generateType}_Report`);
       clearFields();
     } catch (err) {
       console.error("Report fetch or Excel generation failed:", err);

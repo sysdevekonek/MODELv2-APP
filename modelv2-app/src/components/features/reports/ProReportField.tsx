@@ -2,14 +2,10 @@
 'use client';
 import react, { useState } from 'react';
 import Button from "@/components/ui/Buttons";
-import { useDynamicInputs } from '../../../hooks/pro-report/useDynamicInputs';
+import { useDynamicInputs } from '../../../hooks/reports/useProreport';
 import { Download } from 'lucide-react';
 import { Plus } from 'lucide-react';
 import { Minus } from 'lucide-react';
-import { CircleCheck } from 'lucide-react';
-
-
-
 
 const ProReportField = () => {
   const [activeTab, setActiveTab] = useState<'airwaybill' | 'pronumber'>('airwaybill');
