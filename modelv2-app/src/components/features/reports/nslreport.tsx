@@ -208,13 +208,13 @@ const state = usenslreport();
                               </div>
                               </div>
                               <br />
-                              <div className='w-full flex justify-start items-center'>
-                                <div className="w-[30%] flex justify-between">
-                                  <label className=' text-sm font-semibold w-full pl-[20px]'>Detailed Invoice:</label>
+                              <div className='w-full flex justify-end items-center'>
+                                <div className="flex gap-3 mr-10">
                                   <input type="checkbox"
                                         checked={detailedInvoice}
                                         onChange={(e) => setDetailedInvoice(e.target.checked)}
                                         className="w-[20px] h-[20px]"/>
+                                  <label className=' text-sm font-semibold w-full'>Detailed Invoice</label>
                                 </div>
                               </div>
                             </div>
