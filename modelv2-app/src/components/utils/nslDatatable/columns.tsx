@@ -1,10 +1,8 @@
 "use client"
 import toast from "react-hot-toast";
 import { ColumnDef } from "@tanstack/react-table"
-import ComboBox  from "@/components/comboBox"
-import { useSADDropdown } from "@/components/dropdownAPI"
-import { usenslreport } from "@/hooks/reports/usenslreport";
-
+import ComboBox  from "@/components/utils/comboBox"
+import { useSADDropdown } from "@/components/utils/dropdownAPI"
 
 // NSL Table
 export type NSLdata = {

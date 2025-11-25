@@ -1,10 +1,11 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { toast } from 'react-hot-toast';
-import { ComboBoxRef } from "@/components/comboBox";
+import { ComboBoxRef } from "@/components/utils/comboBox";
 import { NSLdata } from "../../components/utils/nslDatatable/columns";
-import ExcelJS from "exceljs";
+import { exportToExcel } from "@/components/utils/exportExcel"; 
 import api from '../../common/config';
+
 import { 
   useTemplateDropdown, 
   useConsigneeDropdown, 
@@ -12,7 +13,7 @@ import {
   useConsolidatorDropdown, 
   useWarehouseDropdown, 
   useSADDropdown 
-} from "@/components/dropdownAPI";
+} from "@/components/utils/dropdownAPI";
 import axios from "axios";
 
 const defaultRow: NSLdata = {
@@ -148,91 +149,74 @@ export const usenslreport = () => {
     return `${mm}/${dd}/${yyyy}`; // MM/DD/YYYY
   }
 
-  const exportToExcel = async (columns: NSLdata[], filtersFromState: any) => {
-    setSaving(true);
-    try {
-      const normalizedLabels = columns.map(c => c.label.replace(/\s+/g, "_"));
-      const payload = {
-        ...filtersFromState,
-        Invoice: filtersFromState.Invoice ? "1" : "0",
-        fromDate: formatDateForOracle(filtersFromState.fromDate),
-        toDate: formatDateForOracle(filtersFromState.toDate),
-        columns: normalizedLabels.join(";"),
-      };
-      const res = await api.post("/reports/nsl", payload);
-      const responseData = res.data?.data ?? [];
-  
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet("NSL Report");
-  
-      const headers = columns.map(c => c.label);
-      worksheet.columns = headers.map(h => ({ header: h, key: h, width: 20 }));
-      worksheet.getRow(1).font = { bold: true };
-  
-      if (Array.isArray(responseData) && responseData.length > 0) {
-        const first = responseData[0];
-        if (Array.isArray(first)) {
-          worksheet.addRows(responseData as any[]);
-        } else if (typeof first === "object" && first !== null) {
-          const rows = (responseData as Record<string, any>[]).map(obj =>
-            headers.map(h => obj[h] ?? "")
-          );
-          worksheet.addRows(rows);
-        } else {
-          worksheet.addRow([String(responseData)]);
-        }
-      }
-  
-      // Auto-fit column widths (safe approach)
-      worksheet.columns.forEach((column, colIndex) => {
-        let maxLength = 10; // minimum width
-        worksheet.eachRow((row) => {
-          const cell = row.getCell(colIndex + 1);
-          const cellValue = cell.value ? cell.value.toString() : "";
-          if (cellValue.length > maxLength) {
-            maxLength = cellValue.length;
-          }
-        });
-        // Make columns a bit wider than the string length
-        column.width = Math.floor(maxLength * 1.2) + 5;
-      });
+const fetchAndExportReport = async (columns: NSLdata[], filtersFromState: any) => {
+  setSaving(true);
+  try {
+    const normalizedLabels = columns.map(c => c.label.replace(/\s+/g, "_"));
+    const payload = {
+      ...filtersFromState,
+      Invoice: filtersFromState.Invoice ? "1" : "0",
+      fromDate: formatDateForOracle(filtersFromState.fromDate),
+      toDate: formatDateForOracle(filtersFromState.toDate),
+      columns: normalizedLabels.join(";"),
+    };
+    
+    const res = await api.post("/reports/nsl", payload);
+    const responseData = res.data?.data ?? [];
 
+    // Transform the API response to work with our reusable export
+    let excelData: any[] = [];
+    const headers = columns.map(c => c.label);
 
-      worksheet.eachRow((row, rowNumber) => {
-        row.eachCell((cell) => {
-          cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
-          };
+    if (Array.isArray(responseData) && responseData.length > 0) {
+      const first = responseData[0];
       
-          if (rowNumber === 1) {
-            // Header row: centered + bold
-            cell.alignment = { horizontal: "left", vertical: "middle" };
-            cell.font = { bold: true };
-          } else {
-            // Data rows: left aligned
-            cell.alignment = { horizontal: "left", vertical: "middle", wrapText: true };
-          }
+      if (Array.isArray(first)) {
+        // Convert array of arrays to array of objects
+        excelData = responseData.map((rowArray: any[]) => {
+          const rowObject: any = {};
+          headers.forEach((header, index) => {
+            rowObject[header] = rowArray[index] ?? "";
+          });
+          return rowObject;
         });
-      });
-  
-      const buffer = await workbook.xlsx.writeBuffer();
-      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `NSL_Report_${Date.now()}.xlsx`;
-      link.click();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Excel export failed", err);
-      toast.error("Failed exporting report");
-    } finally {
-      setSaving(false);
+      } else if (typeof first === "object" && first !== null) {
+        // Data is already array of objects - ensure it has all column keys
+        excelData = (responseData as Record<string, any>[]).map(obj => {
+          const processedObj: any = {};
+          headers.forEach(header => {
+            processedObj[header] = obj[header] ?? "";
+          });
+          return processedObj;
+        });
+      } else {
+        // Single value response
+        excelData = [{ [headers[0]]: String(responseData) }];
+      }
     }
-  };
+
+    // Prepare columns for the reusable export
+    const excelColumns = headers.map(header => ({
+      key: header,
+      header: header,
+      width: 20,
+    }));
+    
+    await exportToExcel(
+      excelData,
+      `NSL_Report_${Date.now()}`,
+      excelColumns
+    );
+
+    // toast.success("Report generated successfully!");
+
+  } catch (err) {
+    console.error("Excel export failed", err);
+    toast.error("Failed exporting report");
+  } finally {
+    setSaving(false);
+  }
+};
   
   
   const updateRow = (id: string, updates: Partial<NSLdata>) => {
@@ -441,6 +425,7 @@ export const usenslreport = () => {
     setSelectedDepartment,
     detailedInvoice,
     setDetailedInvoice,
+    exportToExcel,
 
     // SAD DROPDOWN & DATA TABLE
     SADDropdown,
@@ -451,7 +436,7 @@ export const usenslreport = () => {
     isValid,
 
     // EXCEL EXPORT
-    exportToExcel,
+    fetchAndExportReport,
     fromDate,
     setFromDate,
     toDate,

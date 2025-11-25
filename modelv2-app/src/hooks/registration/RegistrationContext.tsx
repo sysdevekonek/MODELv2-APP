@@ -47,7 +47,7 @@ export const RegistrationProvider = ({ children }: { children: ReactNode }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [currentTab, setCurrentTab] = useState(0);
 
-  // console.log("UserData:", userData);
+   console.log("UserData:", userData);
   const updateField = (field: keyof UserData, value: any) => {
     setUserData((prev) => ({ ...prev, [field]: value }));
   };

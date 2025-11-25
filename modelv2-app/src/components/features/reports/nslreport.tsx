@@ -1,5 +1,5 @@
 "use client"
-import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import ComboBox, { ComboBoxRef } from "@/components/utils/comboBox";
 import toast from "react-hot-toast";
 import { useRef, useEffect } from "react";
 import { columns } from "../../utils/nslDatatable/columns"
@@ -8,6 +8,7 @@ import { usenslreport } from "@/hooks/reports/usenslreport";
 import { CirclePlus } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import { RotateCcw } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -65,6 +66,7 @@ const state = usenslreport();
     validateForm,
     dateError,
     rowError,
+    fetchAndExportReport
   } = state;
 
   const dateErrorRef = useRef<HTMLDivElement | null>(null);
@@ -81,14 +83,14 @@ const state = usenslreport();
   
   return (
     <>
-      <div className='mt-6 w-full h-[150vh] flex flex-col items-center justify-center bg-bgContainer shadow rounded-md'>
+      <div className='mt-6 w-full h-auto flex flex-col items-center justify-center bg-bgContainer shadow rounded-md'>
             <div className='w-full'>
               <div className='mt-[-1.5em] bg-main1 text-titlebodytext1 font-bold w-2/5 lg:w-1/4 h-[3em] flex justify-center items-center rounded'>
                   <h1>NSL REPORT</h1>
               </div>
             </div>
             <div className='mt-5 w-[95%] h-[30em] flex flex-col'>
-                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-full flex items-center'>
+                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-[8%] flex items-center'>
                     <h3>NSL REPORT EXTRACTION</h3>
                 </div>
                 {/* start of form */}
@@ -206,13 +208,13 @@ const state = usenslreport();
                               </div>
                               </div>
                               <br />
-                              <div className='w-full flex justify-start items-center'>
-                                <div className="w-[30%] flex justify-between">
-                                  <label className=' text-sm font-semibold w-full pl-[20px]'>Detailed Invoice:</label>
+                              <div className='w-full flex justify-end items-center'>
+                                <div className="flex gap-3 mr-10">
                                   <input type="checkbox"
                                         checked={detailedInvoice}
                                         onChange={(e) => setDetailedInvoice(e.target.checked)}
                                         className="w-[20px] h-[20px]"/>
+                                  <label className=' text-sm font-semibold w-full'>Detailed Invoice</label>
                                 </div>
                               </div>
                             </div>
@@ -224,7 +226,7 @@ const state = usenslreport();
             </div>
             {/* end of form */}
             <div className='mt-5 w-[95%] h-full flex flex-col mb-5'>
-                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-[3em] flex items-center'>
+                <div className='pl-5 bg-main1 text-titlebodytext1 font-bold h-[2.5em] flex items-center'>
                     <h3>REPORT TABLE</h3>
                 </div>
                 <div className="flex flex-row w-full h-[2.5em] gap-2 my-2">
@@ -233,6 +235,37 @@ const state = usenslreport();
                     title="Add Rows"
                     className="transition font-medium w-32 h-full bg-main1 text-titlebodytext1 rounded-sm flex justify-center items-center gap-3 hover:bg-buttonHover">
                       Add Field <CirclePlus height={20} width={20}/>
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (!validateForm(data, fromDate, toDate)) return;
+
+                      toast.promise(
+                        fetchAndExportReport(data, {
+                          fromDate,
+                          toDate,
+                          ConsigneeCode: selectedConsignee,
+                          Invoice: detailedInvoice,
+                          ConsolidatorCode: selectedConsolidator,
+                          WarehouseCode: selectedWarehouse,
+                          DepartmentCode: selectedDepartment,
+                        }),
+                        {
+                          loading: "Generating report...",
+                          success: <b>Report generated successfully!</b>,
+                          error: <b>Failed to generate report.</b>,
+                        }
+                      );
+                    }}
+                    title="Download Rows"
+                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3">
+                      <Download height={20} width={20}/>
+                  </button>
+                  <button 
+                    onClick={handleResetRows}
+                    title="Reset Rows"
+                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3">
+                      <RotateCcw height={20} width={20}/>
                   </button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -244,41 +277,11 @@ const state = usenslreport();
                       <DropdownMenuItem onClick={handleOpenDialog}>
                         Save
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          if (!validateForm(data, fromDate, toDate)) return;
-
-                          toast.promise(
-                            exportToExcel(data, {
-                              fromDate,
-                              toDate,
-                              ConsigneeCode: selectedConsignee,
-                              Invoice: detailedInvoice,
-                              ConsolidatorCode: selectedConsolidator,
-                              WarehouseCode: selectedWarehouse,
-                              DepartmentCode: selectedDepartment,
-                            }),
-                            {
-                              loading: "Generating report...",
-                              success: <b>Report generated successfully!</b>,
-                              error: <b>Failed to generate report.</b>,
-                            }
-                          );
-                        }}
-                      >
-                        Generate Report
-                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => {/* your print logic */}}>
                         Generate All
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <button 
-                    onClick={handleResetRows}
-                    title="Reset Rows"
-                    className="transition hover:bg-buttonHover hover:text-white font-medium w-10 h-full bg-button2 text-bodytext2 rounded-sm flex justify-center items-center gap-3">
-                      <RotateCcw height={20} width={20}/>
-                  </button>
                 </div>
                 {/* start of form */}
                 <div ref={rowErrorRef} className='w-full h-full'>

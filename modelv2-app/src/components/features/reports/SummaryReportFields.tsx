@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
-import { useSummaryReports } from "@/hooks/useSummaryReport";
-import ComboBox, { ComboBoxRef } from "@/components/comboBox";
+import { useSummaryReports } from "@/hooks/reports/useSummaryReport";
+import ComboBox, { ComboBoxRef } from "@/components/utils/comboBox";
 import Button from "@/components/ui/Buttons";
 
 export default function SummaryReportFields() {
   const comboRef = useRef<ComboBoxRef>(null);
   const {
+    getClients,
     clients,
     selectedClient,
     fromDate,
@@ -14,14 +15,19 @@ export default function SummaryReportFields() {
     setSelectedClient,
     setFromDate,
     setToDate,
-    fetchAndExportReport,
     clearForm,
+    reportData,
+    fetchAndExportReport
   } = useSummaryReports();
 
   const handleClear = () => {
     clearForm();
     comboRef.current?.clear(); 
   };
+
+  React.useEffect(() => {
+    console.log("reportData updated:", reportData);
+  }, [reportData]);
 
   return (
   <div className="w-full max-w-xl mx-auto p-6">
@@ -37,11 +43,12 @@ export default function SummaryReportFields() {
             displayKey="CMP_CON_NAM"
             valueKey="CMP_CON_COD"
             selectedValue={selectedClient}
+            onOpen={getClients}
             setSelectedValue={(val) => {
                 if (val !== "") setSelectedClient(val);
               }}
               showValueKeyInList={false}
-            className="w-full bg-inputField1 border border-inputField2 text-sm rounded-lg focus:ring-2 focus:ring-main1 focus:outline-none text-sm px-3 py-2"
+            className="w-full bg-inputField1 border border-inputField2 rounded-lg focus:ring-2 focus:ring-main1 focus:outline-none text-sm px-3 py-2"
           />
         </div>
       </div>
