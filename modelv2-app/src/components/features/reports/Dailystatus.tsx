@@ -1,5 +1,6 @@
 'use client';
 import { Download } from 'lucide-react';
+import Buttons from '@/components/ui/Buttons';
 
 const Dailystatus = () => {
     return (
@@ -21,33 +22,34 @@ const Dailystatus = () => {
                             <div className=" flex justify-center items-end gap-6">
                                 <div className="w-full lg:w-[18%]">
                                     <label className="text-sm font-semibold block mb-2">Date From:</label>
-                                    <input type="date" className="py-2 bg-inputField1 text-xs rounded p-1 w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"/>
+                                    <input type="date" className="px-3 py-2 bg-inputField1 text-xs rounded w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"/>
                                 </div>
                                 <div className="w-full lg:w-[18%]">
                                     <label className="text-sm font-semibold block mb-2">To:</label>
-                                    <input type="date" className="py-2 bg-inputField1 text-xs rounded p-1 w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"/>
+                                    <input type="date" className="px-3 py-2 bg-inputField1 text-xs rounded w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"/>
                                 </div>
                             </div>
                             <div className="w-full lg:w-[38%] justify-self-center">
                                 <label className="text-sm font-semibold block mb-2">Consginee: </label>
-                                <input type="text" className="py-2 bg-inputField1 text-xs rounded p-1 w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
+                                <input type="text" className="px-3 py-2 bg-inputField1 text-xs rounded w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
                                 placeholder="Select Consignee"/>
                             </div>
                             <div className="w-full lg:w-[38%] justify-self-center">
                                 <label className="text-sm font-semibold block mb-2">Port of Destination: </label>
-                                <input type="text" className="py-2 bg-inputField1 text-xs rounded p-1 w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
+                                <input type="text" className="px-3 py-2 bg-inputField1 text-xs rounded p-1 w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
                                 placeholder="Select Port"/>
                             </div>
                             <div className="w-full lg:w-[38%] justify-self-center">
                                 <label className="text-sm font-semibold block mb-2">Department: </label>
-                                <input type="text" className="py-2 bg-inputField1 text-xs rounded p-1 w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
+                                <input type="text" className="px-3 py-2 bg-inputField1 text-xs rounded p-1 w-full border border-inputField2 focus:outline-none focus:ring-2 focus:ring-slate-400 text-bodytext2"
                                 placeholder="Select Department"/>
                             </div>
                             <div className="flex justify-center">
-                                <button className="rounded px-8 py-2 bg-slate-900 text-white hover:bg-slate-800 font-semibold text-sm flex justify-center items-center gap-2">
+                                <Buttons className=""
+                                    variant="primary">
                                     <Download size={16} strokeWidth={2} />
                                     <span>Generate Report</span>
-                                </button>
+                                </Buttons>
                             </div>
                         </form>
                     </div>
