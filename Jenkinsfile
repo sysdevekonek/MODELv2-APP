@@ -28,7 +28,7 @@ pipeline {
                     docker rm ${APP_NAME} || true
                     docker run -d --name ${APP_NAME} -p 3305:3305 --restart unless-stopped ${APP_NAME}:latest
                 """
-            }
+             }
         }
     }
 
