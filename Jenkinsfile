@@ -18,7 +18,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 dir('modelv2-app') {
-                    bat "docker build -t ${APP_NAME}:${BUILD_NUMBER} -t ${APP_NAME}:latest ."
+                    sh "docker build -t ${APP_NAME}:${BUILD_NUMBER} -t ${APP_NAME}:latest ."
                 }
             }
         }
@@ -33,8 +33,8 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat """
-                        docker login -u %DOCKER_USER% -p %DOCKER_PASS% ${DOCKER_REGISTRY}
+                    sh """
+                        docker login -u \$DOCKER_USER -p \$DOCKER_PASS ${DOCKER_REGISTRY}
                         docker tag ${APP_NAME}:${BUILD_NUMBER} ${DOCKER_REGISTRY}/${APP_NAME}:${BUILD_NUMBER}
                         docker tag ${APP_NAME}:latest ${DOCKER_REGISTRY}/${APP_NAME}:latest
                         docker push ${DOCKER_REGISTRY}/${APP_NAME}:${BUILD_NUMBER}
@@ -58,7 +58,7 @@ pipeline {
 
     post {
         always {
-            bat "docker rmi ${APP_NAME}:${BUILD_NUMBER} || exit 0"
+            sh "docker rmi ${APP_NAME}:${BUILD_NUMBER} || true"
             cleanWs()
         }
         success {
