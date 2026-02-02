@@ -16,6 +16,9 @@ pipeline {
         }
 
         stage('Build Docker Image') {
+            when {
+                branch 'deployment'
+            }
             steps {
                 dir('modelv2-app') {
                     sh "docker build -t ${APP_NAME}:${BUILD_NUMBER} -t ${APP_NAME}:latest ."
@@ -23,9 +26,22 @@ pipeline {
             }
         }
 
+        stage('Run Container') {
+            when {
+                branch 'deployment'
+            }
+            steps {
+                sh """
+                    docker stop ${APP_NAME} || true
+                    docker rm ${APP_NAME} || true
+                    docker run -d --name ${APP_NAME} -p 3305:3305 --restart unless-stopped ${APP_NAME}:latest
+                """
+            }
+        }
+
         stage('Push to Registry') {
             when {
-                branch 'main'
+                branch 'deployment'
             }
             steps {
                 withCredentials([usernamePassword(
@@ -43,26 +59,12 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy') {
-            when {
-                branch 'main'
-            }
-            steps {
-                input message: 'Deploy to Production?', ok: 'Deploy'
-                echo 'Deploying...'
-                // Add your deployment commands here
-            }
-        }
     }
 
     post {
-        always {
-            sh "docker rmi ${APP_NAME}:${BUILD_NUMBER} || true"
-            cleanWs()
-        }
         success {
             echo 'Pipeline completed successfully!'
+            echo "App is running at http://172.21.79.32:3305"
         }
         failure {
             echo 'Pipeline failed!'
