@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toastInfo } from '@/components/utils/customToasts';
 
 const api = axios.create({
-  baseURL: 'http://localhost:4001',
+  baseURL: 'http://172.21.79.32',
 });
 
 let isRefreshing = false;
@@ -69,7 +69,7 @@ api.interceptors.response.use(
         }
 
         const res = await axios.post(
-          'http://localhost:4001/auth/refresh',
+          'http://172.21.79.32/auth/refresh',
           {},
           {
             headers: {
