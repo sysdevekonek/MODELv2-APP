@@ -15,30 +15,6 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                dir('modelv2-app') {
-                    bat 'npm ci'
-                }
-            }
-        }
-
-        stage('Lint') {
-            steps {
-                dir('modelv2-app') {
-                    bat 'npm run lint'
-                }
-            }
-        }
-
-        stage('Build Application') {
-            steps {
-                dir('modelv2-app') {
-                    bat 'npm run build'
-                }
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 dir('modelv2-app') {
@@ -68,26 +44,14 @@ pipeline {
             }
         }
 
-        stage('Deploy to Development') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'Deploying to Development environment...'
-                // Add your deployment commands here
-                // Example: bat 'kubectl apply -f k8s/dev/'
-            }
-        }
-
-        stage('Deploy to Production') {
+        stage('Deploy') {
             when {
                 branch 'main'
             }
             steps {
                 input message: 'Deploy to Production?', ok: 'Deploy'
-                echo 'Deploying to Production environment...'
+                echo 'Deploying...'
                 // Add your deployment commands here
-                // Example: bat 'kubectl apply -f k8s/prod/'
             }
         }
     }
@@ -102,7 +66,6 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed!'
-            // Add notification here (email, Slack, etc.)
         }
     }
 }
